@@ -1,0 +1,3 @@
+# Runtime: Python >=3.10, standard library only (no installation required).
+# Independent symbolic-oracle development tests only:
+sympy==1.14.0

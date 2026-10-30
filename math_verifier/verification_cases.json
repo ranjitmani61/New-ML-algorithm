@@ -1,0 +1,1275 @@
+{
+  "schema_version": 1,
+  "corpus": "sealed_external",
+  "prepared_before_implementation_inspection": true,
+  "cases": [
+    {
+      "id": "ext_001",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          },
+          "y": {
+            "domain": "real"
+          }
+        },
+        "lhs": "(x+y)**2",
+        "op": "==",
+        "rhs": "x**2+2*x*y+y**2"
+      },
+      "expected": "VERIFIED",
+      "reason": "The binomial identity holds for every real x and y by distributivity."
+    },
+    {
+      "id": "ext_002",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "x**2",
+        "op": ">=",
+        "rhs": "0"
+      },
+      "expected": "VERIFIED",
+      "reason": "Every real square is nonnegative, including at x=0."
+    },
+    {
+      "id": "ext_003",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "x**2",
+        "op": ">",
+        "rhs": "0"
+      },
+      "expected": [
+        "DISPROVEN",
+        "UNVERIFIED"
+      ],
+      "reason": "At the exact witness x=0 both sides are zero, so strict positivity is false."
+    },
+    {
+      "id": "ext_004",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "1/x",
+        "op": "==",
+        "rhs": "1/x"
+      },
+      "expected": [
+        "ILL_DEFINED",
+        "UNVERIFIED"
+      ],
+      "reason": "The quantified real domain includes x=0, at which both expressions divide by zero; reflexivity cannot remove this domain defect."
+    },
+    {
+      "id": "ext_005",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "x/x",
+        "op": "==",
+        "rhs": "1"
+      },
+      "expected": [
+        "ILL_DEFINED",
+        "UNVERIFIED"
+      ],
+      "reason": "At x=0 the left side is undefined. Cancellation may not silently restrict the domain."
+    },
+    {
+      "id": "ext_006",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real",
+            "lower": "1",
+            "upper": "2"
+          }
+        },
+        "lhs": "x/x",
+        "op": "==",
+        "rhs": "1"
+      },
+      "expected": "VERIFIED",
+      "reason": "For every x in [1,2], x is nonzero and exact cancellation is valid."
+    },
+    {
+      "id": "ext_007",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real",
+            "lower": "0",
+            "lower_open": true,
+            "upper": "2"
+          }
+        },
+        "lhs": "log(x)",
+        "op": ">",
+        "rhs": "0"
+      },
+      "expected": [
+        "DISPROVEN",
+        "UNVERIFIED"
+      ],
+      "reason": "The domain includes x=1, where log(1)=0, so the asserted strict inequality is false despite log being defined everywhere in this domain."
+    },
+    {
+      "id": "ext_008",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real",
+            "lower": "-1",
+            "upper": "1"
+          }
+        },
+        "lhs": "sqrt(x)",
+        "op": ">=",
+        "rhs": "0"
+      },
+      "expected": [
+        "ILL_DEFINED",
+        "UNVERIFIED"
+      ],
+      "reason": "The real domain includes x=-1, where a real square root does not exist."
+    },
+    {
+      "id": "ext_009",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "sqrt(x**2)",
+        "op": "==",
+        "rhs": "x"
+      },
+      "expected": [
+        "DISPROVEN",
+        "UNVERIFIED"
+      ],
+      "reason": "At x=-1 the principal square root is 1 and the right side is -1."
+    },
+    {
+      "id": "ext_010",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "sqrt(x**2)",
+        "op": "==",
+        "rhs": "abs(x)"
+      },
+      "expected": [
+        "VERIFIED",
+        "UNVERIFIED"
+      ],
+      "reason": "For every real x the principal nonnegative square root of x squared equals its absolute value."
+    },
+    {
+      "id": "ext_011",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "1/(x**2+1)",
+        "op": ">",
+        "rhs": "0"
+      },
+      "expected": [
+        "VERIFIED",
+        "UNVERIFIED"
+      ],
+      "reason": "For every real x, x squared plus 1 is strictly positive, so the reciprocal is defined and strictly positive."
+    },
+    {
+      "id": "ext_012",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "exp(x)",
+        "op": ">",
+        "rhs": "0"
+      },
+      "expected": [
+        "VERIFIED",
+        "UNVERIFIED"
+      ],
+      "reason": "The real exponential is strictly positive at every real argument."
+    },
+    {
+      "id": "ext_013",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "log(exp(x))",
+        "op": "==",
+        "rhs": "x"
+      },
+      "expected": [
+        "VERIFIED",
+        "UNVERIFIED"
+      ],
+      "reason": "The exponential is positive and the real logarithm is its inverse on that range."
+    },
+    {
+      "id": "ext_014",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "exp(log(x))",
+        "op": "==",
+        "rhs": "x"
+      },
+      "expected": [
+        "ILL_DEFINED",
+        "UNVERIFIED"
+      ],
+      "reason": "The stated domain includes x=0 and negative x, for which the real logarithm is undefined."
+    },
+    {
+      "id": "ext_015",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "x",
+        "op": ">=",
+        "rhs": "1",
+        "assumptions": [
+          {
+            "lhs": "x",
+            "op": "<",
+            "rhs": "0"
+          },
+          {
+            "lhs": "x",
+            "op": ">",
+            "rhs": "1"
+          }
+        ]
+      },
+      "expected": [
+        "VACUOUS",
+        "UNVERIFIED"
+      ],
+      "reason": "No real x is simultaneously below zero and above one, so the assumptions define an empty domain."
+    },
+    {
+      "id": "ext_016",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "x**2",
+        "op": ">=",
+        "rhs": "1",
+        "assumptions": [
+          {
+            "lhs": "x",
+            "op": ">=",
+            "rhs": "1"
+          }
+        ]
+      },
+      "expected": [
+        "VERIFIED",
+        "UNVERIFIED"
+      ],
+      "reason": "The assumption x>=1 implies x squared >=1 by multiplication of nonnegative quantities."
+    },
+    {
+      "id": "ext_017",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real",
+            "lower": "0",
+            "upper": "1"
+          }
+        },
+        "lhs": "x",
+        "op": "<=",
+        "rhs": "1"
+      },
+      "expected": "VERIFIED",
+      "reason": "The closed upper bound is exactly the weak inequality asserted."
+    },
+    {
+      "id": "ext_018",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real",
+            "lower": "0",
+            "upper": "1"
+          }
+        },
+        "lhs": "x",
+        "op": "<",
+        "rhs": "1"
+      },
+      "expected": [
+        "DISPROVEN",
+        "UNVERIFIED"
+      ],
+      "reason": "The closed endpoint x=1 belongs to the quantified domain and violates the strict inequality."
+    },
+    {
+      "id": "ext_019",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real",
+            "lower": "0",
+            "upper": "1",
+            "upper_open": true
+          }
+        },
+        "lhs": "x",
+        "op": "<",
+        "rhs": "1"
+      },
+      "expected": [
+        "VERIFIED",
+        "UNVERIFIED"
+      ],
+      "reason": "An open upper endpoint excludes x=1 and imposes x<1 throughout the domain."
+    },
+    {
+      "id": "ext_020",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real",
+            "lower": "1",
+            "upper": "2"
+          }
+        },
+        "lhs": "x**2",
+        "op": ">=",
+        "rhs": "2"
+      },
+      "expected": [
+        "DISPROVEN",
+        "UNVERIFIED"
+      ],
+      "reason": "At the included endpoint x=1 the left side is 1, which is less than 2."
+    },
+    {
+      "id": "ext_021",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "derivative",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "expression": "x**3",
+        "variable": "x",
+        "proposed": "3*x**2"
+      },
+      "expected": "VERIFIED",
+      "reason": "The power rule gives the derivative of x cubed as 3 times x squared on all real numbers."
+    },
+    {
+      "id": "ext_022",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "derivative",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "expression": "x**3",
+        "variable": "x",
+        "proposed": "2*x**2"
+      },
+      "expected": [
+        "DISPROVEN",
+        "UNVERIFIED"
+      ],
+      "reason": "At x=1 the actual derivative is 3 and the proposed derivative is 2."
+    },
+    {
+      "id": "ext_023",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "derivative",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "expression": "abs(x)",
+        "variable": "x",
+        "proposed": "x/abs(x)"
+      },
+      "expected": [
+        "ILL_DEFINED",
+        "UNVERIFIED"
+      ],
+      "reason": "Absolute value is not differentiable at x=0, which is in the stated domain; the proposed formula is also undefined there."
+    },
+    {
+      "id": "ext_024",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "derivative",
+        "variables": {
+          "x": {
+            "domain": "real",
+            "lower": "0",
+            "lower_open": true
+          }
+        },
+        "expression": "abs(x)",
+        "variable": "x",
+        "proposed": "1"
+      },
+      "expected": [
+        "VERIFIED",
+        "UNVERIFIED"
+      ],
+      "reason": "For all strictly positive x, absolute value equals x in a neighborhood and has derivative 1."
+    },
+    {
+      "id": "ext_025",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "derivative",
+        "variables": {
+          "x": {
+            "domain": "real",
+            "lower": "0",
+            "upper": "1"
+          }
+        },
+        "expression": "sqrt(x)",
+        "variable": "x",
+        "proposed": "1/(2*sqrt(x))"
+      },
+      "expected": [
+        "ILL_DEFINED",
+        "UNVERIFIED"
+      ],
+      "reason": "At the included endpoint x=0, the proposed derivative divides by zero and the real square root has no finite derivative."
+    },
+    {
+      "id": "ext_026",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "derivative",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "expression": "log(x)",
+        "variable": "x",
+        "proposed": "1/x"
+      },
+      "expected": [
+        "ILL_DEFINED",
+        "UNVERIFIED"
+      ],
+      "reason": "The real logarithm is undefined at every nonpositive real x, while the specified variable domain includes those x."
+    },
+    {
+      "id": "ext_027",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "derivative",
+        "variables": {
+          "x": {
+            "domain": "real",
+            "lower": "1",
+            "upper": "2"
+          }
+        },
+        "expression": "log(x)",
+        "variable": "x",
+        "proposed": "1/x"
+      },
+      "expected": "VERIFIED",
+      "reason": "Logarithm is differentiable on an open neighborhood of [1,2], and its derivative is 1/x there."
+    },
+    {
+      "id": "ext_028",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "derivative",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "expression": "7",
+        "variable": "x",
+        "proposed": "0"
+      },
+      "expected": "VERIFIED",
+      "reason": "A constant function has derivative zero at every real point."
+    },
+    {
+      "id": "ext_029",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "derivative",
+        "variables": {
+          "x": {
+            "domain": "real"
+          },
+          "y": {
+            "domain": "real"
+          }
+        },
+        "expression": "x*y",
+        "variable": "x",
+        "proposed": "y"
+      },
+      "expected": "VERIFIED",
+      "reason": "Taking the partial derivative in x treats y as an independent constant, giving y."
+    },
+    {
+      "id": "ext_030",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "derivative",
+        "variables": {
+          "x": {
+            "domain": "real"
+          },
+          "y": {
+            "domain": "real"
+          }
+        },
+        "expression": "x*y",
+        "variable": "x",
+        "proposed": "x"
+      },
+      "expected": [
+        "DISPROVEN",
+        "UNVERIFIED"
+      ],
+      "reason": "At x=0,y=1 the partial derivative in x is 1 whereas the proposed expression is 0."
+    },
+    {
+      "id": "ext_031",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "finite",
+        "variables": {
+          "x": {
+            "domain": "integer",
+            "lower": "-2",
+            "upper": "2"
+          }
+        },
+        "lhs": "x**2",
+        "op": ">=",
+        "rhs": "0"
+      },
+      "expected": "VERIFIED_FINITE",
+      "reason": "There are exactly five integer assignments {-2,-1,0,1,2}; their squares are 4,1,0,1,4. Certification is for this finite scope."
+    },
+    {
+      "id": "ext_032",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "finite",
+        "variables": {
+          "x": {
+            "domain": "integer",
+            "lower": "0",
+            "upper": "10"
+          }
+        },
+        "lhs": "x**2",
+        "op": "==",
+        "rhs": "x"
+      },
+      "expected": "DISPROVEN",
+      "reason": "The enumerated domain includes integer x=2, for which x squared is 4 rather than 2."
+    },
+    {
+      "id": "ext_033",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "finite",
+        "variables": {
+          "x": {
+            "domain": "integer",
+            "lower": "0",
+            "upper": "0"
+          }
+        },
+        "lhs": "x",
+        "op": "==",
+        "rhs": "0"
+      },
+      "expected": "VERIFIED_FINITE",
+      "reason": "The finite domain is the singleton integer assignment x=0."
+    },
+    {
+      "id": "ext_034",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "finite",
+        "variables": {
+          "x": {
+            "domain": "integer",
+            "lower": "0",
+            "upper": "1",
+            "lower_open": true,
+            "upper_open": true
+          }
+        },
+        "lhs": "x",
+        "op": "==",
+        "rhs": "17"
+      },
+      "expected": [
+        "VACUOUS",
+        "UNVERIFIED"
+      ],
+      "reason": "There is no integer strictly between 0 and 1, so the finite domain is empty."
+    },
+    {
+      "id": "ext_035",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "finite",
+        "variables": {
+          "x": {
+            "domain": "integer",
+            "lower": "1",
+            "upper": "2"
+          }
+        },
+        "lhs": "x**2",
+        "op": ">=",
+        "rhs": "x"
+      },
+      "expected": "VERIFIED_FINITE",
+      "reason": "The two integer assignments x=1 and x=2 give 1>=1 and 4>=2 respectively; the requested scope is finite."
+    },
+    {
+      "id": "ext_036",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "finite",
+        "variables": {
+          "x": {
+            "domain": "integer"
+          }
+        },
+        "lhs": "x**2",
+        "op": ">=",
+        "rhs": "0"
+      },
+      "expected": [
+        "INVALID",
+        "UNVERIFIED"
+      ],
+      "reason": "A finite enumeration claim requires explicit bounded integer domains. This unbounded domain cannot receive VERIFIED_FINITE."
+    },
+    {
+      "id": "ext_037",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "logic",
+        "formula": "implies(p and q, p)"
+      },
+      "expected": "VERIFIED",
+      "reason": "In each Boolean valuation satisfying the conjunction, p is true; otherwise the implication is true by its truth table."
+    },
+    {
+      "id": "ext_038",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "logic",
+        "formula": "iff(implies(p, q), implies(not q, not p))"
+      },
+      "expected": "VERIFIED",
+      "reason": "An implication and its contrapositive have the same truth value in all four valuations of p and q."
+    },
+    {
+      "id": "ext_039",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "logic",
+        "formula": "implies(p, q)"
+      },
+      "expected": "DISPROVEN",
+      "reason": "The Boolean valuation p=True,q=False makes the implication false."
+    },
+    {
+      "id": "ext_040",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "logic",
+        "formula": "p or not p"
+      },
+      "expected": "VERIFIED",
+      "reason": "For both Boolean values of p, one of p and not p is true."
+    },
+    {
+      "id": "ext_041",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "logic",
+        "formula": "iff(p or q, p and q)"
+      },
+      "expected": "DISPROVEN",
+      "reason": "The valuation p=True,q=False makes the disjunction true and the conjunction false."
+    },
+    {
+      "id": "ext_042",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "psd",
+        "matrix": [
+          [
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ]
+      },
+      "expected": "VERIFIED",
+      "reason": "For every real vector (a,b), the quadratic form is a squared, which is nonnegative; a zero eigenvalue is allowed."
+    },
+    {
+      "id": "ext_043",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "psd",
+        "matrix": [
+          [
+            "1",
+            "2"
+          ],
+          [
+            "2",
+            "1"
+          ]
+        ]
+      },
+      "expected": "DISPROVEN",
+      "reason": "The exact vector (1,-1) gives quadratic form -2, so the symmetric matrix is not positive semidefinite."
+    },
+    {
+      "id": "ext_044",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "psd",
+        "matrix": [
+          [
+            "1",
+            "1"
+          ],
+          [
+            "1",
+            "999/1000"
+          ]
+        ]
+      },
+      "expected": "DISPROVEN",
+      "reason": "The exact vector (1,-1) gives 1-2+999/1000=-1/1000, showing a small but strictly negative quadratic form."
+    },
+    {
+      "id": "ext_045",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "psd",
+        "matrix": [
+          [
+            "0",
+            "-1"
+          ],
+          [
+            "-1",
+            "0"
+          ]
+        ]
+      },
+      "expected": "DISPROVEN",
+      "reason": "The exact vector (1,1) gives quadratic form -2; checking diagonal entries alone would miss this failure."
+    },
+    {
+      "id": "ext_046",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "matrix_identity",
+        "matrices": {
+          "A": [
+            2,
+            2
+          ],
+          "B": [
+            2,
+            2
+          ]
+        },
+        "lhs": "trace(A*B)",
+        "rhs": "trace(B*A)"
+      },
+      "expected": "VERIFIED",
+      "reason": "Both traces sum A_ij*B_ji over the same finite pair of indices, so cyclicity holds for all real 2 by 2 matrices."
+    },
+    {
+      "id": "ext_047",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "matrix_identity",
+        "matrices": {
+          "A": [
+            2,
+            2
+          ],
+          "B": [
+            2,
+            2
+          ]
+        },
+        "lhs": "det(A*B)",
+        "rhs": "det(A)*det(B)"
+      },
+      "expected": [
+        "VERIFIED",
+        "UNVERIFIED"
+      ],
+      "reason": "The determinant is multiplicative for square real matrices; a checker may conservatively decline this supported mathematical identity."
+    },
+    {
+      "id": "ext_048",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "matrix_identity",
+        "matrices": {
+          "A": [
+            2,
+            2
+          ],
+          "B": [
+            2,
+            2
+          ]
+        },
+        "lhs": "A*B",
+        "rhs": "B*A"
+      },
+      "expected": [
+        "DISPROVEN",
+        "UNVERIFIED"
+      ],
+      "reason": "For A=[[1,0],[0,0]] and B=[[0,1],[0,0]], AB=B while BA=0, so matrix multiplication is not commutative."
+    },
+    {
+      "id": "ext_049",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "matrix_identity",
+        "matrices": {
+          "A": [
+            2,
+            2
+          ],
+          "B": [
+            2,
+            2
+          ]
+        },
+        "lhs": "transpose(A*B)",
+        "rhs": "transpose(B)*transpose(A)"
+      },
+      "expected": [
+        "VERIFIED",
+        "UNVERIFIED"
+      ],
+      "reason": "Entrywise transposition reverses multiplication order, since the (i,j) entry on either side is the same finite sum."
+    },
+    {
+      "id": "ext_050",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "ode",
+        "variables": {
+          "t": {
+            "domain": "real"
+          }
+        },
+        "variable": "t",
+        "solution": "exp(t)",
+        "rhs": "y",
+        "initial": {
+          "at": "0",
+          "value": "1"
+        }
+      },
+      "expected": "VERIFIED",
+      "reason": "The derivative of exp(t) equals exp(t), substitution for y gives exp(t), and exp(0)=1."
+    },
+    {
+      "id": "ext_051",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "ode",
+        "variables": {
+          "t": {
+            "domain": "real"
+          }
+        },
+        "variable": "t",
+        "solution": "exp(t)",
+        "rhs": "-y",
+        "initial": {
+          "at": "0",
+          "value": "1"
+        }
+      },
+      "expected": [
+        "DISPROVEN",
+        "UNVERIFIED"
+      ],
+      "reason": "At t=0 the proposed solution has derivative 1 while the ODE right side after substitution is -1."
+    },
+    {
+      "id": "ext_052",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "ode",
+        "variables": {
+          "t": {
+            "domain": "real"
+          }
+        },
+        "variable": "t",
+        "solution": "t**2",
+        "rhs": "2*t",
+        "initial": {
+          "at": "0",
+          "value": "0"
+        }
+      },
+      "expected": "VERIFIED",
+      "reason": "The derivative of t squared is 2t everywhere, and the initial condition at zero is satisfied."
+    },
+    {
+      "id": "ext_053",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "ode",
+        "variables": {
+          "t": {
+            "domain": "real"
+          }
+        },
+        "variable": "t",
+        "solution": "exp(t)",
+        "rhs": "y",
+        "initial": {
+          "at": "0",
+          "value": "2"
+        }
+      },
+      "expected": "DISPROVEN",
+      "reason": "The differential equation is satisfied but the exact initial condition fails because exp(0)=1, not 2."
+    },
+    {
+      "id": "ext_054",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "ode",
+        "variables": {
+          "t": {
+            "domain": "real",
+            "lower": "0",
+            "lower_open": true
+          }
+        },
+        "variable": "t",
+        "solution": "log(t)",
+        "rhs": "1/t",
+        "initial": {
+          "at": "1",
+          "value": "0"
+        }
+      },
+      "expected": [
+        "VERIFIED",
+        "UNVERIFIED"
+      ],
+      "reason": "On the strictly positive real domain, log(t) is differentiable with derivative 1/t, and log(1)=0."
+    },
+    {
+      "id": "ext_055",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "sin(x)",
+        "op": "==",
+        "rhs": "sin(x)"
+      },
+      "expected": [
+        "INVALID",
+        "UNVERIFIED"
+      ],
+      "reason": "The declared arithmetic function whitelist excludes sin. Reflexive syntax is not authorization to certify an unsupported expression."
+    },
+    {
+      "id": "ext_056",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "__import__('builtins').sum([1,2])",
+        "op": "==",
+        "rhs": "3"
+      },
+      "expected": "INVALID",
+      "reason": "Attribute access, importing, string and list literals, and the builtins sum call are outside the safe expression grammar and must be rejected without evaluation."
+    },
+    {
+      "id": "ext_057",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "z",
+        "op": "==",
+        "rhs": "z"
+      },
+      "expected": "INVALID",
+      "reason": "The expression uses the undeclared symbol z; an undefined symbol cannot be silently introduced as a new quantified variable."
+    },
+    {
+      "id": "ext_058",
+      "tags": [
+        "sealed_external"
+      ],
+      "claim": {
+        "kind": "scalar",
+        "variables": {
+          "x": {
+            "domain": "real"
+          }
+        },
+        "lhs": "x**9",
+        "op": ">=",
+        "rhs": "0"
+      },
+      "expected": [
+        "INVALID",
+        "UNVERIFIED"
+      ],
+      "reason": "The planned parser explicitly limits integer powers to -8 through 8; exponent 9 must fail closed instead of receiving a mathematical certificate."
+    }
+  ]
+}
