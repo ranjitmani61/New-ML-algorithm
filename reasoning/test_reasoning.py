@@ -150,5 +150,27 @@ class LearnedStopping(unittest.TestCase):
         self.assertLess(r["attempts"], 3)
 
 
+class LatentVotes(unittest.TestCase):
+    def test_mentioned_values(self):
+        import selection
+
+        v = selection.mentioned_values(r"so x = \frac{3}{4} and 2\sqrt{3}, then 10/4 = 2.5, total 1,000")
+        for want in ("3/4", "2\\sqrt{3}", "5/2", "10"):
+            self.assertIn(want, v)
+
+    def test_latent_support_counts_other_attempts_only(self):
+        import selection
+
+        answers = ["26", "1", "1", "13"]
+        mentions = [{"26"}, {"26", "1"}, {"1"}, {"26", "13"}]
+        s = selection.latent_support(answers, mentions, problem_values={"13"})
+        self.assertEqual(s["26"], 2)  # attempts 2 and 4 mention 26 but answer otherwise
+        self.assertEqual(s["1"], 0)
+        self.assertEqual(s["13"], 0)  # values from the problem statement get no latent support
+        traces = [trace(a) for a in answers]
+        self.assertEqual(selection.latent_vote(traces, mentions, {"13"}, beta=0.0)[0], "1")
+        self.assertEqual(selection.latent_vote(traces, mentions, {"13"}, beta=1.0)[0], "26")
+
+
 if __name__ == "__main__":
     unittest.main()
