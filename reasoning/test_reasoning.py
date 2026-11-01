@@ -172,5 +172,55 @@ class LatentVotes(unittest.TestCase):
         self.assertEqual(selection.latent_vote(traces, mentions, {"13"}, beta=1.0)[0], "26")
 
 
+class TerminalRatio(unittest.TestCase):
+    def test_waypoint_answer_loses_to_downstream_answer(self):
+        import selection
+
+        def t(answer, mentions):
+            x = trace(answer)
+            x.mentions = frozenset(mentions)
+            return x
+
+        # 72 is reached by every attempt; three stop there, two continue to 1152 = 72 * 16.
+        pool = [t("72", {"72"}), t("72", {"72"}), t("72", {"72"}), t("1152", {"72", "1152"}), t("1152", {"72", "1152"})]
+        self.assertEqual(selection.terminal_ratio_vote(pool, frozenset(), gamma=0.0)[0], "72")  # plain vote
+        self.assertEqual(selection.terminal_ratio_vote(pool, frozenset(), gamma=2.0)[0], "1152")
+        self.assertEqual(selection.terminal_ratio_vote(pool, frozenset({"72"}), gamma=2.0)[0], "72")  # given value
+        # a settled answer that nobody passes through keeps its full vote mass
+        settled = [t("5", {"5"}), t("5", {"5"}), t("6", {"6"})]
+        a, scores = selection.terminal_ratio_vote(settled, frozenset(), gamma=2.0)
+        self.assertEqual((a, scores["5"]), ("5", 2.0))
+
+
+class Grading(unittest.TestCase):
+    def test_equivalent_answers_share_a_cluster(self):
+        import grading
+
+        keys, members = grading.cluster(["\\frac{\\sqrt{6}}{2}", "\\frac{\\sqrt6}2", "(-3/2,3)", "(-1.5,3)", None, "3"], "")
+        self.assertEqual(keys[0], keys[1])
+        self.assertEqual(keys[2], keys[3])
+        self.assertIsNone(keys[4])
+        self.assertEqual(len(members), 3)
+        self.assertTrue(grading.matches_gold("5225 \\text{ cubic inches}", "5225"))
+        self.assertTrue(grading.matches_gold("\\frac{35}{2} \\pi", "\\frac{35\\pi}{2}"))
+        self.assertFalse(grading.matches_gold("[0,3)", "(-3/2,3)"))
+        self.assertFalse(grading.matches_gold("\\frac{1}{3}", "0.33"))
+
+    def test_multiple_choice_letters_map_to_option_values(self):
+        import grading
+
+        problem = ("How many? $\\mathrm{\\textbf{(A)} \\ }226\\qquad \\mathrm{\\textbf{(B)} \\ } 243 \\qquad "
+                   "\\mathrm{\\textbf{(C)} \\ } 270 \\qquad \\mathrm{\\textbf{(D)} \\ }469\\qquad \\mathrm{\\textbf{(E)} \\ } 486$")
+        options = grading.mc_options(problem)
+        self.assertEqual(options, {"A": "226", "B": "243", "C": "270", "D": "469", "E": "486"})
+        for raw in ("C", "(C)", "\\text{(C)}", "\\textbf{(C) }270"):
+            self.assertEqual(grading.map_choice(raw, options), "270")
+        self.assertEqual(grading.map_choice("12", options), "12")
+        self.assertEqual(grading.mc_options("label(\"$A$\",A,NW); dot(A); (A) only"), {})
+        keys, members = grading.cluster(["C", "270", "A"], problem)
+        self.assertEqual(keys[0], keys[1])
+        self.assertEqual(grading.gold_key("226", members, problem), keys[2])
+
+
 if __name__ == "__main__":
     unittest.main()

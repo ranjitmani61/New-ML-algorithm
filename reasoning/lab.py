@@ -47,6 +47,7 @@ class Trace:
     claims: int
     false: int
     repaired: str | None  # answer after final-step repair (None if no repair applies)
+    mentions: frozenset | None = None  # values written anywhere in the attempt (selection.mentioned_values)
 
 
 @dataclass
@@ -55,6 +56,7 @@ class Question:
     set: str
     gold: str
     traces: list = field(default_factory=list)
+    problem_values: frozenset = frozenset()  # values written in the problem statement
 
 
 def trace_from_summary(s):
@@ -242,7 +244,7 @@ def simulate(questions, method, params, repeats=40, seed=0, cap=None):
                 used[i] += c
             continue
         for i, (q, p) in enumerate(zip(questions, pools)):
-            a, tk, n = run_method(p, method, params, cap or len(p))
+            a, tk, n = run_method(p, method, params, cap or len(p), q)
             acc[i] += a == q.gold
             tokens[i] += tk
             used[i] += n
@@ -250,7 +252,7 @@ def simulate(questions, method, params, repeats=40, seed=0, cap=None):
             "tokens": float(tokens.mean() / repeats), "attempts": float(used.mean() / repeats)}
 
 
-def run_method(p, method, params, cap):
+def run_method(p, method, params, cap, question=None):
     if method == "sc":
         return run_fixed(p, params["k"], lambda u: vote(u)[0])
     if method == "conf":
@@ -268,6 +270,13 @@ def run_method(p, method, params, cap):
         rule = lambda u: vote(u, vsc_weights(u, params["rho"], params.get("alpha", 0.0),
                                              repair=params.get("repair", True)), params.get("repair", True))
         return run_sequential(p, rule, asc_stop(params["c"]), cap, minimum=params.get("min", 1))
+    if method == "trv":
+        import selection
+
+        def rule(u):
+            w = conf_weights(u, params["measure"], params.get("eta", 1.0)) if params.get("measure") else None
+            return selection.terminal_ratio_vote(u, question.problem_values, params.get("gamma", 2.0), w)[0]
+        return run_fixed(p, params["k"], rule)
     raise ValueError(method)
 
 
