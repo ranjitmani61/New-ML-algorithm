@@ -82,32 +82,6 @@ def load_features(path, sets=None):
     return sorted(questions, key=lambda q: q.qid)
 
 
-def trace_features(sample, conf=None, logprob=None, window=64, tail=256):
-    text = sample["text"]
-    raw = bm.model_answer(text) if sample["finished"] else None
-    answer = bm.normalize(raw)
-    steps = bm.check_steps(text) if sample["finished"] else {"claims": 0, "false": 0, "last": None}
-    repaired = None
-    last = steps.get("last")
-    if answer is not None and last is not None and not last[0] and bm.normalize(last[1]) == answer:
-        repaired = bm.normalize(last[2])
-    if conf is not None and len(conf):
-        c = np.asarray(conf, dtype=np.float64)
-        tail_mean = float(c[-tail:].mean())
-        if len(c) >= window:
-            csum = np.concatenate([[0.0], np.cumsum(c)])
-            low = float(((csum[window:] - csum[:-window]) / window).min())
-        else:
-            low = float(c.mean())
-        mean = float(c.mean())
-        lp = float(np.mean(logprob)) if logprob is not None and len(logprob) else 0.0
-    else:
-        mean = tail_mean = low = sample.get("mean_conf", 0.0)
-        lp = sample.get("sum_logprob", 0.0) / max(1, sample["tokens"])
-    return Trace(answer, int(sample["tokens"]), bool(sample["finished"]), mean, tail_mean, low, lp,
-                 int(steps["claims"]), int(steps["false"]), repaired)
-
-
 def load_pools(directory, sets=None):
     questions = []
     for part in sorted(glob.glob(os.path.join(directory, "**", "part*.jsonl.gz"), recursive=True)):
@@ -120,7 +94,9 @@ def load_pools(directory, sets=None):
             q = Question(item["id"], item["set"], bm.normalize(bm.gold_answer(item)))
             for s in item["samples"]:
                 a = s["array"]
-                q.traces.append(trace_features(s, conf[off[a]:off[a + 1]], lp[off[a]:off[a + 1]]))
+                summary = bm.summarize_attempt(s["text"], s["tokens"], s["finished"],
+                                               conf[off[a]:off[a + 1]], lp[off[a]:off[a + 1]])
+                q.traces.append(trace_from_summary(summary))
             questions.append(q)
     return sorted(questions, key=lambda q: q.qid)
 
@@ -378,7 +354,8 @@ def main(argv=None):
     args = ap.parse_args(argv)
     if any(s.endswith("_test") for s in args.sets):
         raise SystemExit("test sets are sealed: evaluate them only through the preregistered final run")
-    questions = load_pools(args.pools, set(args.sets))
+    loader = load_features if args.pools.endswith((".jsonl", ".jsonl.gz")) else load_pools
+    questions = loader(args.pools, set(args.sets))
     result = {"sets": args.sets, "describe": describe(questions), "curves": {}}
     for method, grid in DEV_GRIDS.items():
         result["curves"][method] = curve(questions, method, grid, repeats=args.repeats)
