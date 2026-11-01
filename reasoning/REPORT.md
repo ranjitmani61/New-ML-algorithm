@@ -1,7 +1,8 @@
 # Test-time reasoning: results (honest status)
 
 Part A: easy setting (GSM8K / MATH-500), two candidates, both rejected on development.
-Part B: hard setting (MATH level 5), terminal-ratio voting, preregistered and tested once.
+Part B: hard setting (MATH level 5), terminal-ratio voting, preregistered and tested once:
+**rejected** (slightly worse than the tuned baseline on the sealed test).
 
 ## Part A: GSM8K and MATH-500
 
@@ -157,4 +158,37 @@ downloaded. `hard_eval.py test` refuses an unregistered spec and records a singl
 
 ### Sealed test result
 
-TEST_RESULT_PLACEHOLDER
+**Failed.** Run once on 1,190 sealed questions (`results/hard_test_eval.json`; journal event 23
+is the single holdout access, after the preregistration at event 22; journal verifies intact).
+
+| k (tokens/question) | SC | tuned conf | trv_vote | trv_conf | trv_conf - conf [95% CI] |
+|---|---|---|---|---|---|
+| 4 (2.9k) | 59.4% | 60.7% | 58.6% | 59.7% | -0.95 [-1.38, -0.53] |
+| 8 (5.8k) | 62.2% | 63.4% | 61.8% | 62.5% | -0.83 [-1.35, -0.32] |
+| 16 (11.5k) | 63.9% | 65.0% | 63.3% | 64.2% | -0.85 [-1.49, -0.21] |
+| 32 (23.0k) | 65.3% | 66.2% | 64.5% | 65.7% | -0.50 [-1.60, +0.50] |
+
+Primary statistic: **-0.73 points [-1.40, -0.06]**. The preregistered criterion (interval above 0)
+fails, and the interval lies below 0: the tau^2 factor makes the tuned confidence vote slightly
+*worse*. Without confidence weights it is also worse than plain SC (trv_vote - SC: -0.4 to -0.7
+points; the interval excludes 0 at k = 4 only). trv_conf vs SC is +0.3 to +0.5 (all intervals
+include 0); that is the confidence weighting, not the new factor.
+
+The dev-tuned confidence baseline did transfer (conf - SC: +1.0 to +1.3 points on test, +0.8 to
++1.2 on dev); only the new factor did not.
+
+Post-hoc, exploratory (after the test, not preregistered): on the full 32-attempt pool,
+trv_conf changes the conf answer on 91 test questions: 20 wrong->right, 26 right->wrong,
+45 wrong->wrong. On dev the same count was 7 / 2 / 13. So the pass-through pattern is real
+(it fixes 20 test questions) but the penalty fires on correct majorities about as often. The
+likely reason for the dev result is selection: the rule and gamma were found by studying the dev
+failures they were then scored on. A difference between MATH train and test problems is not
+ruled out (test majority accuracy is 3.5 points lower), but the confidence baseline, tuned the
+same way, transferred.
+
+### Conclusion (Part B)
+
+Terminal-ratio voting is rejected. No new rule from this project has beaten the strongest tuned
+baseline (confidence-weighted vote) on sealed data; this was the only one that reached a sealed test. What holds up: the grading fix (a
+measurement correction, +4 points of majority accuracy that were mis-graded, not an algorithm)
+and the protocol, which caught a development-only effect before it was claimed.
