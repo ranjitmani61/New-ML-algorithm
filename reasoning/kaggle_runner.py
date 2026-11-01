@@ -322,20 +322,32 @@ def worker_vllm(gpu, shard_path, out_prefix, cfg):
         json.dump(meta, fh)
 
 
-def install_vllm(spec):
-    """pip install vLLM inside the kernel (needs internet); returns the installed version."""
-    t = time.time()
-    r = subprocess.run([sys.executable, "-m", "pip", "install", "-q", spec], capture_output=True, text=True)
-    with open("/kaggle/working/pip_vllm.log", "w") as fh:
-        fh.write(r.stdout + "\n" + r.stderr)
-    v = subprocess.run([sys.executable, "-c", "import vllm, torch; print(vllm.__version__, torch.__version__)"],
-                       capture_output=True, text=True)
-    info = {"pip_exit": r.returncode, "seconds": round(time.time() - t), "versions": v.stdout.strip(),
-            "import_error": v.stderr.strip()[-800:]}
-    print(json.dumps({"install": info}), flush=True)
-    if r.returncode != 0 or v.returncode != 0:
-        raise RuntimeError(f"vLLM install failed: {info} | {r.stderr[-800:]}")
-    return info
+def install_vllm(spec, fallback="vllm==0.11.0"):
+    """pip install vLLM inside the kernel (needs internet) and check that CUDA initialises.
+
+    A vLLM wheel brings its own torch build; if that build cannot use this machine's driver,
+    retry with ``fallback`` (an older vLLM on a CUDA 12.8 torch). torchaudio from the base
+    image is removed: transformers imports it, and its CUDA build no longer matches torch.
+    """
+    smi = subprocess.run(["nvidia-smi", "--query-gpu=driver_version,name", "--format=csv,noheader"],
+                         capture_output=True, text=True).stdout.strip()
+    attempts = []
+    for s in (spec, fallback):
+        t = time.time()
+        r = subprocess.run([sys.executable, "-m", "pip", "install", "-q", s], capture_output=True, text=True)
+        subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "-q", "torchaudio"], capture_output=True)
+        with open("/kaggle/working/pip_vllm.log", "a") as fh:
+            fh.write(f"=== {s}\n{r.stdout}\n{r.stderr}\n")
+        v = subprocess.run([sys.executable, "-c", "import torch, vllm; torch.zeros(1).cuda(); "
+                            "print(vllm.__version__, torch.__version__, torch.version.cuda)"],
+                           capture_output=True, text=True)
+        info = {"spec": s, "pip_exit": r.returncode, "seconds": round(time.time() - t), "versions": v.stdout.strip(),
+                "check_error": v.stderr.strip()[-600:], "driver": smi}
+        attempts.append(info)
+        print(json.dumps({"install": info}), flush=True)
+        if r.returncode == 0 and v.returncode == 0:
+            return {**info, "attempts": len(attempts)}
+    raise RuntimeError(f"vLLM install failed: {attempts}")
 
 
 def kernel_main(cfg):
