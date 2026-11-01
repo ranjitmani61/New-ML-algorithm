@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+
+# SQLite transient files (present only while a journal is open)
+*.sqlite-wal
+*.sqlite-shm
