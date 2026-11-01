@@ -96,6 +96,7 @@ def normalize(answer):
     if answer is None:
         return None
     s = str(answer).strip()
+    s = s.replace("\\\\", ",")  # LaTeX row/line separator, before single-backslash spacing commands
     s = s.replace("\n", "").replace("\\!", "").replace("\\,", "").replace("\\;", "").replace("\\ ", "")
     s = s.replace("\\left", "").replace("\\right", "").replace("\\displaystyle", "")
     s = s.replace("dfrac", "frac").replace("tfrac", "frac")
@@ -109,6 +110,7 @@ def normalize(answer):
     s = s.replace(" ", "")
     s = re.sub(r"\\sqrt(\w)", r"\\sqrt{\1}", s)
     s = _fix_fracs(s)
+    s = re.sub(r"\\frac\{(-?\d+)\}\{(\d+)\}", r"\1/\2", s)  # simple fractions inside compound answers
     if s.startswith("0.") is False and re.fullmatch(r"\.\d+", s):
         s = "0" + s
     if re.fullmatch(r"-?\d{1,3}(,\d{3})+(\.\d+)?", s):
@@ -271,8 +273,8 @@ def _rounded_ok(value, written):
 
 
 _CLAIM = re.compile(
-    r"([\d.(\[{\\][\d\s.,+\-*/×÷^()\[\]{}\\a-zA-Z%]*?)\s*=\s*\\?\$?\s*"
-    r"(-?(?:" + _NUM + r"|\.\d+)(?:\s*/\s*" + _NUM + r")?)(?![\d.,]*\d|\s*[-+/^*×]\s*\(?\d|\s*\\(?:frac|times|cdot)|[a-zA-Z(]|\s+(?:and\s+)?\d+\s*/\s*\d)"
+    r"(?<![A-Za-z0-9_^}\)\].])([\d.(\[{\\][\d\s.,+\-*/×÷^()\[\]{}\\a-zA-Z%]*?)\s*=\s*\\?\$?\s*"
+    r"(-?(?:" + _NUM + r"|\.\d+)(?:\s*/\s*" + _NUM + r")?)(?![\d.,]*\d|[.,]?\s*\\|\s*[-+/^*×÷!]|\s*\\(?:frac|times|cdot|sqrt|pi|div)|[a-zA-Z(\\{]|\s+(?:and\s+)?\d+\s*/\s*\d)"
 )
 _WORD = re.compile(r"(?<!\\)\b[a-zA-Z]{2,}\b|%")
 
@@ -288,8 +290,15 @@ def check_steps(text):
     false_values = []
     last = None
     seen = set()
-    for m in _CLAIM.finditer((text or "").replace("\\[", " ").replace("\\]", " ")):
+    text = (text or "").replace("\\[", " ").replace("\\]", " ")
+    text = text.replace("\\!", "").replace("\\,", "").replace("\\;", "")  # LaTeX spacing (e.g. 729,\!000)
+    for m in _CLAIM.finditer(text):
         lhs, rhs = m.group(1), m.group(2)
+        before = text[:m.start(1)].rstrip(" $")
+        if before and before[-1] in "+-*/^×÷−":
+            continue  # the match starts inside a longer expression (x^2 + 3^2 = 25)
+        if re.search(r"\d\s*\\[dt]?frac", lhs):
+            continue  # mixed number such as 33\frac{1}{3}: ambiguous, not judged
         lhs = _WORD.split(lhs.split("=")[-1])[-1]  # keep the mathematical tail of the phrase
         lhs = re.sub(r"^\.(?=\s|$)|^\.\s+", "", lhs).strip()  # a sentence-ending period is not a decimal point
         if not re.search(r"[+\-*/×÷^]|\\times|\\cdot|\\frac|\\div", lhs):

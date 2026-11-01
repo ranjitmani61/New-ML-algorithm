@@ -20,6 +20,8 @@ class Answers(unittest.TestCase):
         self.assertEqual(bm.gsm8k_gold("blah\n#### 1,234"), "1234")
 
     def test_equivalence(self):
+        self.assertTrue(bm.is_equiv("\\begin{pmatrix}\\frac{16}{49}\\\\\\frac{48}{49}\\end{pmatrix}",
+                                    "\\begin{pmatrix} 16/49 \\\\ 48/49 \\end{pmatrix}"))
         for a, b in (("\\frac{1}{2}", "0.5"), ("1/2", "\\dfrac12"), ("10", "10.0"), ("\\$18", "18"), ("x=5", "5"),
                      ("1,000", "1000"), ("90^\\circ", "90"), ("\\text{(C)}", "(C)"), ("50\\%", "50")):
             self.assertTrue(bm.is_equiv(a, b), (a, b))
@@ -38,10 +40,13 @@ class StepVerifier(unittest.TestCase):
         self.assertEqual(self.check("10/3 = 3.4")["false"], 1)
         self.assertEqual(self.check("\\frac{3}{4} \\times 8 = 6")["false"], 0)
         self.assertEqual(self.check("2^{10} = 1024")["false"], 0)
+        self.assertEqual(self.check("90^3=729,\\!000")["false"], 0)
+        self.assertEqual(self.check("so 3^2 + 4^2 = 25")["claims"], 1)
 
     def test_skips_what_it_cannot_judge(self):
         for text in ("x = 5", "Let n = 3 apples", "x + 2 = 7 so x = 5", "3 / 4 * 2 = 1 1/2 feet",
-                     "2 * 225 + 2 * 125 = 450 + 250 = 700"):
+                     "2 * 225 + 2 * 125 = 450 + 250 = 700", "If $2^8=4^x$, then", "x^2 + 3^2 = 25",
+                     "-11+50 = 39", "33\\frac{1}{3}=100/3", "\\frac{279}{99999} = 0.\\overline{00279}"):
             self.assertEqual(self.check(text)["false"], 0, text)
 
     def test_last_claim_and_repair_source(self):
