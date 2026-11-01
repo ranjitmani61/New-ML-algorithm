@@ -1,0 +1,992 @@
+{
+  "builtin_datasets": {
+    "breast_cancer": {
+      "goals_active": [
+        "ill_conditioned",
+        "outliers"
+      ],
+      "verdict": "READY",
+      "warnings": []
+    },
+    "diabetes": {
+      "goals_active": [
+        "target_noise"
+      ],
+      "verdict": "READY",
+      "warnings": []
+    },
+    "digits": {
+      "goals_active": [
+        "high_dimension"
+      ],
+      "verdict": "READY",
+      "warnings": []
+    },
+    "iris": {
+      "goals_active": [],
+      "verdict": "READY_WITH_WARNINGS",
+      "warnings": [
+        "SORTED_BY_TARGET"
+      ]
+    },
+    "wine": {
+      "goals_active": [],
+      "verdict": "READY_WITH_WARNINGS",
+      "warnings": [
+        "SORTED_BY_TARGET"
+      ]
+    }
+  },
+  "development_datasets": {
+    "adult_census": {
+      "available": true,
+      "card_sha256": "b769f9cf973791c3a464dc6f76ab2cf970eeddd54666688b6515259ed2babaad",
+      "columns": 15,
+      "documented": [
+        {
+          "found": true,
+          "issue": [
+            "REDUNDANT_COLUMNS",
+            "education"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "MISSING_VALUES",
+            "workclass"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "MISSING_VALUES",
+            "occupation"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "MISSING_VALUES",
+            "native.country"
+          ]
+        }
+      ],
+      "expected_goals": {
+        "class_imbalance": true
+      },
+      "goals_active": [
+        "class_imbalance",
+        "high_dimension",
+        "ill_conditioned",
+        "outliers",
+        "target_noise"
+      ],
+      "kind": "classification",
+      "leakage_boundary": {
+        "development": {
+          "cells_changed": 84656,
+          "decisions_identical": true,
+          "rows_changed": 6512,
+          "split_identical": true,
+          "train_matrix_identical": true
+        },
+        "test": {
+          "cells_changed": 84656,
+          "decisions_identical": true,
+          "rows_changed": 6512,
+          "split_identical": true,
+          "train_matrix_identical": true
+        }
+      },
+      "raw_sha256": "250e154ed75714ae57a564926d66c6319cd6aac1bcd32774cc76841a88d74e53",
+      "rows": 32561,
+      "seconds": 2.955,
+      "summary": "adult_census: READY_WITH_WARNINGS\n  task=classification classes=['<=50K', '>50K'] rows used=32561/32561 features=51\n  split train/dev/test = 19537/6512/6512\n  goals: outliers, target_noise, class_imbalance, ill_conditioned, high_dimension\n  WARNING REDUNDANT_COLUMNS [education]: one-to-one with 'education.num' in training rows; dropped\n  WARNING CONFLICTING_DUPLICATES: 2 training rows share identical features but have different labels",
+      "verdict": "READY_WITH_WARNINGS",
+      "warnings": [
+        {
+          "code": "DUPLICATE_ROWS",
+          "severity": "info"
+        },
+        {
+          "code": "RARE_LEVELS",
+          "column": "workclass",
+          "severity": "info"
+        },
+        {
+          "code": "MISSING_VALUES",
+          "column": "workclass",
+          "severity": "info"
+        },
+        {
+          "code": "MISSING_VALUES",
+          "column": "occupation",
+          "severity": "info"
+        },
+        {
+          "code": "HIGH_CARDINALITY",
+          "column": "native.country",
+          "severity": "info"
+        },
+        {
+          "code": "MISSING_VALUES",
+          "column": "native.country",
+          "severity": "info"
+        },
+        {
+          "code": "REDUNDANT_COLUMNS",
+          "column": "education",
+          "severity": "warning"
+        },
+        {
+          "code": "UNSEEN_AT_TRANSFORM",
+          "severity": "info"
+        },
+        {
+          "code": "EXACT_LINEAR_DEPENDENCE",
+          "severity": "info"
+        },
+        {
+          "code": "CONFLICTING_DUPLICATES",
+          "severity": "warning"
+        }
+      ]
+    },
+    "heart_failure": {
+      "available": true,
+      "card_sha256": "11a989feecc7d15b809ea066ef8504ba784f7d18b68334ea6ae7b4296382e8b9",
+      "columns": 12,
+      "documented": [
+        {
+          "found": true,
+          "issue": [
+            "DISGUISED_MISSING",
+            "Cholesterol"
+          ]
+        }
+      ],
+      "goals_active": [
+        "target_noise"
+      ],
+      "kind": "classification",
+      "leakage_boundary": {
+        "development": {
+          "cells_changed": 2024,
+          "decisions_identical": true,
+          "rows_changed": 184,
+          "split_identical": true,
+          "train_matrix_identical": true
+        },
+        "test": {
+          "cells_changed": 2013,
+          "decisions_identical": true,
+          "rows_changed": 183,
+          "split_identical": true,
+          "train_matrix_identical": true
+        }
+      },
+      "raw_sha256": "948420b084d8a3a0ca42b8419fce9aee175879e43f8aedf712377899a67aa49b",
+      "rows": 918,
+      "seconds": 0.086,
+      "summary": "heart_failure: READY_WITH_WARNINGS\n  task=classification classes=['0', '1'] rows used=918/918 features=19\n  split train/dev/test = 551/184/183\n  goals: target_noise\n  WARNING DISGUISED_MISSING [Cholesterol]: value 0 fills 18.1% of training rows but is isolated from the other values [85, 603] (gap 1.23 IQR); treated as missing",
+      "verdict": "READY_WITH_WARNINGS",
+      "warnings": [
+        {
+          "code": "DISGUISED_MISSING",
+          "column": "Cholesterol",
+          "severity": "warning"
+        },
+        {
+          "code": "MISSING_VALUES",
+          "column": "Cholesterol",
+          "severity": "info"
+        }
+      ]
+    },
+    "telco_churn": {
+      "available": true,
+      "card_sha256": "ddab2e2e830191aa7ab3b07c6485d6072238e2a6e026de642f80b6dd39d40829",
+      "columns": 21,
+      "documented": [
+        {
+          "found": true,
+          "issue": [
+            "IDENTIFIER_COLUMN",
+            "customerID"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "MISSING_VALUES",
+            "TotalCharges"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "EXACT_LINEAR_DEPENDENCE",
+            null
+          ]
+        }
+      ],
+      "goals_active": [
+        "class_imbalance",
+        "ill_conditioned",
+        "target_noise"
+      ],
+      "kind": "classification",
+      "leakage_boundary": {
+        "development": {
+          "cells_changed": 26771,
+          "decisions_identical": true,
+          "rows_changed": 1409,
+          "split_identical": true,
+          "train_matrix_identical": true
+        },
+        "test": {
+          "cells_changed": 26752,
+          "decisions_identical": true,
+          "rows_changed": 1408,
+          "split_identical": true,
+          "train_matrix_identical": true
+        }
+      },
+      "raw_sha256": "88be4b93fbe0cc83421af1c503794c97c342eca914c1576db7c276e61d61358a",
+      "rows": 7043,
+      "seconds": 1.074,
+      "summary": "telco_churn: READY_WITH_WARNINGS\n  task=classification classes=['No', 'Yes'] rows used=7043/7043 features=41\n  split train/dev/test = 4226/1409/1408\n  goals: target_noise, class_imbalance, ill_conditioned\n  WARNING IDENTIFIER_COLUMN [customerID]: named like an identifier and unique per row; dropped\n  WARNING CONFLICTING_DUPLICATES: 42 training rows share identical features but have different labels",
+      "verdict": "READY_WITH_WARNINGS",
+      "warnings": [
+        {
+          "code": "DUPLICATE_ROWS",
+          "severity": "info"
+        },
+        {
+          "code": "IDENTIFIER_COLUMN",
+          "column": "customerID",
+          "severity": "warning"
+        },
+        {
+          "code": "MISSING_VALUES",
+          "column": "TotalCharges",
+          "severity": "info"
+        },
+        {
+          "code": "EXACT_LINEAR_DEPENDENCE",
+          "severity": "info"
+        },
+        {
+          "code": "CONFLICTING_DUPLICATES",
+          "severity": "warning"
+        }
+      ]
+    },
+    "titanic": {
+      "available": true,
+      "card_sha256": "a53d6898af379ed6bcd0b69f87b5758cd3063cd2e29182b13b8574dabace40e0",
+      "columns": 12,
+      "documented": [
+        {
+          "found": true,
+          "issue": [
+            "IDENTIFIER_COLUMN",
+            "PassengerId"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "FREE_TEXT_COLUMN",
+            "Name"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "MOSTLY_MISSING",
+            "Cabin"
+          ]
+        }
+      ],
+      "goals_active": [
+        "outliers",
+        "target_noise"
+      ],
+      "kind": "classification",
+      "leakage_boundary": {
+        "development": {
+          "cells_changed": 1611,
+          "decisions_identical": true,
+          "rows_changed": 179,
+          "split_identical": true,
+          "train_matrix_identical": true
+        },
+        "test": {
+          "cells_changed": 1593,
+          "decisions_identical": true,
+          "rows_changed": 177,
+          "split_identical": true,
+          "train_matrix_identical": true
+        }
+      },
+      "raw_sha256": "7d118fef8b6ccf7f81111877bc388536f7b1e498a655e3d649d19aaa010e9f6f",
+      "rows": 891,
+      "seconds": 0.086,
+      "summary": "titanic: READY_WITH_WARNINGS\n  task=classification classes=['0', '1'] rows used=891/891 features=13\n  split train/dev/test = 535/179/177\n  goals: outliers, target_noise\n  WARNING IDENTIFIER_COLUMN [PassengerId]: named like an identifier and unique per row; dropped\n  WARNING FREE_TEXT_COLUMN [Name]: free text (unique multi-word values); dropped\n  WARNING MOSTLY_MISSING [Cabin]: 77.8% missing in training rows; only a missingness indicator is kept\n  WARNING CONFLICTING_DUPLICATES: 3 training rows share identical features but have different labels",
+      "verdict": "READY_WITH_WARNINGS",
+      "warnings": [
+        {
+          "code": "DUPLICATE_ROWS",
+          "severity": "info"
+        },
+        {
+          "code": "IDENTIFIER_COLUMN",
+          "column": "PassengerId",
+          "severity": "warning"
+        },
+        {
+          "code": "FREE_TEXT_COLUMN",
+          "column": "Name",
+          "severity": "warning"
+        },
+        {
+          "code": "MISSING_VALUES",
+          "column": "Age",
+          "severity": "info"
+        },
+        {
+          "code": "HIGH_CARDINALITY",
+          "column": "Ticket",
+          "severity": "info"
+        },
+        {
+          "code": "MOSTLY_MISSING",
+          "column": "Cabin",
+          "severity": "warning"
+        },
+        {
+          "code": "MISSING_VALUES",
+          "column": "Embarked",
+          "severity": "info"
+        },
+        {
+          "code": "UNSEEN_AT_TRANSFORM",
+          "severity": "info"
+        },
+        {
+          "code": "CONFLICTING_DUPLICATES",
+          "severity": "warning"
+        }
+      ]
+    }
+  },
+  "engine_sha256": "d0d37cba30d3c369d72fa4616f999d373118bedfc5723d8a96c97c6020d6361c",
+  "environment": {
+    "numpy": "2.5.3",
+    "platform": "Linux-6.18.44-fc-v185-x86_64-with-glibc2.39",
+    "python": "3.13.17"
+  },
+  "heldout_datasets": {
+    "bike_sharing_day": {
+      "available": true,
+      "card_sha256": "b776b8651726071c3ff8811eeaa9904b942e787591faa6c245e0ba78c104ca56",
+      "columns": 16,
+      "documented": [
+        {
+          "found": true,
+          "issue": [
+            "IDENTIFIER_COLUMN",
+            "instant"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "LEAKAGE_SUSPECT",
+            [
+              "casual",
+              "registered"
+            ]
+          ]
+        }
+      ],
+      "goals_active": [
+        "distribution_shift",
+        "ill_conditioned"
+      ],
+      "kind": "regression",
+      "kind_correct": true,
+      "leakage_boundary": {
+        "development": {
+          "cells_changed": 1606,
+          "decisions_identical": true,
+          "rows_changed": 146,
+          "split_identical": true,
+          "train_matrix_identical": true
+        },
+        "test": {
+          "cells_changed": 1606,
+          "decisions_identical": true,
+          "rows_changed": 146,
+          "split_identical": true,
+          "train_matrix_identical": true
+        }
+      },
+      "raw_sha256": "a6bcf826782d3c0fbfdcbeead17cd0884185a0dafe8ff10cd48a874ee7ba18be",
+      "rerun": {
+        "drop": [
+          "casual",
+          "registered"
+        ],
+        "expected_goals": {
+          "distribution_shift": true,
+          "ill_conditioned": true
+        },
+        "goals_active": [
+          "distribution_shift",
+          "ill_conditioned"
+        ],
+        "shift": {
+          "auc": 0.982067,
+          "target_mean_change_sd": 0.377189
+        },
+        "summary": "bike_sharing_day: READY_WITH_WARNINGS\n  task=regression classes=None rows used=731/731 features=11\n  split train/dev/test = 439/146/146\n  goals: ill_conditioned, distribution_shift\n  WARNING IDENTIFIER_COLUMN [instant]: row identifier (unique, dense integer sequence); dropped",
+        "verdict": "READY_WITH_WARNINGS"
+      },
+      "rows": 731,
+      "seconds": 0.096,
+      "summary": "bike_sharing_day: BLOCKED\n  task=regression classes=None rows used=731/731 features=13\n  split train/dev/test = 439/146/146\n  goals: ill_conditioned, distribution_shift\n  WARNING IDENTIFIER_COLUMN [instant]: row identifier (unique, dense integer sequence); dropped\n  BLOCK LEAKAGE_SUSPECT: the target is reconstructed by a linear model with out-of-fold R^2 1.0000 in training rows (e.g. total = part_a + part_b); check these columns are not computed from the outcome",
+      "verdict": "BLOCKED",
+      "verdict_expected": "BLOCKED",
+      "warnings": [
+        {
+          "code": "IDENTIFIER_COLUMN",
+          "column": "instant",
+          "severity": "warning"
+        },
+        {
+          "code": "LEAKAGE_SUSPECT",
+          "severity": "block"
+        }
+      ]
+    },
+    "breast_cancer_kaggle": {
+      "available": true,
+      "card_sha256": "ab472b9c969d2a37ab486d76b86a9272a4d8e927c1930621f572cbd4c50a0b4a",
+      "columns": 33,
+      "documented": [
+        {
+          "found": true,
+          "issue": [
+            "IDENTIFIER_COLUMN",
+            "id"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "CONSTANT_COLUMN",
+            "unnamed_32"
+          ]
+        }
+      ],
+      "expected_goals": {
+        "ill_conditioned": true
+      },
+      "goals_active": [
+        "ill_conditioned",
+        "outliers"
+      ],
+      "kind": "classification",
+      "kind_correct": true,
+      "leakage_boundary": {
+        "development": {
+          "cells_changed": 3450,
+          "decisions_identical": true,
+          "rows_changed": 115,
+          "split_identical": true,
+          "train_matrix_identical": true
+        },
+        "test": {
+          "cells_changed": 3390,
+          "decisions_identical": true,
+          "rows_changed": 113,
+          "split_identical": true,
+          "train_matrix_identical": true
+        }
+      },
+      "raw_sha256": "1425d9affa78ba8e53afc81d0ef8a19069ee10c4b21fe89b3cf514071b12ee33",
+      "rows": 569,
+      "seconds": 0.153,
+      "summary": "breast_cancer_kaggle: READY_WITH_WARNINGS\n  task=classification classes=['B', 'M'] rows used=569/569 features=30\n  split train/dev/test = 341/115/113\n  goals: outliers, ill_conditioned\n  WARNING IDENTIFIER_COLUMN [id]: named like an identifier and unique per row; dropped",
+      "verdict": "READY_WITH_WARNINGS",
+      "warnings": [
+        {
+          "code": "IDENTIFIER_COLUMN",
+          "column": "id",
+          "severity": "warning"
+        },
+        {
+          "code": "CONSTANT_COLUMN",
+          "column": "unnamed_32",
+          "severity": "info"
+        }
+      ]
+    },
+    "pima_diabetes": {
+      "available": true,
+      "card_sha256": "43afc13056bf055e69d577d90aff4b8a1559dfb17964c4253bbfa0d923fb44db",
+      "columns": 9,
+      "documented": [
+        {
+          "found": false,
+          "issue": [
+            "DISGUISED_MISSING",
+            "Glucose"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "DISGUISED_MISSING",
+            "BloodPressure"
+          ]
+        },
+        {
+          "found": false,
+          "issue": [
+            "DISGUISED_MISSING",
+            "SkinThickness"
+          ]
+        },
+        {
+          "found": false,
+          "issue": [
+            "DISGUISED_MISSING",
+            "Insulin"
+          ]
+        },
+        {
+          "found": true,
+          "issue": [
+            "DISGUISED_MISSING",
+            "BMI"
+          ]
+        }
+      ],
+      "goals_active": [
+        "outliers",
+        "target_noise"
+      ],
+      "kind": "classification",
+      "kind_correct": true,
+      "leakage_boundary": {
+        "development": {
+          "cells_changed": 1232,
+          "decisions_identical": true,
+          "rows_changed": 154,
+          "split_identical": true,
+          "train_matrix_identical": true
+        },
+        "test": {
+          "cells_changed": 1224,
+          "decisions_identical": true,
+          "rows_changed": 153,
+          "split_identical": true,
+          "train_matrix_identical": true
+        }
+      },
+      "must_not": [
+        {
+          "found": false,
+          "issue": [
+            "DISGUISED_MISSING",
+            "Pregnancies"
+          ]
+        }
+      ],
+      "predicted_miss": [
+        [
+          "DISGUISED_MISSING",
+          "Glucose"
+        ],
+        [
+          "DISGUISED_MISSING",
+          "Insulin"
+        ]
+      ],
+      "raw_sha256": "698c203a14aa31941d2251175330c9199f3ccdb31597abbba2a3e35416257a72",
+      "rows": 768,
+      "seconds": 0.077,
+      "summary": "pima_diabetes: READY_WITH_WARNINGS\n  task=classification classes=['0', '1'] rows used=768/768 features=10\n  split train/dev/test = 461/154/153\n  goals: outliers, target_noise\n  WARNING DISGUISED_MISSING [BloodPressure]: value 0 fills 4.6% of training rows but is isolated from the other values [30, 114] (gap 1.88 IQR); treated as missing\n  WARNING DISGUISED_MISSING [BMI]: value 0 fills 1.1% of training rows but is isolated from the other values [18.2, 67.1] (gap 1.86 IQR); treated as missing",
+      "verdict": "READY_WITH_WARNINGS",
+      "warnings": [
+        {
+          "code": "DISGUISED_MISSING",
+          "column": "BloodPressure",
+          "severity": "warning"
+        },
+        {
+          "code": "MISSING_VALUES",
+          "column": "BloodPressure",
+          "severity": "info"
+        },
+        {
+          "code": "DISGUISED_MISSING",
+          "column": "BMI",
+          "severity": "warning"
+        },
+        {
+          "code": "MISSING_VALUES",
+          "column": "BMI",
+          "severity": "info"
+        }
+      ]
+    }
+  },
+  "planted": {
+    "clean_false_alarms": {
+      "classification": {
+        "fired": {
+          "goal:target_noise": 5
+        },
+        "label_disagreement_with_noise_free_rule": 0.04291666666666667,
+        "noise_metric": {
+          "max": 0.091667,
+          "mean": 0.06472235,
+          "min": 0.030556
+        },
+        "noise_metric_with_25pct_flips": {
+          "max": 0.275,
+          "mean": 0.23083330000000002,
+          "min": 0.191667
+        },
+        "runs": 20
+      },
+      "regression": {
+        "fired": {},
+        "noise_metric": {
+          "max": 0.181226,
+          "mean": 0.1654516,
+          "min": 0.140627
+        },
+        "runs": 20
+      }
+    },
+    "detection": {
+      "class_imbalance/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "collinear/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "collinear/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "constant/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "constant/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "disguised_missing/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "disguised_missing/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "duplicates/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "duplicates/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "free_text/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "free_text/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "high_dimension/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "high_dimension/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "identifier_numeric/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "identifier_numeric/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "identifier_string/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "identifier_string/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "label_noise/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "label_noise/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "leakage/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "leakage/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "missing_values/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "missing_values/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "mostly_missing/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "mostly_missing/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "outliers/classification": {
+        "detected": 19,
+        "runs": 20
+      },
+      "outliers/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "redundant/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "redundant/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "sorted_by_target/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "sorted_by_target/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "sum_leak/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "temporal_shift/classification": {
+        "detected": 19,
+        "runs": 20
+      },
+      "temporal_shift/regression": {
+        "detected": 19,
+        "runs": 20
+      }
+    },
+    "seconds": 82.65,
+    "seed_offset": 0
+  },
+  "planted_fresh_seeds": {
+    "clean_false_alarms": {
+      "classification": {
+        "fired": {
+          "goal:target_noise": 4
+        },
+        "label_disagreement_with_noise_free_rule": 0.042333333333333334,
+        "noise_metric": {
+          "max": 0.086111,
+          "mean": 0.060833349999999994,
+          "min": 0.019444
+        },
+        "noise_metric_with_25pct_flips": {
+          "max": 0.263889,
+          "mean": 0.21972225,
+          "min": 0.175
+        },
+        "runs": 20
+      },
+      "regression": {
+        "fired": {},
+        "noise_metric": {
+          "max": 0.206041,
+          "mean": 0.17004619999999998,
+          "min": 0.142426
+        },
+        "runs": 20
+      }
+    },
+    "detection": {
+      "class_imbalance/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "collinear/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "collinear/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "constant/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "constant/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "disguised_missing/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "disguised_missing/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "duplicates/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "duplicates/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "free_text/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "free_text/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "high_dimension/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "high_dimension/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "identifier_numeric/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "identifier_numeric/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "identifier_string/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "identifier_string/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "label_noise/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "label_noise/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "leakage/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "leakage/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "missing_values/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "missing_values/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "mostly_missing/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "mostly_missing/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "outliers/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "outliers/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "redundant/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "redundant/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "sorted_by_target/classification": {
+        "detected": 20,
+        "runs": 20
+      },
+      "sorted_by_target/regression": {
+        "detected": 20,
+        "runs": 20
+      },
+      "sum_leak/regression": {
+        "detected": 19,
+        "runs": 20
+      },
+      "temporal_shift/classification": {
+        "detected": 19,
+        "runs": 20
+      },
+      "temporal_shift/regression": {
+        "detected": 18,
+        "runs": 20
+      }
+    },
+    "seconds": 81.48,
+    "seed_offset": 7000
+  },
+  "policy_sha256": "816623cb93173e762b97678eb2bb6c329faf581ea2231f04013cf703b7976b7b",
+  "seconds": 178.35,
+  "version": "data-engine-1.0"
+}
