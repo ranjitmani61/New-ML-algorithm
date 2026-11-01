@@ -112,5 +112,43 @@ class Lab(unittest.TestCase):
         self.assertAlmostEqual(r["mean"], 0.5)
 
 
+class LearnedStopping(unittest.TestCase):
+    def pools(self, n=60, seed=0):
+        """Easy questions (always right) and hopeless ones (scattered wrong answers)."""
+        rng = np.random.default_rng(seed)
+        qs = []
+        for i in range(n):
+            q = lab.Question(f"q{i}", "dev", "A")
+            hopeless = i % 2 == 1
+            for _ in range(32):
+                ans = str(rng.integers(0, 50)) if hopeless else "A"
+                q.traces.append(trace(ans, tokens=100, conf=2.0 if hopeless else 9.0))
+            qs.append(q)
+        return qs
+
+    def test_features_are_label_free_and_consistent(self):
+        import stopping
+
+        f, leader = stopping.state_features([trace("1"), trace("2"), trace("2")])
+        self.assertEqual(leader, "2")
+        self.assertAlmostEqual(f["share1"], 2 / 3)
+        self.assertEqual(f["margin"], 1)
+        self.assertEqual(len(stopping.FULL_FEATURES), len(set(stopping.FULL_FEATURES)))
+
+    def test_stops_early_on_settled_and_futile_questions(self):
+        import stopping
+
+        qs = self.pools()
+        policy = stopping.StoppingPolicy(lam=1e-3).fit(stopping.build_paths(qs, repeats=4, seed=1))
+        eval_paths = stopping.build_paths(qs, repeats=2, seed=2)
+        steps = policy.stop_steps(eval_paths)
+        self.assertLessEqual(max(steps), 3)  # neither kind of question is worth more attempts
+        asc = lab.simulate(qs, "asc", {"c": 0.95}, repeats=2)
+        self.assertGreater(asc["attempts"], 10)  # ASC keeps sampling the futile half
+        r = stopping.cross_validate(qs, [1e-3], folds=3, repeats_fit=4, repeats_eval=2)[1e-3]
+        self.assertAlmostEqual(r["accuracy"], 0.5, places=6)
+        self.assertLess(r["attempts"], 3)
+
+
 if __name__ == "__main__":
     unittest.main()
