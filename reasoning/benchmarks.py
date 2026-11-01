@@ -310,3 +310,38 @@ def check_steps(text):
             false_values.append((rhs, _canonical_number(value)))
         last = (ok, rhs, _canonical_number(value))
     return {"claims": claims, "false": false, "false_values": false_values, "last": last}
+
+
+# ---------------------------------------------------------------- attempt summary
+
+
+def summarize_attempt(text, tokens, finished, conf=None, logprob=None, window=64, tail=256):
+    """Compact, analysis-ready record of one attempt (shared by the GPU runner and the lab).
+
+    [raw_answer, tokens, finished, conf_mean, conf_tail, conf_low, logprob_mean,
+     checked_claims, false_claims, last_claim]  with last_claim = [ok, written, exact] or None.
+    conf_* are DeepConf token confidences (-mean top-20 log-probabilities): the mean,
+    the mean over the last `tail` tokens, and the lowest sliding-window (`window`) mean.
+    """
+    raw = model_answer(text) if finished else None
+    steps = check_steps(text) if finished else {"claims": 0, "false": 0, "last": None}
+    if conf is not None and len(conf):
+        values = [float(v) for v in conf]
+        mean = sum(values) / len(values)
+        tail_values = values[-tail:]
+        tail_mean = sum(tail_values) / len(tail_values)
+        if len(values) >= window:
+            run = sum(values[:window])
+            low = run
+            for i in range(window, len(values)):
+                run += values[i] - values[i - window]
+                low = min(low, run)
+            low /= window
+        else:
+            low = mean
+        lp = sum(float(v) for v in logprob) / len(logprob) if logprob is not None and len(logprob) else 0.0
+    else:
+        mean = tail_mean = low = lp = 0.0
+    last = list(steps["last"]) if steps.get("last") else None
+    return [raw, int(tokens), bool(finished), round(mean, 4), round(tail_mean, 4), round(low, 4), round(lp, 4),
+            int(steps["claims"]), int(steps["false"]), last]

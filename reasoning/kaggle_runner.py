@@ -28,9 +28,9 @@ import sys
 import time
 
 CONFIG = None  # replaced at push time with the run configuration
+BENCHMARKS_B64 = None  # benchmarks.py source, embedded at push time
 
 MODEL_SOURCE = "qwen-lm/qwen2.5-math/transformers/1.5b-instruct/1"
-MODEL_DIR = "/kaggle/input/qwen2.5-math/transformers/1.5b-instruct/1"
 DATASETS = ["thedevastator/grade-school-math-8k-q-a", "open-benchmarks/math-500-measuring-mathematical-problem-solving"]
 SYSTEM = "Please reason step by step, and put your final answer within \\boxed{}."
 
@@ -73,15 +73,29 @@ def find_file(name):
     return sorted(hits)[0]
 
 
+def find_model_dir():
+    """The model's mount point varies (case, version folders); locate its config.json."""
+    hits = [os.path.dirname(p) for p in glob.glob("/kaggle/input/**/config.json", recursive=True)]
+    ranked = sorted(hits, key=lambda d: (not ("1.5b-instruct" in d.lower() and "math" in d.lower()), len(d)))
+    if not ranked:
+        raise FileNotFoundError("no model config.json under /kaggle/input: " + str(os.listdir("/kaggle/input")))
+    return ranked[0]
+
+
 def worker(gpu, shard_path, out_prefix, cfg):
     import numpy as np
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer, LogitsProcessor, LogitsProcessorList
 
     items = [json.loads(line) for line in open(shard_path)]
-    tok = AutoTokenizer.from_pretrained(MODEL_DIR)
+    sys.path.insert(0, "/kaggle/working")
+    import benchmarks as bm
+
+    features = open(f"{out_prefix}.features.jsonl", "w")
+    model_dir = cfg.get("model_dir") or find_model_dir()
+    tok = AutoTokenizer.from_pretrained(model_dir)
     tok.padding_side = "left"
-    model = AutoModelForCausalLM.from_pretrained(MODEL_DIR, torch_dtype=torch.float16).to("cuda").eval()
+    model = AutoModelForCausalLM.from_pretrained(model_dir, torch_dtype=torch.float16).to("cuda").eval()
     eos = [tok.convert_tokens_to_ids("<|im_end|>"), tok.convert_tokens_to_ids("<|endoftext|>")]
     pad = tok.convert_tokens_to_ids("<|endoftext|>")
     temperature, top_p, k = cfg["temperature"], cfg["top_p"], 20
@@ -146,6 +160,7 @@ def worker(gpu, shard_path, out_prefix, cfg):
         gen_cpu = gen.cpu().numpy()
         for b_idx, item in enumerate(batch):
             samples = []
+            summaries = []
             for j in range(n):
                 r = b_idx * n + j
                 ids = gen_cpu[r]
@@ -159,17 +174,21 @@ def worker(gpu, shard_path, out_prefix, cfg):
                 lp_all.append(l)
                 offsets.append(offsets[-1] + length)
                 generated += length
+                summaries.append(bm.summarize_attempt(text, length, finished, conf[r, :length], lps[r, :length]))
                 samples.append({"text": text, "tokens": int(length), "finished": finished,
                                 "sum_logprob": float(lps[r, :length].sum()),
                                 "mean_conf": float(conf[r, :length].mean()), "array": len(offsets) - 2})
             out_json.write(json.dumps({**{k2: item[k2] for k2 in ("id", "set", "question", "solution")},
                                        "samples": samples, "prompt_tokens": int(enc["attention_mask"][b_idx].sum())}) + "\n")
+            features.write(json.dumps({"id": item["id"], "set": item["set"], "gold": bm.gold_answer(item),
+                                       "samples": summaries}) + "\n")
         i += len(batch)
         batch_no += 1
         elapsed = time.time() - start
         print(json.dumps({"gpu": gpu, "done": i, "of": len(items), "tokens": generated,
                           "tok_per_s": round(generated / elapsed, 1), "batch_steps": steps}), flush=True)
     out_json.close()
+    features.close()
     np.savez_compressed(f"{out_prefix}.npz", conf=np.concatenate(conf_all) if conf_all else np.zeros(0, "float16"),
                         logprob=np.concatenate(lp_all) if lp_all else np.zeros(0, "float16"),
                         offsets=np.array(offsets, dtype=np.int64))
@@ -187,6 +206,13 @@ def kernel_main(cfg):
 
     cfg["started"] = time.time()
     os.makedirs("/kaggle/working/pools", exist_ok=True)
+    import base64
+
+    with open("/kaggle/working/benchmarks.py", "wb") as fh:
+        fh.write(base64.b64decode(BENCHMARKS_B64))
+    cfg["model_dir"] = find_model_dir()
+    print(json.dumps({"model_dir": cfg["model_dir"], "inputs": sorted(os.listdir("/kaggle/input")),
+                      "gpus": torch.cuda.device_count()}), flush=True)
     items = []
     for name in cfg["sets"]:
         rows, _ = read_rows(find_file(SETS[name]["file"]))
@@ -227,9 +253,80 @@ def kernel_main(cfg):
             problems.append(f"worker {g}: exit {codes[g] if codes else 'n/a'}, {lines} questions written; {tail}")
     if problems:
         raise RuntimeError(" | ".join(problems))
+    emit_features(gpus)
+
+
+def emit_features(gpus, chunk=3000):
+    """Print all feature records into the log as checksummed gzip+base64 chunks.
+
+    The log is returned inline by the Kaggle API, so results arrive even when
+    output-file downloads are blocked. Reassemble with `kaggle_runner.py fetch-log`.
+    """
+    import base64
+    import hashlib
+
+    blob = b"".join(open(f"/kaggle/working/pools/part{g}.features.jsonl", "rb").read() for g in range(gpus))
+    packed = base64.b64encode(gzip.compress(blob, 9)).decode()
+    total = (len(packed) + chunk - 1) // chunk
+    for i in range(total):
+        piece = packed[i * chunk:(i + 1) * chunk]
+        print(f"POOLCHUNK {i} {total} {hashlib.sha256(piece.encode()).hexdigest()[:16]} {piece}", flush=True)
+    print(f"POOLDONE {hashlib.sha256(packed.encode()).hexdigest()} {len(blob)}", flush=True)
 
 
 # ---------------------------------------------------------------- local side
+
+
+def session_log(user, slug):
+    """Kernel log and output-file names straight from the Kaggle API (no file download needed)."""
+    from kaggle.api.kaggle_api_extended import KaggleApi
+    from kagglesdk.kernels.types.kernels_api_service import ApiListKernelSessionOutputRequest
+
+    api = KaggleApi()
+    api.authenticate()
+    with api.build_kaggle_client() as client:
+        req = ApiListKernelSessionOutputRequest()
+        req.user_name, req.kernel_slug = user, slug
+        resp = client.kernels.kernels_api_client.list_kernel_session_output(req)
+    lines = ["files: " + ", ".join(f.file_name for f in resp.files)]
+    try:
+        for entry in json.loads(resp.log or "[]"):
+            lines.append(entry.get("data", "").rstrip("\n"))
+    except ValueError:
+        lines.append(resp.log or "")
+    return "\n".join(lines)
+
+
+def fetch_log(user, slug, out):
+    """Reassemble the POOLCHUNK records from the kernel log into a verified features.jsonl.gz."""
+    import base64
+    import hashlib
+
+    chunks, done = {}, None
+    for line in session_log(user, slug).splitlines():
+        if line.startswith("POOLCHUNK "):
+            _, i, total, digest, piece = line.split(" ", 4)
+            if hashlib.sha256(piece.encode()).hexdigest()[:16] != digest:
+                raise ValueError(f"chunk {i} failed its checksum")
+            chunks[int(i)] = (int(total), piece)
+        elif line.startswith("POOLDONE "):
+            done = line.split()
+    if not chunks or done is None:
+        raise ValueError("no complete feature transport in the log")
+    total = next(iter(chunks.values()))[0]
+    missing = [i for i in range(total) if i not in chunks]
+    if missing:
+        raise ValueError(f"{len(missing)} of {total} chunks missing (log truncated?)")
+    packed = "".join(chunks[i][1] for i in range(total))
+    if hashlib.sha256(packed.encode()).hexdigest() != done[1]:
+        raise ValueError("reassembled transport failed its checksum")
+    blob = gzip.decompress(base64.b64decode(packed))
+    if len(blob) != int(done[2]):
+        raise ValueError("size mismatch")
+    with gzip.open(out, "wb") as fh:
+        fh.write(blob)
+    return {"chunks": total, "bytes": len(blob), "questions": blob.count(b"\n"), "out": out,
+            "sha256": hashlib.sha256(blob).hexdigest()}
 
 
 def kaggle(*args):
@@ -244,30 +341,17 @@ def push(slug, sets, samples, rows, temperature, top_p, seed, budget_hours, user
     for s in sets:
         if s not in SETS:
             raise SystemExit(f"unknown set {s}")
-    src = open(__file__, encoding="utf-8").read().replace("CONFIG = None  # replaced at push time",
-                                                          f"CONFIG = {json.dumps(cfg)}  # embedded at push time", 1)
-    d = tempfile.mkdtemp(prefix="kernel_")
-    # A notebook kernel: Kaggle stores the executed notebook with its printed output,
-    # and kernel source (unlike kernel output files) is retrievable through www.kaggle.com.
     import base64
 
-    cell = (
-        "import base64, subprocess, sys\n"
-        f"src = base64.b64decode('{base64.b64encode(src.encode()).decode()}').decode()\n"
-        "open('/kaggle/working/runner.py', 'w').write(src)\n"
-        "r = subprocess.run([sys.executable, '/kaggle/working/runner.py'], capture_output=True, text=True)\n"
-        "print('RETURN CODE', r.returncode)\n"
-        "print('STDOUT-TAIL', r.stdout[-30000:])\n"
-        "print('STDERR-TAIL', r.stderr[-30000:])\n"
-    )
-    notebook = {"cells": [{"cell_type": "code", "execution_count": None, "metadata": {}, "outputs": [],
-                           "source": cell}],
-                "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}},
-                "nbformat": 4, "nbformat_minor": 4}
-    with open(os.path.join(d, "runner.ipynb"), "w", encoding="utf-8") as fh:
-        json.dump(notebook, fh)
-    meta = {"id": f"{user}/{slug}", "title": slug, "code_file": "runner.ipynb", "language": "python",
-            "kernel_type": "notebook", "is_private": True, "enable_gpu": True, "enable_tpu": False,
+    bench = base64.b64encode(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "benchmarks.py"), "rb").read()).decode()
+    src = open(__file__, encoding="utf-8").read()
+    src = src.replace("CONFIG = None  # replaced at push time", f"CONFIG = {json.dumps(cfg)}  # embedded at push time", 1)
+    src = src.replace("BENCHMARKS_B64 = None  # benchmarks.py source", f"BENCHMARKS_B64 = {bench!r}  # benchmarks.py source", 1)
+    d = tempfile.mkdtemp(prefix="kernel_")
+    with open(os.path.join(d, "runner.py"), "w", encoding="utf-8") as fh:
+        fh.write(src)
+    meta = {"id": f"{user}/{slug}", "title": slug, "code_file": "runner.py", "language": "python",
+            "kernel_type": "script", "is_private": True, "enable_gpu": True, "enable_tpu": False,
             "enable_internet": False, "dataset_sources": DATASETS, "kernel_sources": [],
             "competition_sources": [], "model_sources": [MODEL_SOURCE], "machine_shape": "NvidiaTeslaT4"}
     with open(os.path.join(d, "kernel-metadata.json"), "w") as fh:
@@ -298,29 +382,20 @@ def main(argv):
     p.add_argument("--seed", type=int, default=1)
     p.add_argument("--budget-hours", type=float, default=11.0)
     p.add_argument("--user", default=os.environ.get("KAGGLE_USERNAME", "epicnexus"))
-    for name in ("status", "fetch", "log"):
+    for name in ("status", "fetch", "log", "fetch-log"):
         q = sub.add_parser(name)
         q.add_argument("--slug", required=True)
         q.add_argument("--user", default=os.environ.get("KAGGLE_USERNAME", "epicnexus"))
-        if name == "fetch":
+        if name in ("fetch", "fetch-log"):
             q.add_argument("--out", required=True)
     args = ap.parse_args(argv[1:])
     if args.cmd == "push":
         print(json.dumps(push(args.slug, args.sets, args.samples, args.rows, args.temperature, args.top_p,
                               args.seed, args.budget_hours, args.user)))
     elif args.cmd == "log":
-        import tempfile
-
-        d = tempfile.mkdtemp(prefix="pull_")
-        r = kaggle("kernels", "pull", f"{args.user}/{args.slug}", "-p", d)
-        for name in os.listdir(d):
-            if name.endswith(".ipynb"):
-                nb = json.load(open(os.path.join(d, name)))
-                for c in nb.get("cells", []):
-                    for o in c.get("outputs", []):
-                        print("".join(o.get("text", "")) or json.dumps(o)[:4000])
-        if r.returncode:
-            print(r.stdout, r.stderr)
+        print(session_log(args.user, args.slug))
+    elif args.cmd == "fetch-log":
+        print(json.dumps(fetch_log(args.user, args.slug, args.out)))
     elif args.cmd == "status":
         r = kaggle("kernels", "status", f"{args.user}/{args.slug}")
         print(r.stdout.strip(), r.stderr.strip())

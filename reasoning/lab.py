@@ -57,6 +57,31 @@ class Question:
     traces: list = field(default_factory=list)
 
 
+def trace_from_summary(s):
+    """Trace from a benchmarks.summarize_attempt record."""
+    raw, tokens, finished, mean, tail_mean, low, lp, claims, false, last = s
+    answer = bm.normalize(raw) if finished else None
+    repaired = None
+    if answer is not None and last is not None and not last[0] and bm.normalize(last[1]) == answer:
+        repaired = bm.normalize(last[2])
+    return Trace(answer, int(tokens), bool(finished), mean, tail_mean, low, lp, int(claims), int(false), repaired)
+
+
+def load_features(path, sets=None):
+    """Questions from a features.jsonl(.gz) produced by the runner's log transport."""
+    opener = gzip.open if path.endswith(".gz") else open
+    questions = []
+    with opener(path, "rt") as fh:
+        for line in fh:
+            item = json.loads(line)
+            if sets and item["set"] not in sets:
+                continue
+            q = Question(item["id"], item["set"], bm.normalize(item["gold"]))
+            q.traces = [trace_from_summary(s) for s in item["samples"]]
+            questions.append(q)
+    return sorted(questions, key=lambda q: q.qid)
+
+
 def trace_features(sample, conf=None, logprob=None, window=64, tail=256):
     text = sample["text"]
     raw = bm.model_answer(text) if sample["finished"] else None
