@@ -318,5 +318,66 @@ class BundleContract(Base):
         self.assertEqual(rc.main(["verify-bundle", bundle]), 0)
 
 
+class PipelineIntegration(unittest.TestCase):
+    """The orchestrator end to end on small synthetic data with a fast validator protocol."""
+
+    def test_discovery_to_scientific_validation(self):
+        import numpy as np
+
+        sys.path.insert(0, os.path.join(os.path.dirname(HERE), "data_engine"))
+        import data_engine as de
+        import run_pipeline
+
+        def synth(seed, name, n=160, d=5):
+            rng = np.random.default_rng(seed)
+            x = rng.normal(size=(n, d))
+            y = (x @ rng.normal(size=d) + 0.3 * rng.normal(size=n) > 0).astype(int)
+            return de.from_arrays(x, y, [f"f{j}" for j in range(d)], name=name)
+
+        disc, v1, v2 = synth(1, "disc"), synth(2, "v1"), synth(3, "v2")
+        # Titanic-like: an identifier and a high-cardinality "ticket" make raw-distinct
+        # rows collide after encoding, which the encoder/validator alignment must absorb.
+        rng = np.random.default_rng(4)
+        base = rng.integers(0, 3, size=(160, 3)).astype(float)
+        ticket = np.array([f"T{v}" for v in rng.integers(0, 60, 160)], dtype=object)
+        yy = (base.sum(1) + rng.normal(size=160) > 3).astype(int)
+        v3 = de.from_arrays(np.column_stack([np.arange(160), base, ticket]), yy,
+                            ["passenger_id", "a", "b", "c", "ticket"], name="v3")
+        copy_v1 = de.Table("v1_copy", v1.columns, list(v1.rows), "copy of v1", v1.raw_sha256)
+        copy_disc = de.Table("disc_copy", disc.columns, list(disc.rows), "copy of disc", disc.raw_sha256)
+        config = {
+            "discovery": [{"name": "disc", "table": disc, "target": "target"}],
+            "validation": [{"name": n, "table": t, "target": "target"}
+                           for n, t in (("v1", v1), ("v2", v2), ("v3", v3), ("v1_copy", copy_v1),
+                                        ("disc_copy", copy_disc))],
+            "rounds": 1, "per_round": 30, "candidates": 2, "seed": 3, "max_rows": 10000,
+            "protocol": {"budget": 4, "seeds": [0], "isolated": False, "timeout_seconds": 60, "steps": 30},
+        }
+        with tempfile.TemporaryDirectory() as d:
+            journal = os.path.join(d, "run.sqlite")
+            science = os.path.join(d, "science.sqlite")
+            summary = run_pipeline.Pipeline(config, journal, science).run(os.path.join(d, "run.bundle.jsonl"))
+            cohort = {r["name"]: r for r in summary["validation_cohort"]}
+            self.assertEqual(cohort["v1"]["status"], "INCLUDED")
+            self.assertEqual(cohort["v2"]["status"], "INCLUDED")
+            self.assertEqual(cohort["v3"]["status"], "INCLUDED", cohort["v3"].get("reason"))
+            self.assertEqual(cohort["v1_copy"]["status"], "EXCLUDED")  # aliased content
+            self.assertIn("overlaps discovery", cohort["disc_copy"]["reason"])
+            self.assertEqual(cohort["v1"]["alignment_passes"] >= 1, True)
+            self.assertIn(summary["science"]["status"], ("ACCEPTED", "NOT_DEMONSTRATED"))
+            self.assertIn(summary["science"]["selected"], [h["entity"] for h in summary["handoff"]])
+            self.assertFalse(summary["power"]["significance_attainable"])  # two datasets cannot reach Holm 0.05
+            journal_report = summary["journal"]
+            self.assertTrue(journal_report["verify_ok"] and journal_report["bundle_verify_ok"])
+            self.assertEqual(journal_report["report"]["holdout_accesses"], 3)
+            self.assertEqual(journal_report["report"]["test_metrics_not_preregistered"], 0)
+            self.assertGreater(journal_report["report"]["test_metrics"], 0)
+            stages = [e["stage"] for e in summary["selected_lineage"]]
+            for stage in ("generator", "hypothesis_filter", "math_gate", "development", "science"):
+                self.assertIn(stage, stages)
+            with self.assertRaises(FileExistsError):
+                run_pipeline.Pipeline(config, journal, science + "2")
+
+
 if __name__ == "__main__":
     unittest.main()

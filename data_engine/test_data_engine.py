@@ -135,6 +135,46 @@ class SplitContract(unittest.TestCase):
         card = de.DataEngine().analyze(de.from_arrays(x, y), "target")
         self.assertGreater(card.record["split"]["class_counts"]["train"]["rare"], 0)
 
+    def test_declared_split_is_respected_and_fits_on_declared_train(self):
+        rng = np.random.default_rng(26)
+        x, y = synthetic(26, n=300)
+        cat = rng.choice(["a", "b"], size=300).astype(object)
+        order = rng.permutation(300)
+        declared = {"train": sorted(map(int, order[:180])), "development": sorted(map(int, order[180:240])),
+                    "test": sorted(map(int, order[240:]))}
+        for i in declared["test"][:10]:
+            cat[i] = "only_in_test"
+        t = de.from_arrays(np.column_stack([x, cat]), y, [f"f{j}" for j in range(6)] + ["cat"])
+        card = de.DataEngine().analyze(t, "target", split=declared)
+        self.assertNotEqual(card.verdict, "BLOCKED", card.summary())
+        self.assertEqual(card.record["split"]["method"], "declared")
+        self.assertEqual({k: sorted(map(int, v)) for k, v in card._row_ids.items()}, declared)
+        self.assertNotIn("cat=only_in_test", card.record["features"])  # vocabulary from declared train only
+        self.assertEqual(card.used_rows, tuple(range(300)))
+
+    def test_invalid_declared_splits_block(self):
+        x, y = synthetic(27, n=200)
+        x = np.vstack([x, x[:1]])  # row 200 duplicates row 0
+        y = np.concatenate([y, y[:1]])
+        t = de.from_arrays(x, y)
+        base = {"train": list(range(0, 120)), "development": list(range(120, 160)), "test": list(range(160, 201))}
+        cases = {
+            "overlap": {**base, "development": list(range(110, 160))},
+            "missing": {**base, "test": list(range(160, 200))},
+            "duplicate crossing": base,  # rows 0 (train) and 200 (test) are duplicates
+        }
+        for label, split in cases.items():
+            card = de.DataEngine().analyze(t, "target", split=split)
+            self.assertEqual(card.verdict, "BLOCKED", label)
+            self.assertIn("SPLIT_DECLARED_INVALID", codes(card), label)
+        only_zero = [i for i in range(201) if y[i] == 0]
+        ones = [i for i in range(201) if y[i] == 1]
+        card = de.DataEngine().analyze(t, "target", split={"train": only_zero[:-20], "development": only_zero[-20:],
+                                                          "test": ones})
+        self.assertIn("CLASS_ABSENT_FROM_TRAIN", codes(card))
+        with self.assertRaises(ValueError):
+            de.DataEngine().analyze(t, "target", split={"train": [1]})
+
     def test_temporal_split_moves_forward_in_time(self):
         x, y = synthetic(4, n=300)
         stamp = np.arange(300)[::-1]
@@ -376,6 +416,13 @@ class Exports(unittest.TestCase):
         result = {(r["a"], r["b"]): r for r in de.cohort_overlap([a, b, c])}
         self.assertEqual(result[("a", "b")]["shared_rows"], 100)
         self.assertEqual(result[("a", "c")]["shared_rows"], 0)
+        # Two unrelated tables sharing one column name are not comparable row by row.
+        d = de.from_arrays(np.column_stack([x[:, :1], np.arange(200)]), y, ["x0", "other"], target="y_d", name="d")
+        e = de.from_arrays(np.column_stack([x[:, :1], -np.arange(200), np.ones(200)]), y, ["x0", "z", "w"],
+                           target="y_e", name="e")
+        pair = de.cohort_overlap([d, e])[0]
+        self.assertFalse(pair["comparable"])
+        self.assertIsNone(pair["shared_rows"])
 
     def test_cli(self):
         x, y = synthetic(25, n=200)

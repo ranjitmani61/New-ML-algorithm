@@ -101,7 +101,7 @@
       },
       "raw_sha256": "250e154ed75714ae57a564926d66c6319cd6aac1bcd32774cc76841a88d74e53",
       "rows": 32561,
-      "seconds": 2.955,
+      "seconds": 2.871,
       "summary": "adult_census: READY_WITH_WARNINGS\n  task=classification classes=['<=50K', '>50K'] rows used=32561/32561 features=51\n  split train/dev/test = 19537/6512/6512\n  goals: outliers, target_noise, class_imbalance, ill_conditioned, high_dimension\n  WARNING REDUNDANT_COLUMNS [education]: one-to-one with 'education.num' in training rows; dropped\n  WARNING CONFLICTING_DUPLICATES: 2 training rows share identical features but have different labels",
       "verdict": "READY_WITH_WARNINGS",
       "warnings": [
@@ -188,7 +188,7 @@
       },
       "raw_sha256": "948420b084d8a3a0ca42b8419fce9aee175879e43f8aedf712377899a67aa49b",
       "rows": 918,
-      "seconds": 0.086,
+      "seconds": 0.12,
       "summary": "heart_failure: READY_WITH_WARNINGS\n  task=classification classes=['0', '1'] rows used=918/918 features=19\n  split train/dev/test = 551/184/183\n  goals: target_noise\n  WARNING DISGUISED_MISSING [Cholesterol]: value 0 fills 18.1% of training rows but is isolated from the other values [85, 603] (gap 1.23 IQR); treated as missing",
       "verdict": "READY_WITH_WARNINGS",
       "warnings": [
@@ -255,7 +255,7 @@
       },
       "raw_sha256": "88be4b93fbe0cc83421af1c503794c97c342eca914c1576db7c276e61d61358a",
       "rows": 7043,
-      "seconds": 1.074,
+      "seconds": 1.055,
       "summary": "telco_churn: READY_WITH_WARNINGS\n  task=classification classes=['No', 'Yes'] rows used=7043/7043 features=41\n  split train/dev/test = 4226/1409/1408\n  goals: target_noise, class_imbalance, ill_conditioned\n  WARNING IDENTIFIER_COLUMN [customerID]: named like an identifier and unique per row; dropped\n  WARNING CONFLICTING_DUPLICATES: 42 training rows share identical features but have different labels",
       "verdict": "READY_WITH_WARNINGS",
       "warnings": [
@@ -333,7 +333,7 @@
       },
       "raw_sha256": "7d118fef8b6ccf7f81111877bc388536f7b1e498a655e3d649d19aaa010e9f6f",
       "rows": 891,
-      "seconds": 0.086,
+      "seconds": 0.079,
       "summary": "titanic: READY_WITH_WARNINGS\n  task=classification classes=['0', '1'] rows used=891/891 features=13\n  split train/dev/test = 535/179/177\n  goals: outliers, target_noise\n  WARNING IDENTIFIER_COLUMN [PassengerId]: named like an identifier and unique per row; dropped\n  WARNING FREE_TEXT_COLUMN [Name]: free text (unique multi-word values); dropped\n  WARNING MOSTLY_MISSING [Cabin]: 77.8% missing in training rows; only a missingness indicator is kept\n  WARNING CONFLICTING_DUPLICATES: 3 training rows share identical features but have different labels",
       "verdict": "READY_WITH_WARNINGS",
       "warnings": [
@@ -382,7 +382,7 @@
       ]
     }
   },
-  "engine_sha256": "d0d37cba30d3c369d72fa4616f999d373118bedfc5723d8a96c97c6020d6361c",
+  "engine_sha256": "8569205ee91259b816d2488ded93709f8f026293b36fd3d4b03a7f16312cc3fd",
   "environment": {
     "numpy": "2.5.3",
     "platform": "Linux-6.18.44-fc-v185-x86_64-with-glibc2.39",
@@ -456,7 +456,7 @@
         "verdict": "READY_WITH_WARNINGS"
       },
       "rows": 731,
-      "seconds": 0.096,
+      "seconds": 0.112,
       "summary": "bike_sharing_day: BLOCKED\n  task=regression classes=None rows used=731/731 features=13\n  split train/dev/test = 439/146/146\n  goals: ill_conditioned, distribution_shift\n  WARNING IDENTIFIER_COLUMN [instant]: row identifier (unique, dense integer sequence); dropped\n  BLOCK LEAKAGE_SUSPECT: the target is reconstructed by a linear model with out-of-fold R^2 1.0000 in training rows (e.g. total = part_a + part_b); check these columns are not computed from the outcome",
       "verdict": "BLOCKED",
       "verdict_expected": "BLOCKED",
@@ -519,7 +519,7 @@
       },
       "raw_sha256": "1425d9affa78ba8e53afc81d0ef8a19069ee10c4b21fe89b3cf514071b12ee33",
       "rows": 569,
-      "seconds": 0.153,
+      "seconds": 0.203,
       "summary": "breast_cancer_kaggle: READY_WITH_WARNINGS\n  task=classification classes=['B', 'M'] rows used=569/569 features=30\n  split train/dev/test = 341/115/113\n  goals: outliers, ill_conditioned\n  WARNING IDENTIFIER_COLUMN [id]: named like an identifier and unique per row; dropped",
       "verdict": "READY_WITH_WARNINGS",
       "warnings": [
@@ -619,7 +619,7 @@
       ],
       "raw_sha256": "698c203a14aa31941d2251175330c9199f3ccdb31597abbba2a3e35416257a72",
       "rows": 768,
-      "seconds": 0.077,
+      "seconds": 0.088,
       "summary": "pima_diabetes: READY_WITH_WARNINGS\n  task=classification classes=['0', '1'] rows used=768/768 features=10\n  split train/dev/test = 461/154/153\n  goals: outliers, target_noise\n  WARNING DISGUISED_MISSING [BloodPressure]: value 0 fills 4.6% of training rows but is isolated from the other values [30, 114] (gap 1.88 IQR); treated as missing\n  WARNING DISGUISED_MISSING [BMI]: value 0 fills 1.1% of training rows but is isolated from the other values [18.2, 67.1] (gap 1.86 IQR); treated as missing",
       "verdict": "READY_WITH_WARNINGS",
       "warnings": [
@@ -813,7 +813,7 @@
         "runs": 20
       }
     },
-    "seconds": 82.65,
+    "seconds": 87.27,
     "seed_offset": 0
   },
   "planted_fresh_seeds": {
@@ -983,10 +983,10 @@
         "runs": 20
       }
     },
-    "seconds": 81.48,
+    "seconds": 85.83,
     "seed_offset": 7000
   },
   "policy_sha256": "816623cb93173e762b97678eb2bb6c329faf581ea2231f04013cf703b7976b7b",
-  "seconds": 178.35,
+  "seconds": 188.21,
   "version": "data-engine-1.0"
 }

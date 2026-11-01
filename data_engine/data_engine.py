@@ -349,18 +349,25 @@ def load_builtin(name):
     )
 
 
-def cohort_overlap(tables, columns=None):
+def cohort_overlap(tables, columns=None, min_shared_fraction=0.5):
     """Pairwise shared-row check across tables (identical datasets, leaked rows).
 
-    Rows are compared on the columns the two tables share (or ``columns``).
+    Rows are compared on the columns the two tables share (or ``columns``). The
+    comparison is made only when the shared columns cover at least
+    ``min_shared_fraction`` of the narrower table and number at least two;
+    otherwise rows matching on, say, ``Age`` alone would be reported as shared.
+    Such pairs are reported as ``comparable: False`` with identical-content
+    checking only.
     """
     out = []
     for i in range(len(tables)):
         for j in range(i + 1, len(tables)):
             a, b = tables[i], tables[j]
             shared = [c for c in (columns or a.columns) if c in a.columns and c in b.columns]
-            if not shared:
-                out.append({"a": a.name, "b": b.name, "shared_columns": 0, "shared_rows": 0})
+            narrow = min(len(a.columns), len(b.columns))
+            if columns is None and (len(shared) < 2 or len(shared) < min_shared_fraction * narrow):
+                out.append({"a": a.name, "b": b.name, "shared_columns": len(shared), "comparable": False,
+                            "shared_rows": None, "identical_content": a.content_hash() == b.content_hash()})
                 continue
             ia = [a.columns.index(c) for c in shared]
             ib = [b.columns.index(c) for c in shared]
@@ -372,6 +379,7 @@ def cohort_overlap(tables, columns=None):
                     "a": a.name,
                     "b": b.name,
                     "shared_columns": len(shared),
+                    "comparable": True,
                     "shared_rows": inter,
                     "jaccard": inter / max(1, len(ha | hb)),
                     "identical_content": a.content_hash() == b.content_hash(),
@@ -400,6 +408,7 @@ class DataCard:
     _development: tuple | None = field(default=None, repr=False)
     _test: tuple | None = field(default=None, repr=False)
     _row_ids: dict | None = field(default=None, repr=False)
+    _used: tuple | None = field(default=None, repr=False)
     _science: dict | None = field(default=None, repr=False)
     _unseal_log: list = field(default_factory=list, repr=False)
 
@@ -477,6 +486,21 @@ class DataCard:
     def unseal_count(self):
         return len(self._unseal_log)
 
+    @property
+    def partition_rows(self):
+        """{"train", "development", "test"} -> sorted table row indices."""
+        self._require_ready()
+        return {k: sorted(int(i) for i in v) for k, v in self._row_ids.items()}
+
+    @property
+    def used_rows(self):
+        """Table row indices of the rows used (target present), in table order.
+
+        Row i of science_dataset().x is table row used_rows[i].
+        """
+        self._require_ready()
+        return self._used
+
     # -- exports ------------------------------------------------------------
     def task_spec(self, generator_module):
         """Generator TaskSpec with data-derived goals (training evidence only)."""
@@ -497,17 +521,22 @@ class DataCard:
             p("development", self._development[0], self._development[1], self._row_ids["development"]),
         )
 
-    def science_dataset(self, science_module, name=None, historical_exposure=True, source=None):
+    def science_dataset(self, science_module, name=None, historical_exposure=True, source=None, groups=None):
         """All used rows as a scientific_validation.Dataset.
 
         scientific_validation applies its own split. Encoders here were fitted on
         this engine's training partition, so label-free encoder statistics
         (category vocabulary, medians) may include rows that land in the
         validator's test split. No target value enters any encoder. Duplicate
-        buckets are passed as group IDs so duplicates stay together there too.
+        buckets are passed as group IDs so duplicates stay together there too;
+        ``groups`` may replace them with a coarser grouping (one label per row).
         """
         self._require_ready()
         s = self._science
+        if groups is not None:
+            groups = [str(g) for g in groups]
+            if len(groups) != len(s["y"]):
+                raise ValueError("one group label per used row required")
         kind = self.record["kind"]
         classes = len(self.record["classes"]) if kind == "classification" else 1
         return science_module.Dataset(
@@ -516,7 +545,7 @@ class DataCard:
             s["y"],
             kind=kind,
             classes=classes,
-            groups=s["groups"],
+            groups=groups if groups is not None else s["groups"],
             historical_exposure=historical_exposure,
             source=source or self.record["source"],
         )
@@ -541,6 +570,7 @@ class DataEngine:
         drop=(),
         allow=(),
         seed=0,
+        split=None,
     ) -> DataCard:
         """Analyze ``table`` predicting column ``target``.
 
@@ -548,6 +578,10 @@ class DataEngine:
         time:   column giving temporal order; switches to a forward-in-time split.
         drop:   columns to exclude by declaration (e.g. known post-outcome fields).
         allow:  columns exempted from the leakage block after human review.
+        split:  an externally declared split {"train", "development", "test"} of
+                table row indices (an official benchmark split, or the split a
+                downstream validator will use). It is validated, never repaired:
+                any violation blocks the card.
         """
         if not isinstance(table, Table):
             raise TypeError("Table required (use read_csv, from_arrays or load_builtin)")
@@ -555,12 +589,21 @@ class DataEngine:
             raise ValueError("kind must be classification, regression or None")
         if type(seed) is not int:
             raise ValueError("integer seed required")
-        return _Analysis(self.policy, table, target, kind, groups, time, drop, allow, seed).run()
+        if split is not None:
+            if not isinstance(split, dict) or set(split) != {"train", "development", "test"}:
+                raise ValueError("split must map exactly train, development and test to row indices")
+            if time is not None:
+                raise ValueError("a declared split and a time column are mutually exclusive")
+            for rows in split.values():
+                if not isinstance(rows, (list, tuple)) or any(type(i) is not int for i in rows):
+                    raise ValueError("declared split rows must be lists of integer table row indices")
+        return _Analysis(self.policy, table, target, kind, groups, time, drop, allow, seed, split).run()
 
 
 class _Analysis:
-    def __init__(self, policy, table, target, kind, groups, time, drop, allow, seed):
+    def __init__(self, policy, table, target, kind, groups, time, drop, allow, seed, split=None):
         self.p = policy
+        self.declared = split
         self.t = table
         self.kind = kind
         self.seed = seed
@@ -754,7 +797,11 @@ class _Analysis:
             return
         assign = np.full(len(buckets), -1, dtype=np.int64)
         fractions = np.array(p.split, dtype=np.float64)
-        if self.time_col is not None:
+        if self.declared is not None:
+            row_part = self._declared_parts(n)
+            if row_part is None:
+                return
+        elif self.time_col is not None:
             self.split_method = "temporal"
             times = self._times()
             order = sorted(range(len(buckets)), key=lambda b: (min(times[i] for i in buckets[b]), b))
@@ -784,15 +831,16 @@ class _Analysis:
                     choice = int(np.argmax(target - filled))
                     assign[b] = choice
                     filled[choice] += len(buckets[b])
-        row_part = assign[self.bucket_of]
+        if self.declared is None:
+            row_part = assign[self.bucket_of]
         if self.kind == "classification":
             for c in range(len(self.classes)):
                 if not np.any((row_part == 0) & (self.y_all == c)):
-                    if self.split_method == "temporal":
+                    if self.split_method in ("temporal", "declared"):
                         self.warn(
                             "CLASS_ABSENT_FROM_TRAIN",
                             "block",
-                            f"class {self.classes[c]!r} does not occur in the temporal training window",
+                            f"class {self.classes[c]!r} does not occur in the {self.split_method} training partition",
                             self.target,
                         )
                         continue
@@ -806,21 +854,58 @@ class _Analysis:
         self.part = row_part
         self.pos = {label: np.flatnonzero(row_part == k) for k, label in enumerate(("train", "development", "test"))}
         self.rows_of = {label: self.used[self.pos[label]] for label in self.pos}
-        # Integrity: no row, duplicate key or group crosses partitions.
+        # Integrity: no row, duplicate key or group crosses partitions. The
+        # engine's own splits guarantee this by construction; a declared split
+        # that violates it is blocked rather than repaired.
+        crossing = []
         for a in range(3):
             for b in range(a + 1, 3):
                 ka = {keys[i] for i in np.flatnonzero(row_part == a)}
                 kb = {keys[i] for i in np.flatnonzero(row_part == b)}
                 if ka & kb:
-                    raise AssertionError("duplicate feature rows crossed partitions")
+                    crossing.append("duplicate feature rows")
         if self.groups_col is not None:
             gcol = self.col(self.groups_col)
             homes = {}
             for i, g in enumerate(gcol):
                 if g is not None and homes.setdefault(g, row_part[i]) != row_part[i]:
-                    raise AssertionError("a group crossed partitions")
+                    crossing.append("group IDs")
+                    break
+        if crossing:
+            if self.declared is None:
+                raise AssertionError(f"{crossing[0]} crossed partitions")
+            self.warn(
+                "SPLIT_DECLARED_INVALID",
+                "block",
+                f"the declared split puts {' and '.join(sorted(set(crossing)))} in more than one partition",
+            )
         self.dup_rows = dup_rows
         self.n_buckets = len(buckets)
+
+    def _declared_parts(self, n):
+        """Validate a declared split; returns per-row partition codes or None (blocked)."""
+        self.split_method = "declared"
+        position = {int(r): i for i, r in enumerate(self.used)}
+        row_part = np.full(n, -1, dtype=np.int64)
+        problems = []
+        for code, role in enumerate(("train", "development", "test")):
+            for r in self.declared[role]:
+                i = position.get(r)
+                if i is None:
+                    problems.append(f"row {r} is not a usable row (no target or out of range)")
+                elif row_part[i] != -1:
+                    problems.append(f"row {r} is declared in more than one partition")
+                else:
+                    row_part[i] = code
+            if len(problems) > 5:
+                break
+        missing = int(np.sum(row_part == -1))
+        if missing and len(problems) <= 5:
+            problems.append(f"{missing} usable rows are not assigned to any partition")
+        if problems:
+            self.warn("SPLIT_DECLARED_INVALID", "block", "; ".join(problems[:5]))
+            return None
+        return row_part
 
     def _split_key_columns(self):
         n = len(self.used)
@@ -1681,10 +1766,11 @@ class _Analysis:
             card._development = arrays["development"]
             card._test = arrays["test"]
             card._row_ids = ids
+            card._used = tuple(int(i) for i in self.used)
             card._science = {
                 "x": self.X,
                 "y": self.y_all,
-                "groups": [f"b{int(b)}" for b in self.bucket_of],
+                "groups": [f"{self.t.name}:b{int(b)}" for b in self.bucket_of],
             }
         return card
 
