@@ -76,3 +76,25 @@ What the confirmed result means and does not mean, from the mechanism checks:
   oracle trained to 8 terms), and it is biased toward small sums because the labels never change.
 * It is shown only for commutative sums so far. The S3 batch tests whether it carries over to
   order-dependent composition.
+
+## Novelty check for inverse-pair insertion (after confirmation)
+
+Five alphaXiv searches (identity or inverse insertion, zero-sum or label-preserving construction,
+cancelling elements, relator or Tietze moves, state-tracking augmentation).
+
+* **Closest prior art: h1 (arXiv 2510.07312, 2025).** It builds long-horizon training problems
+  from short labeled ones (GSM8K, MATH) by chaining them. One variant, "transformation chaining",
+  rewrites a parameter in terms of an earlier answer so the final answer is unchanged. The
+  high-level principle (long problems with known answers from short labeled ones, including
+  answer-preserving rewrites) is therefore not new.
+* **What differs here:**
+  * the mechanism: cancelling elements inserted inside one input, rather than serial chaining of
+    sub-problems;
+  * the setting: supervised length generalization in small transformers;
+  * the controlled finding: the inserted material must be computationally active. Inverse pairs
+    gave 88%, zeros 37%, fillers 8%, and true long labels 94%.
+* Related: random spaces and fillers (our control), zero-padding of digits, self-improvement
+  (2502.01612), theory that a few long strings help (2610.35715).
+
+Assessment: a solid controlled result and a simple, general data rule, in an area where the core
+idea exists. Not a new paradigm.
