@@ -9,6 +9,7 @@ Ideas for the S3 task (train words of length 1-6, test 7-16, chance 1/6):
 
 import argparse
 import json
+import pickle
 import time
 
 import jax
@@ -68,5 +69,6 @@ if __name__ == "__main__":
         p = E.train(p, cfg, sampler(task, np.random.default_rng(seed), idea), args.steps, args.lr, seed, **kw)
         row = {"eval": E.evaluate(p, cfg, task, seed, TEST[args.task]), "seconds": round(time.time() - t0)}
         res["seeds"][seed] = row
+        pickle.dump(jax.device_get(p), open(args.out.replace(".json", f"_s{seed}.pkl"), "wb"))
         print(args.task, args.idea, seed, json.dumps(row), flush=True)
         json.dump(res, open(args.out, "w"), indent=1)

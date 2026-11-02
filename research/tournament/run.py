@@ -5,6 +5,7 @@
 
 import argparse
 import json
+import pickle
 import time
 
 import jax
@@ -38,5 +39,6 @@ for seed in args.seeds:
             row[f"eval_alpha{a}"] = C.evaluate(pe, cfg, seed)
         row["eval_theta3"] = C.evaluate(p3, cfg, seed)
     res["seeds"][seed] = row
+    pickle.dump(jax.device_get(p), open(args.out.replace(".json", f"_s{seed}.pkl"), "wb"))
     print(args.idea, seed, json.dumps(row), flush=True)
     json.dump(res, open(args.out, "w"), indent=1)

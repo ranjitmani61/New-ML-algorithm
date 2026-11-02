@@ -58,7 +58,7 @@ class S3Task:
 TASKS = {"sum": SumTask, "s3": S3Task}
 
 
-def init(key, task, d=64, layers=3, heads=4, mlp=256, attention="softmax"):
+def init(key, task, d=64, layers=3, heads=4, mlp=256, attention="softmax", loops=1):
     keys = iter(jax.random.split(key, 4 + 6 * layers))
     nrm = lambda k, shape, scale: jax.random.normal(k, shape) * scale
     V = task.VOCAB
@@ -75,20 +75,26 @@ def init(key, task, d=64, layers=3, heads=4, mlp=256, attention="softmax"):
         if attention == "sigmoid":
             L["b"] = jnp.full((heads,), -np.log(10.0))
         p["layers"].append(L)
-    return p, {"heads": heads, "attention": attention, "ans": task.ANS, "pad": task.PAD}
+    return p, {"heads": heads, "attention": attention, "ans": task.ANS, "pad": task.PAD, "loops": loops}
 
 
-def forward(p, cfg, toks, pos_offset=None):
+def forward(p, cfg, toks, pos_offset=None, loops=None):
+    """loops > 1 applies the layer stack repeatedly (weight-tied) with the input embedding re-added
+    before each pass (input injection), as in looped transformers."""
     B, T = toks.shape
+    loops = loops or cfg.get("loops", 1)
     h, A = cfg["heads"], cfg["ans"]
     real = (toks != cfg["pad"]) | (jnp.arange(T)[None, :] >= T - A)
     pos = jnp.cumsum(real, axis=1).astype(jnp.float32) - 1.0
     if pos_offset is not None:
         pos = pos + pos_offset[:, None]
-    x = p["emb"][toks]
+    x0 = p["emb"][toks]
+    x = x0
     mask = jnp.tril(jnp.ones((T, T), bool))[None, None] & real[:, None, None, :]
     n_keys = jnp.maximum(jnp.cumsum(real, axis=1), 1).astype(jnp.float32)
-    for L in p["layers"]:
+    for li, L in enumerate([L for _ in range(loops) for L in p["layers"]]):
+        if loops > 1 and li % len(p["layers"]) == 0 and li > 0:
+            x = x + x0
         y = C._rms(x, L["ln1"])
         q, k, v = jnp.split(y @ L["qkv"], 3, -1)
         sh = lambda t: t.reshape(B, T, h, -1)

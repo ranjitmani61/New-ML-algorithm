@@ -16,6 +16,13 @@ remains in git history).
   baseline, and in-distribution accuracy at least 95%. Otherwise discard.
 * **Comparison bar:** a candidate must also beat the best reference (known method) to count as a
   new contribution.
+* **Confirmation (fixed now, before any winner):** a kept idea is rerun unchanged on seeds 2, 3, 4
+  with the baseline and the best reference on the same seeds. It passes if the mean long-length
+  gain over the baseline is at least +10 points, all three seeds beat the baseline, and it beats
+  the best reference by at least +5 points on average. Then a novelty check, then the Kaggle final
+  with a specification registered before the run.
+* **Process note:** batch 1 first lost about 30 minutes because a wait loop matched its own
+  command line (`pgrep -f`). Waits now use explicit process ids or result files.
 
 ## Ideas
 

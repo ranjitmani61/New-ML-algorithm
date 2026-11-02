@@ -70,6 +70,9 @@ IDEAS = {
                 hypothesis="weights move along a difficulty direction from 1-3 to 1-4 terms; "
                            "extrapolating theta4 + a (theta4 - theta3) continues it",
                 prediction="no gain or harm (wild card)"),
+    "oracle": dict(kind="reference", max_terms=8,
+                   hypothesis="upper bound: true labels on 1-8 terms (violates the short-only constraint)",
+                   prediction="high; calibrates how much of the possible gain an idea recovers"),
     "rex": dict(kind="candidate", loss="rex", rex_lambda=10.0,
                 hypothesis="penalising the variance of risk across lengths 1-4 favours a "
                            "length-invariant mechanism (REx with length as environment)",
@@ -79,7 +82,8 @@ IDEAS = {
 
 def sampler(rng, idea, batch=128, max_terms=4, p_aug=0.5):
     tf = idea.get("transform")
-    max_in = MAX_IN_LONG if tf else MAX_IN_SHORT
+    max_terms = idea.get("max_terms", max_terms)
+    max_in = MAX_IN_LONG if (tf or max_terms > 4) else MAX_IN_SHORT
 
     def draw():
         items, groups = [], []
