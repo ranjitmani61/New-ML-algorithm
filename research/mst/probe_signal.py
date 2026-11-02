@@ -24,7 +24,7 @@ for n in (5, 6, 7, 8):
     truth = [T.value(e) for e in exprs]
     greedy = L.answers(T.batch(exprs))
     row = {"greedy_acc": float(np.mean([g == t for g, t in zip(greedy, truth)]))}
-    for cond in ("majority", "invariance", "metamorphic", "placebo"):
+    for cond in sys.argv[4:] or ("majority", "invariance", "metamorphic", "placebo"):
         labels, kept, share = mst.pseudo_label(L, rng, exprs, cond)
         row[cond] = mst.label_quality(exprs, labels, kept)
         if cond == "majority":

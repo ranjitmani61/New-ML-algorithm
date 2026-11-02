@@ -103,3 +103,20 @@ def shift_term_wrong(rng, terms):
     new, back = shift_term(rng, terms)
     delta = value(new) - value(terms)
     return new, (lambda a, delta=delta: a + delta)
+
+
+def shift_all(rng, terms):
+    """Equivariant: shift every term by its own d_i (staying in 0..9); value changes by sum s_i * d_i."""
+    new, delta = [], 0
+    for s, v in terms:
+        d = int(rng.integers(-v, TERM_MAX - v + 1))
+        new.append((s, v + d))
+        delta += s * d
+    return new, (lambda a, delta=delta: a - delta)
+
+
+def shift_all_wrong(rng, terms):
+    """Placebo for shift_all: same transform, mapped back with the opposite sign."""
+    new, _ = shift_all(rng, terms)
+    delta = value(new) - value(terms)
+    return new, (lambda a, delta=delta: a + delta)

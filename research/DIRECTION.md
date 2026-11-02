@@ -76,3 +76,34 @@ training. That step needs its own prior-art check and gates.
 Uncertain, perhaps one in three that G1-G4 pass. Main risks: errors at length may be random rather
 than consistent (then majority voting already works); relations may be satisfiable by wrong
 solutions the model prefers; the closest prior (self-improvement) may already capture the gain.
+
+## Pilot results (development seed 0, 2026-11-02)
+
+Setup: signed sums of single-digit terms; a 3-layer, width-64 rotary transformer trained on 1-4
+terms for 12,000 steps (`research/mst/`).
+
+**G1 headroom: passed.** Greedy accuracy 99-100% at 1-4 terms, 23% at 5 terms, 6-9% at 6-8.
+
+**Consensus trap: present and extreme.** 95-98% of the model's errors are repeated by the majority
+of 8 samples, so majority self-training would train on more than 90% wrong labels at 6-8 terms.
+
+**The relations do not break it (pseudo-label quality before any training, 1,000 expressions per
+length).** Precision is the share of kept labels that are correct.
+
+| terms | majority | permutation invariance | one-term shift | all-term shift (idea #2) |
+|---|---|---|---|---|
+| 5 | 23% | 23% | 26% | 31% |
+| 6 | 8% | 9% | 7% | 6% |
+| 8 | 6-9% | 7% | 8% | 11% |
+
+The relations cut the number of wrong labels (all-term shift at 8 terms: 0.29 vs 0.90 wrong labels
+per expression) but do not add correct ones. Error structure: at 6-8 terms the sign is right and
+the value is off by a few units, and the error survives reordering and changing every term's
+value. It depends on structure (length, sign pattern), not on the term values, and none of these
+relations change that.
+
+**Lesson:** a relation can only expose errors whose cause it changes. For difficulty-driven
+(length) errors the cause is difficulty, so only difficulty-changing relations can help. Those
+reduce to bootstrapping from easier instances, which is existing work (2502.01612).
+
+Ideas counted in this direction so far: 2 (one-term shift, all-term shift).

@@ -9,6 +9,7 @@ expression (K) and the same training steps. They differ only in how a pseudo-lab
   metamorphic  K/G samples on the expression and on G-1 single-term shifts; each transform's
                answers are mapped back by the known law (a - s_i * d); votes pooled
   placebo      as metamorphic, but mapped back with the wrong law (a + s_i * d)
+  metamorphic_all / placebo_all   the same with every term shifted (idea #2 of this direction)
   oracle       the true value (upper bound)
 
 A pseudo-label is kept when its pooled vote share is at least `keep` (same rule for all).
@@ -24,7 +25,8 @@ import lab
 import tasks as T
 
 CONDITIONS = ("none", "majority", "invariance", "metamorphic", "placebo", "oracle")
-RELATION = {"invariance": T.permute, "metamorphic": T.shift_term, "placebo": T.shift_term_wrong}
+RELATION = {"invariance": T.permute, "metamorphic": T.shift_term, "placebo": T.shift_term_wrong,
+            "metamorphic_all": T.shift_all, "placebo_all": T.shift_all_wrong}
 
 
 def pseudo_label(learner, rng, exprs, condition, K=8, groups=4, keep=0.5):

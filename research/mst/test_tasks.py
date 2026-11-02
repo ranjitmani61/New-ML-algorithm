@@ -16,7 +16,7 @@ class Relations(unittest.TestCase):
         for _ in range(2000):
             terms = T.random_terms(rng, int(rng.integers(1, 9)))
             v = T.value(terms)
-            for rel in (T.permute, T.shift_term, T.flip_signs):
+            for rel in (T.permute, T.shift_term, T.flip_signs, T.shift_all):
                 new, back = rel(rng, terms)
                 self.assertEqual(len(new), len(terms))
                 self.assertTrue(all(0 <= t <= T.TERM_MAX for _, t in new))
@@ -27,9 +27,10 @@ class Relations(unittest.TestCase):
         wrong = 0
         for _ in range(500):
             terms = T.random_terms(rng, 6)
-            new, back = T.shift_term_wrong(rng, terms)
-            wrong += back(T.value(new)) != T.value(terms)
-        self.assertEqual(wrong, 500)
+            for rel in (T.shift_term_wrong, T.shift_all_wrong):
+                new, back = rel(rng, terms)
+                wrong += back(T.value(new)) != T.value(terms) or T.value(new) == T.value(terms)
+        self.assertEqual(wrong, 1000)
 
     def test_batch_layout(self):
         b = T.batch([[(1, 2), (-1, 7)]], [-5])
