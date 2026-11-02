@@ -246,12 +246,18 @@ def main():
     ap.add_argument("--conditions", nargs="+", default=list(CONDITIONS))
     ap.add_argument("--seeds", nargs="+", type=int, default=list(SEEDS))
     ap.add_argument("--smoke", action="store_true", help="tiny run to test the pipeline (not a result)")
+    ap.add_argument("--steps", type=int, default=0, help="timing probe only; the registered run uses 20,000")
+    ap.add_argument("--per-len", type=int, default=0, help="timing probe only; the registered run uses 1,000")
     args = ap.parse_args()
     self_check()
     steps, per_len = (120, 100) if args.smoke else (20_000, 1000)
     warmup = 20 if args.smoke else 500
     size = dict(d=32, layers=2, heads=4, mlp=64) if args.smoke else dict(d=128, layers=4, heads=4, mlp=512)
     bs = 64 if args.smoke else 256
+    if args.steps:
+        steps, warmup = args.steps, min(warmup, args.steps // 4)
+    if args.per_len:
+        per_len = args.per_len
     info = {"devices": [str(d) for d in jax.devices()], "jax": jax.__version__, "smoke": args.smoke,
             "steps": steps, "spec": "research/final/SPEC.md"}
     print(json.dumps(info), flush=True)
