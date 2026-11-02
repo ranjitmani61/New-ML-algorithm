@@ -100,3 +100,65 @@ that floor even before the selection bias.
 4. **Effect bar of about +1 point** over the tuned baseline on confirmation before using GPU on a
    sealed set.
 5. Optional: run Math-Verify without signal timeouts (process-level limit) for determinism.
+
+## Red team of the core idea (before any new run)
+
+Post-hoc as above; dev plus the spent test pools. Scripts: `audit/headroom.py`,
+`audit/clean_detector.py`, `audit/confound.py`.
+
+### A. The room for any zero-token answer picker is small and lopsided
+
+| | winnable: gold has >= half the leader's votes | losable: right leader, runner-up >= half |
+|---|---|---|
+| dev | 4.8% | 4.4% |
+| test | 6.5% | 9.1% |
+
+On test, more questions can be lost than won. A selection signal must be clearly right on close
+calls to gain at all, and noise is net negative. On dev the two sides were even, which let noise
+look like a gain. The "any of 32 correct = 85.8%" ceiling is misleading: most of that gap is
+gold answers with under a quarter of the leader's votes, which no plausible signal will promote.
+
+### B. The waypoint phenomenon is real but mostly not useful
+
+With a clean detector (a value counts only as the result of a computation, `= A`), chance
+mentions fall from 40-90% to 0-10%. In aggregate, wrong majorities are still passed through more
+often than right ones, on dev and on test: on test, small integers 52% vs 19%, integers >= 10
+20% vs 6%, fractions 29% vs 9%. So the bug in finding 1 was the detector, not the phenomenon.
+
+But much of that is vote share: a wrong leader has fewer votes, so more other attempts can pass
+through it. Per other attempt and at equal leader vote share:
+
+| leader vote share | test right / wrong | dev right / wrong |
+|---|---|---|
+| < 35% | 0.013 / 0.052 | 0.114 / 0.068 |
+| 35-50% | 0.049 / 0.074 | 0.000 / 0.110 |
+| 50-70% | 0.072 / 0.078 | 0.016 / 0.086 |
+| >= 70% | 0.045 / 0.135 | 0.017 / 0.027 |
+
+In the band where decisions are made (35-70%), the test difference is small or absent, and dev and
+test disagree in places (small n per bin). A cleaner detector is unlikely to turn this into the
++1 point over the tuned baseline that the test can detect. This was found after the failure on a
+spent set; it is a reason to stop, not evidence for a new rule.
+
+### C. Value and framing
+
+* Zero-token selection heuristics are a crowded area (self-consistency variants, DeepConf, RISC
+  and others) with typical gains around a point. Methods that spend compute on verification
+  (process or outcome reward models) are the stronger published comparison and are outside our
+  equal-generated-token frame.
+* The user's domain is AI deep thinking. Our attempts are short (about 730 tokens) chains from a
+  2024 1.5B non-thinking model. Results about voting over 32 short attempts may not carry over to
+  long chain-of-thought reasoning models.
+
+### D. Data and power conflict
+
+Large math sets (MATH) are likely in the model's training data. Recent competition sets that are
+not (for example a single year's AIME, 30 problems) are far too small: one question is 3 points,
+while we need to detect about 1 point. Any next dataset must be checked for both contamination
+and size before GPU time is spent.
+
+### E. Gates that were missing
+
+The pipeline gates had no negative-control (placebo) gate, no discovery/confirmation split inside
+dev, no headroom check (winnable vs losable) and no confound check against vote share. These four
+would each have flagged terminal-ratio voting before the sealed test.
