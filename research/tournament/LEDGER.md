@@ -38,6 +38,12 @@ remains in git history).
 | 8 | inverse-pair insertion (NPIA) | candidate | pairs (+a, -a) cover length and non-zero count, labels unchanged | +40 or more | pending | |
 | 9 | weight extrapolation along difficulty (WED) | candidate | theta4 + a (theta4 - theta3) continues the difficulty direction | none or harm (wild card) | pending | |
 | 10 | risk extrapolation across lengths (REx) | candidate (known method, new use) | low risk variance across lengths favours a length-invariant mechanism | 0 to +10 | pending | |
+| 17 | oracle (true labels on 1-8 terms) | reference (upper bound) | violates the short-only constraint; calibrates the ceiling | high | pending | |
+| 18 | shuffled self-duplication (label doubled) | candidate | covers long inputs with large sums, which zero-sum insertion never shows | better on large sums, weaker on small | pending | |
+| 19 | inverse pairs + duplication | candidate | structure from pairs, value range from duplication | at least npia at 8 terms; above 50% on sums of 20 or more | pending | |
+
+Ideas 17-19 were added after seeing npia's seed-0 result and its mechanism check (large sums
+fail). They are follow-ups found on discovery data, and they are counted here as such.
 
 ## Batch 2 (testbed 2: S3 state tracking), written before running
 
