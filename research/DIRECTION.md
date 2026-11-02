@@ -107,3 +107,16 @@ relations change that.
 reduce to bootstrapping from easier instances, which is existing work (2502.01612).
 
 Ideas counted in this direction so far: 2 (one-term shift, all-term shift).
+
+## Self-training check (seed 0, 3 rounds of 2,000 unlabeled 5-8-term inputs, 600 steps each)
+
+| condition | 5 terms | 6 terms | 8 terms |
+|---|---|---|---|
+| none | 23% | 6% | 7% |
+| majority vote | 33% | 7% | 8% |
+| metamorphic (all-term shift) | 56% | 5% | 6% |
+| oracle labels | 96% | 93% | 84% |
+
+**Decision: discarded.** It fails the preregistered 8-term target. The one-seed gain at 5 terms
+(+23 over majority) is noted but not claimed. The work continues as an idea tournament in
+`research/tournament/` (ledger: `research/tournament/LEDGER.md`).
