@@ -135,3 +135,11 @@ Code for every discarded idea (SSMax, random offsets, REx, weight extrapolation,
 S3 expansions and references) was deleted from the active bench after this batch. It remains in
 git history at commit 2fff9a8. Kept: baseline, sigmoid (best reference), fill (control), zeros
 and inverse pairs (passed confirmation), oracle (ceiling).
+
+## Final (registered, Kaggle): PASS
+
+Inverse pairs at 24 terms (3x the labeled length): 84.7% vs baseline 1.9%, fillers 4.8%, zeros
+12.7%, sigmoid 0.9%, oracle 92.2% (5 fresh seeds). All three registered criteria passed
+(+81 to +85 on every seed; +79.8 over fillers; 91.6% of the oracle's gain). Both registered
+limits held (48 terms: 7.6%; weaker than the oracle on large sums). Full write-up:
+`research/final/REPORT.md`.

@@ -123,3 +123,10 @@ Ideas counted in this direction so far: 2 (one-term shift, all-term shift).
 
 Code for the discarded pilot was removed from the active tree; it is in git history at commit
 f16a78e (`git show f16a78e:research/mst/mst.py`).
+
+## Outcome of this direction
+
+Metamorphic self-training failed, but its lesson (a relation helps only if it changes the
+error's cause) led to the idea tournament. There, inverse-pair insertion passed discovery,
+preregistered confirmation, and the registered Kaggle final: 84.7% vs 1.9% at 3x the labeled
+length, 91.6% of the oracle's gain. See `research/final/REPORT.md`.
