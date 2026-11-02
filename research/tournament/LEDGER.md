@@ -36,9 +36,9 @@ remains in git history).
 | 6 | filler tokens | reference (random spaces) | lengthens inputs without new terms | 0 to +20 | 7.9% (+1.3); 6 terms 51% | discarded |
 | 7 | identity-element insertion (NEIA) | candidate | errors come from structural length; zero terms cover lengths 5-8 with exact labels | +30 or more | 16.9% (+10.3: +7.6, +13.0); gains only on sums below 10 | kept (barely), to confirmation |
 | 8 | inverse-pair insertion (NPIA) | candidate | pairs (+a, -a) cover length and non-zero count, labels unchanged | +40 or more | 90.3% (+83.7: 87.7, 92.8); seed 0 by sum: 99.7% below 10, 41% at 20-29, about 0 at 30 or more; 10/12/16 terms 38/14/7% | kept, to confirmation |
-| 9 | weight extrapolation along difficulty (WED) | candidate | theta4 + a (theta4 - theta3) continues the difficulty direction | none or harm (wild card) | pending | |
-| 10 | risk extrapolation across lengths (REx) | candidate (known method, new use) | low risk variance across lengths favours a length-invariant mechanism | 0 to +10 | pending | |
-| 17 | oracle (true labels on 1-8 terms) | reference (upper bound) | violates the short-only constraint; calibrates the ceiling | high | pending | |
+| 9 | weight extrapolation along difficulty (WED) | candidate | theta4 + a (theta4 - theta3) continues the difficulty direction | none or harm (wild card) | destroys the model: 1-4 terms 16% (a=0.5), 0.3% (a=1) | discarded |
+| 10 | risk extrapolation across lengths (REx) | candidate (known method, new use) | low risk variance across lengths favours a length-invariant mechanism | 0 to +10 | 4.9% (-1.8); lowers 4-term accuracy | discarded |
+| 17 | oracle (true labels on 1-8 terms) | reference (upper bound) | violates the short-only constraint; calibrates the ceiling | high | 94.3% (93.0, 95.5); seed 0 by sum: 100% below 10, 78% at 20-29, 25% at 30-36; 10/12/16 terms 35/12/5% | ceiling; npia recovers about 95% of its gain |
 | 18 | shuffled self-duplication (label doubled) | candidate | covers long inputs with large sums, which zero-sum insertion never shows | better on large sums, weaker on small | pending | |
 | 19 | inverse pairs + duplication | candidate | structure from pairs, value range from duplication | at least npia at 8 terms; above 50% on sums of 20 or more | pending | |
 
