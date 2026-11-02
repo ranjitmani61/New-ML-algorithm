@@ -59,3 +59,20 @@ sequential composition, so a gain cannot come from covering length alone.
 | 14 | identity insertion | candidate | covers length only | 0 to +10 |
 | 15 | adjacent inverse pairs | candidate | long words with exact labels; risk: the model learns to skip pairs | small to moderate |
 | 16 | short identity blocks (length 2-3) | candidate | richer local identities, harder to shortcut | small to moderate |
+
+## Confirmation (seeds 2, 3, 4; protocol fixed before any winner)
+
+| idea | 8 terms, mean | gain over baseline per seed | vs best reference (sigmoid, 9.4%) | min in-distribution | verdict |
+|---|---|---|---|---|---|
+| baseline | 7.6% (2.2, 9.6, 11.1) | | | 99.8% | |
+| inverse-pair insertion (#8) | **88.3%** (89.6, 88.3, 86.9) | +87.4, +78.7, +75.8 | +78.8 | 99.5% | **PASS** |
+| identity-element insertion (#7) | 37.0% (28.6, 46.3, 36.0) | +26.4, +36.7, +24.9 | +27.5 | 99.1% | PASS (large seed variance) |
+
+What the confirmed result means and does not mean, from the mechanism checks:
+
+* It shows that inserting cancelling non-zero pairs into short labeled problems gives most of the
+  benefit of long labeled data (oracle 94.3% on discovery seeds) without any long label.
+* It does not extrapolate beyond the covered length (10/12/16 terms: 38/14/7%, the same as the
+  oracle trained to 8 terms), and it is biased toward small sums because the labels never change.
+* It is shown only for commutative sums so far. The S3 batch tests whether it carries over to
+  order-dependent composition.
