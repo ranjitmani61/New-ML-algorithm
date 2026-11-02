@@ -1,6 +1,7 @@
 """Run research/final/final.py as a Kaggle TPU kernel.
 
-    python3 kaggle_final.py push   --slug SLUG [--conditions ...] [--seeds ...] [--steps N] [--per-len N]
+    python3 kaggle_final.py push   --slug SLUG [--accelerator tpu|gpu] [--lanes a,b c,d] [--seeds ...]
+                                   [--steps N] [--per-len N]
     python3 kaggle_final.py status --slug SLUG
     python3 kaggle_final.py fetch  --slug SLUG --out DIR
 
@@ -30,19 +31,23 @@ SRC = __SRC__
 os.makedirs("/kaggle/working", exist_ok=True)
 open("/kaggle/working/final.py", "wb").write(base64.b64decode(SRC))
 
+WANT = CONFIG["accelerator"]
 def check():
     r = subprocess.run([sys.executable, "-c", "import jax, optax; print(jax.__version__, jax.devices())"],
                        capture_output=True, text=True)
     out = (r.stdout + r.stderr)[-1500:]
-    return r.returncode == 0 and "tpu" in r.stdout.lower(), out
+    dev = r.stdout.lower()
+    return r.returncode == 0 and (("tpu" in dev) if WANT == "tpu" else ("cuda" in dev or "gpu" in dev)), out
 
 ok, info = check()
 print(json.dumps({"env_check": ok, "info": info}), flush=True)
 if not ok:
-    for spec in (["jax[tpu]", "optax"], ["jax[tpu]==0.4.38", "optax"]):
+    specs = ([["jax[tpu]", "optax"], ["jax[tpu]==0.4.38", "optax"]] if WANT == "tpu"
+             else [["jax[cuda12]", "optax"], ["jax[cuda13]", "optax"]])
+    for spec in specs:
         t = time.time()
-        r = subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-U", *spec,
-                            "-f", "https://storage.googleapis.com/jax-releases/libtpu_releases.html"],
+        extra = ["-f", "https://storage.googleapis.com/jax-releases/libtpu_releases.html"] if WANT == "tpu" else []
+        r = subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-U", *spec, *extra],
                            capture_output=True, text=True)
         ok, info = check()
         print(json.dumps({"install": spec, "pip_exit": r.returncode, "seconds": round(time.time() - t),
@@ -52,15 +57,22 @@ if not ok:
 if not ok:
     print("NO_TPU_JAX", flush=True)
     sys.exit(1)
-cmd = [sys.executable, "/kaggle/working/final.py", "--out", "/kaggle/working/results.json",
-       "--conditions", *CONFIG["conditions"], "--seeds", *map(str, CONFIG["seeds"])]
-if CONFIG.get("steps"):
-    cmd += ["--steps", str(CONFIG["steps"])]
-if CONFIG.get("per_len"):
-    cmd += ["--per-len", str(CONFIG["per_len"])]
-print(json.dumps({"cmd": cmd, "final_sha256": CONFIG["final_sha256"]}), flush=True)
-r = subprocess.run(cmd)
-print(json.dumps({"exit": r.returncode}), flush=True)
+procs = []
+for i, conds in enumerate(CONFIG["lanes"]):
+    cmd = [sys.executable, "/kaggle/working/final.py", "--out", f"/kaggle/working/results_lane{i}.json",
+           "--conditions", *conds, "--seeds", *map(str, CONFIG["seeds"])]
+    if CONFIG.get("steps"):
+        cmd += ["--steps", str(CONFIG["steps"])]
+    if CONFIG.get("per_len"):
+        cmd += ["--per-len", str(CONFIG["per_len"])]
+    env = dict(os.environ)
+    if WANT == "gpu" and len(CONFIG["lanes"]) > 1:
+        env["CUDA_VISIBLE_DEVICES"] = str(i)
+    env["XLA_PYTHON_CLIENT_PREALLOCATE"] = "false"
+    print(json.dumps({"lane": i, "cmd": cmd, "final_sha256": CONFIG["final_sha256"]}), flush=True)
+    procs.append(subprocess.Popen(cmd, env=env))
+codes = [p.wait() for p in procs]
+print(json.dumps({"exit_codes": codes}), flush=True)
 '''
 
 
@@ -68,16 +80,17 @@ def kaggle(*args):
     return subprocess.run(["kaggle", *args], capture_output=True, text=True)
 
 
-def push(slug, conditions, seeds, steps, per_len, user):
+def push(slug, lanes, seeds, steps, per_len, user, accelerator):
     src = open(os.path.join(HERE, "final.py"), "rb").read()
-    cfg = {"conditions": conditions, "seeds": seeds, "steps": steps, "per_len": per_len,
+    cfg = {"lanes": lanes, "seeds": seeds, "steps": steps, "per_len": per_len, "accelerator": accelerator,
            "final_sha256": hashlib.sha256(src).hexdigest()}
     code = RUNNER.replace("__CONFIG__", json.dumps(cfg)).replace("__SRC__", repr(base64.b64encode(src).decode()))
     d = tempfile.mkdtemp(prefix="final_kernel_")
     open(os.path.join(d, "runner.py"), "w").write(code)
     meta = {"id": f"{user}/{slug}", "title": slug, "code_file": "runner.py", "language": "python",
-            "kernel_type": "script", "is_private": True, "enable_gpu": False, "enable_tpu": True,
-            "machine_shape": "TpuV5E8", "enable_internet": True, "dataset_sources": [], "kernel_sources": [],
+            "kernel_type": "script", "is_private": True, "enable_gpu": accelerator == "gpu",
+            "enable_tpu": accelerator == "tpu", "machine_shape": "TpuV5E8" if accelerator == "tpu" else "NvidiaTeslaT4",
+            "enable_internet": True, "dataset_sources": [], "kernel_sources": [],
             "competition_sources": [], "model_sources": []}
     json.dump(meta, open(os.path.join(d, "kernel-metadata.json"), "w"), indent=2)
     r = kaggle("kernels", "push", "-p", d)
@@ -90,7 +103,9 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("push")
     p.add_argument("--slug", required=True)
-    p.add_argument("--conditions", nargs="+", default=["baseline", "sigmoid", "fill", "zeros", "pairs", "oracle"])
+    p.add_argument("--lanes", nargs="+", default=["baseline,sigmoid,fill,zeros,pairs,oracle"],
+                   help="comma-separated condition lists, one process per lane (one GPU each on GPU)")
+    p.add_argument("--accelerator", choices=["tpu", "gpu"], default="tpu")
     p.add_argument("--seeds", nargs="+", type=int, default=[100, 101, 102, 103, 104])
     p.add_argument("--steps", type=int, default=0)
     p.add_argument("--per-len", type=int, default=0)
@@ -103,7 +118,7 @@ def main():
         q.add_argument("--user", default=os.environ.get("KAGGLE_USERNAME", "epicnexus"))
     a = ap.parse_args()
     if a.cmd == "push":
-        push(a.slug, a.conditions, a.seeds, a.steps, a.per_len, a.user)
+        push(a.slug, [l.split(",") for l in a.lanes], a.seeds, a.steps, a.per_len, a.user, a.accelerator)
     elif a.cmd == "status":
         r = kaggle("kernels", "status", f"{a.user}/{a.slug}")
         print(r.stdout.strip(), r.stderr.strip())
