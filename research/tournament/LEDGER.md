@@ -143,3 +143,11 @@ Inverse pairs at 24 terms (3x the labeled length): 84.7% vs baseline 1.9%, fille
 (+81 to +85 on every seed; +79.8 over fillers; 91.6% of the oracle's gain). Both registered
 limits held (48 terms: 7.6%; weaker than the oracle on large sums). Full write-up:
 `research/final/REPORT.md`.
+
+## Audit after the final (predictions written before running)
+
+| # | check | why | prediction |
+|---|---|---|---|
+| 20 | NoPE (no positional encoding), sum testbed | known length-generalization method not tested before | unknown; npia's claim to beat known methods requires NoPE to stay well below npia |
+| 21 | adjacent inverse pairs, sum testbed | if locally skippable pairs work as well, the gain is not about having to sum the inserted terms | weaker than spread pairs |
+| 22 | S3 baseline and inverse pairs at 16,000 steps (4x) | the S3 conclusion came from an under-trained setup (baseline in-distribution 89%) | pairs still plateau near the parity coset (about 1/3) at 16 elements |

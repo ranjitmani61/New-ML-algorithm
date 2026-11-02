@@ -37,6 +37,19 @@ def t_npia(rng, items):
     return _insert(rng, items, extra)
 
 
+def t_npia_adjacent(rng, items):
+    """Audit control: the same cancelling pairs, but each pair inserted as an adjacent block, so a
+    model could learn to skip it locally instead of summing."""
+    k = int(rng.integers(0, (8 - len(items)) // 2 + 1))
+    out = list(items)
+    for _ in range(k):
+        a = int(rng.integers(1, C.TERM_MAX + 1))
+        pair = [(1, a), (-1, a)] if rng.random() < 0.5 else [(-1, a), (1, a)]
+        j = int(rng.integers(0, len(out) + 1))
+        out[j:j] = pair
+    return out
+
+
 def t_fill(rng, items):
     """Reference: insert neutral filler tokens (like random spaces); value unchanged."""
     m = int(rng.integers(0, 8 - len(items) + 1))
@@ -60,6 +73,13 @@ IDEAS = {
                  hypothesis="inverse pairs cover both structural length and the number of non-zero "
                             "terms, labels unchanged (no new sum is computed)",
                  prediction="+40 points or more at 8 terms"),
+    "nope": dict(kind="reference (audit)", attention="nope",
+                 hypothesis="no positional encoding is a known length-generalization method we had not tested",
+                 prediction="unknown; must not match npia for npia's comparison to stand"),
+    "npia_adjacent": dict(kind="audit control", transform=t_npia_adjacent,
+                          hypothesis="if adjacent (locally skippable) pairs work as well, the gain is not "
+                                     "about the model having to sum the inserted terms",
+                          prediction="weaker than spread pairs"),
     "oracle": dict(kind="reference", max_terms=8,
                    hypothesis="upper bound: true labels on 1-8 terms (violates the short-only constraint)",
                    prediction="high; calibrates how much of the possible gain an idea recovers"),

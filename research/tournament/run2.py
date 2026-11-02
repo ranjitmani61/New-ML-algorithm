@@ -20,6 +20,8 @@ import task_s3 as S3
 
 S3_IDEAS = {
     "baseline": dict(kind="baseline"),
+    # audit only: re-test of a discarded idea with an adequate training budget
+    "pairs": dict(kind="audit", expand=S3.expand_pairs),
 }
 TRAIN_MAX = {"sum": 4, "s3": 6}
 TEST = {"sum": list(range(1, 9)), "s3": list(range(1, 17))}

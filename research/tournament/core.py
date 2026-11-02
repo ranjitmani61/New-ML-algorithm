@@ -117,7 +117,10 @@ def forward(p, cfg, toks, pos_offset=None):
         y = _rms(x, L["ln1"])
         q, k, v = jnp.split(y @ L["qkv"], 3, -1)
         sh = lambda t: t.reshape(B, T, h, -1)
-        q, k, v = _rope(sh(q), pos), _rope(sh(k), pos), sh(v)
+        if cfg["attention"] == "nope":  # no positional encoding (known reference)
+            q, k, v = sh(q), sh(k), sh(v)
+        else:
+            q, k, v = _rope(sh(q), pos), _rope(sh(k), pos), sh(v)
         att = jnp.einsum("bqhd,bkhd->bhqk", q, k) / np.sqrt(q.shape[-1])
         if cfg["attention"] == "sigmoid":
             w = jax.nn.sigmoid(att + L["b"][None, :, None, None]) * mask
