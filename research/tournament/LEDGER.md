@@ -113,3 +113,25 @@ transfers length generalization to the commutative part of a computation, consis
 sum result, and not to the non-commutative part. Caveat: at 4,000 steps even in-distribution
 rotation tracking is incomplete (6 elements: 51-56% exact), so this testbed is under-trained, and
 the keep rule's 95% in-distribution check cannot be met by any S3 idea at this budget.
+
+## Batch 2 results (S3, discovery seeds 0-1): everything discarded
+
+| idea | in-distribution (1-6) | 8 | 12 | 16 | gain at 16 | decision |
+|---|---|---|---|---|---|---|
+| baseline | 89.3% | 27% | 18% | 17.2% | | (in-distribution below 95% even here) |
+| identity insertion | 90.3% | 34% | 15% | 16.3% | -0.9 | discarded |
+| adjacent inverse pairs | 85.2% | 35% | 33% | 28.7% | +11.5 | discarded (in-distribution drops; parity plateau) |
+| short identity blocks | 81.4% | 35% | 32% | 31.5% | +14.2 | discarded (in-distribution drops; parity plateau) |
+| sigmoid attention | 91.5% | 40% | 18% | 16.7% | -0.5 | discarded |
+| random position offsets | 89.5% | 31% | 16% | 16.8% | -0.5 | discarded |
+
+Conclusion: answer-preserving insertion does not carry over to order-dependent composition. It
+teaches the commutative part (parity, about 1/3 exact), at a cost in in-distribution accuracy.
+The final test is therefore limited to the commutative setting where the method was confirmed.
+
+## Cleanup
+
+Code for every discarded idea (SSMax, random offsets, REx, weight extrapolation, duplication, the
+S3 expansions and references) was deleted from the active bench after this batch. It remains in
+git history at commit 2fff9a8. Kept: baseline, sigmoid (best reference), fill (control), zeros
+and inverse pairs (passed confirmation), oracle (ceiling).

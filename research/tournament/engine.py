@@ -70,8 +70,6 @@ def init(key, task, d=64, layers=3, heads=4, mlp=256, attention="softmax", loops
              "o": nrm(next(keys), (d, d), (2 * layers * d) ** -0.5),
              "w1": nrm(next(keys), (d, mlp), d ** -0.5),
              "w2": nrm(next(keys), (mlp, d), (2 * layers * mlp) ** -0.5)}
-        if attention == "ssmax":
-            L["s"] = jnp.full((heads,), 1.0 / np.log(10.0))
         if attention == "sigmoid":
             L["b"] = jnp.full((heads,), -np.log(10.0))
         p["layers"].append(L)
@@ -91,7 +89,6 @@ def forward(p, cfg, toks, pos_offset=None, loops=None):
     x0 = p["emb"][toks]
     x = x0
     mask = jnp.tril(jnp.ones((T, T), bool))[None, None] & real[:, None, None, :]
-    n_keys = jnp.maximum(jnp.cumsum(real, axis=1), 1).astype(jnp.float32)
     for li, L in enumerate([L for _ in range(loops) for L in p["layers"]]):
         if loops > 1 and li % len(p["layers"]) == 0 and li > 0:
             x = x + x0
@@ -100,8 +97,6 @@ def forward(p, cfg, toks, pos_offset=None, loops=None):
         sh = lambda t: t.reshape(B, T, h, -1)
         q, k, v = C._rope(sh(q), pos), C._rope(sh(k), pos), sh(v)
         att = jnp.einsum("bqhd,bkhd->bhqk", q, k) / np.sqrt(q.shape[-1])
-        if cfg["attention"] == "ssmax":
-            att = att * (L["s"][None, :, None, None] * jnp.log(n_keys)[:, None, :, None])
         if cfg["attention"] == "sigmoid":
             w = jax.nn.sigmoid(att + L["b"][None, :, None, None]) * mask
         else:
@@ -129,22 +124,12 @@ def greedy(p, cfg, toks):
     return toks[:, T - A:]
 
 
-def make_step(cfg, lr, steps, warmup=200, loss="mean", rex_lambda=0.0, pos_offset_max=0, n_groups=17):
+def make_step(cfg, lr, steps, warmup=200):
     sched = optax.warmup_cosine_decay_schedule(0.0, lr, warmup, steps, lr * 0.1)
     opt = optax.chain(optax.clip_by_global_norm(1.0), optax.adamw(sched, weight_decay=0.01))
 
     def total_loss(p, toks, group, key):
-        off = None
-        if pos_offset_max:
-            off = jax.random.randint(key, (toks.shape[0],), 0, pos_offset_max + 1).astype(jnp.float32)
-        nll = per_example_nll(p, cfg, toks, off)
-        if loss == "rex":
-            onehot = jax.nn.one_hot(group, n_groups)
-            cnt = onehot.sum(0)
-            risk = (onehot * nll[:, None]).sum(0) / jnp.maximum(cnt, 1)
-            present = cnt > 0
-            mean_r = (risk * present).sum() / present.sum()
-            return nll.mean() + rex_lambda * (((risk - mean_r) ** 2) * present).sum() / present.sum()
+        nll = per_example_nll(p, cfg, toks)
         return nll.mean()
 
     @jax.jit

@@ -2,9 +2,8 @@
 
     python3 run2.py TASK IDEA OUT.json --seeds 0 1 [--steps 4000]
 
-Ideas for the S3 task (train words of length 1-6, test 7-16, chance 1/6):
-  baseline, sigmoid, rpe                 as in ideas.py
-  identity, pairs, blocks                answer-preserving local expansions up to length 16
+S3 task: train words of length 1-6, test 7-16, chance 1/6. Only the baseline remains; every S3
+idea was discarded (see LEDGER.md; code in git history).
 """
 
 import argparse
@@ -21,11 +20,6 @@ import task_s3 as S3
 
 S3_IDEAS = {
     "baseline": dict(kind="baseline"),
-    "sigmoid": dict(kind="reference", attention="sigmoid"),
-    "rpe": dict(kind="reference", pos_offset_max=16),
-    "identity": dict(kind="candidate", expand=S3.expand_identity),
-    "pairs": dict(kind="candidate", expand=S3.expand_pairs),
-    "blocks": dict(kind="candidate", expand=S3.expand_blocks),
 }
 TRAIN_MAX = {"sum": 4, "s3": 6}
 TEST = {"sum": list(range(1, 9)), "s3": list(range(1, 17))}

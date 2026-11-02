@@ -29,15 +29,9 @@ res = {"idea": args.idea, "spec": {k: v for k, v in idea.items() if k != "transf
 for seed in args.seeds:
     t0 = time.time()
     p0, cfg = C.init(jax.random.PRNGKey(seed), attention=idea.get("attention", "softmax"))
-    kw = {k: idea[k] for k in ("loss", "rex_lambda", "pos_offset_max") if k in idea}
+    kw = {}
     p = C.train(p0, cfg, I.sampler(np.random.default_rng(seed), idea), args.steps, args.lr, seed, **kw)
     row = {"eval": C.evaluate(p, cfg, seed), "seconds": round(time.time() - t0)}
-    if idea.get("wed"):
-        p3 = C.train(p0, cfg, I.sampler(np.random.default_rng(seed), idea, max_terms=3), args.steps, args.lr, seed)
-        for a in (0.5, 1.0):
-            pe = jax.tree_util.tree_map(lambda x4, x3: x4 + a * (x4 - x3), p, p3)
-            row[f"eval_alpha{a}"] = C.evaluate(pe, cfg, seed)
-        row["eval_theta3"] = C.evaluate(p3, cfg, seed)
     res["seeds"][seed] = row
     pickle.dump(jax.device_get(p), open(args.out.replace(".json", f"_s{seed}.pkl"), "wb"))
     print(args.idea, seed, json.dumps(row), flush=True)

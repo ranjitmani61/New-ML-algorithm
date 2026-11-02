@@ -37,21 +37,6 @@ def t_npia(rng, items):
     return _insert(rng, items, extra)
 
 
-def t_dup(rng, items):
-    """Answer-predictable expansion: the problem plus a shuffled copy of itself; value doubles.
-    Returns (items, value) because the label changes in a known way."""
-    out = list(items) + list(items)
-    order = rng.permutation(len(out))
-    return [out[i] for i in order], 2 * C.value(items)
-
-
-def t_npia_dup(rng, items):
-    """Half the time inverse-pair insertion (value kept), half the time self-duplication (doubled)."""
-    if rng.random() < 0.5:
-        return t_npia(rng, items), C.value(items)
-    return t_dup(rng, items)
-
-
 def t_fill(rng, items):
     """Reference: insert neutral filler tokens (like random spaces); value unchanged."""
     m = int(rng.integers(0, 8 - len(items) + 1))
@@ -61,15 +46,9 @@ def t_fill(rng, items):
 IDEAS = {
     "baseline": dict(kind="baseline", hypothesis="vanilla softmax transformer, rotary positions",
                      prediction="8-term accuracy 5-15%"),
-    "ssmax": dict(kind="reference", attention="ssmax",
-                  hypothesis="length-scaled logits keep attention sharp at longer lengths",
-                  prediction="small to moderate gain; the sum still needs a count"),
     "sigmoid": dict(kind="reference", attention="sigmoid",
                     hypothesis="unnormalised attention can output sums, which extrapolate linearly",
                     prediction="large gain if training finds the sum solution"),
-    "rpe": dict(kind="reference", pos_offset_max=16,
-                hypothesis="random position offsets expose larger position values",
-                prediction="small gain: rotary positions are relative already"),
     "fill": dict(kind="reference", transform=t_fill,
                  hypothesis="filler tokens lengthen inputs without new terms",
                  prediction="0 to +20 points"),
@@ -81,25 +60,9 @@ IDEAS = {
                  hypothesis="inverse pairs cover both structural length and the number of non-zero "
                             "terms, labels unchanged (no new sum is computed)",
                  prediction="+40 points or more at 8 terms"),
-    "dup": dict(kind="candidate", transform=t_dup, label_changes=True,
-                hypothesis="shuffled self-duplication (label doubled) covers long inputs with large sums, "
-                           "the regime inverse pairs never show",
-                prediction="better than baseline on large sums; weaker than npia on small ones"),
-    "npia_dup": dict(kind="candidate", transform=t_npia_dup, label_changes=True,
-                     hypothesis="inverse pairs (structure) plus duplication (large sums) together cover "
-                                "8-term inputs across the value range",
-                     prediction="at least npia's 8-term accuracy, and above 50% on |value| >= 20"),
-    "wed": dict(kind="candidate", wed=True,
-                hypothesis="weights move along a difficulty direction from 1-3 to 1-4 terms; "
-                           "extrapolating theta4 + a (theta4 - theta3) continues it",
-                prediction="no gain or harm (wild card)"),
     "oracle": dict(kind="reference", max_terms=8,
                    hypothesis="upper bound: true labels on 1-8 terms (violates the short-only constraint)",
                    prediction="high; calibrates how much of the possible gain an idea recovers"),
-    "rex": dict(kind="candidate", loss="rex", rex_lambda=10.0,
-                hypothesis="penalising the variance of risk across lengths 1-4 favours a "
-                           "length-invariant mechanism (REx with length as environment)",
-                prediction="0 to +10 points"),
 }
 
 
