@@ -151,3 +151,15 @@ limits held (48 terms: 7.6%; weaker than the oracle on large sums). Full write-u
 | 20 | NoPE (no positional encoding), sum testbed | known length-generalization method not tested before | unknown; npia's claim to beat known methods requires NoPE to stay well below npia |
 | 21 | adjacent inverse pairs, sum testbed | if locally skippable pairs work as well, the gain is not about having to sum the inserted terms | weaker than spread pairs |
 | 22 | S3 baseline and inverse pairs at 16,000 steps (4x) | the S3 conclusion came from an under-trained setup (baseline in-distribution 89%) | pairs still plateau near the parity coset (about 1/3) at 16 elements |
+
+### Audit results so far (sum testbed, discovery seeds 0-1)
+
+* **#20 NoPE:** 8 terms 5.0% (6.1, 3.8), below the baseline's 6.6%. It also lowers 4-term
+  accuracy (92-95%). A known method that does not threaten inverse pairs (90.3%).
+* **#21 adjacent inverse pairs:** 8 terms 86.2% (85.9, 86.5) vs spread pairs 90.3%. Only about 4
+  points weaker. The prediction "weaker" holds only in that small sense: most of the effect
+  survives when each pair could be skipped locally. So the explanation "the model is forced to
+  sum the scattered inserted terms" is not supported. What the evidence supports is that
+  non-zero cancelling terms are present (zeros and fillers, at the same or shorter lengths, fail).
+* **#22 S3 at 4x budget:** first launch failed (my shell error: `cd dir && (A) & (B) &` applies
+  the `cd` to lane A only); rerun in progress with absolute paths.

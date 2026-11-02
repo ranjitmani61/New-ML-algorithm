@@ -58,8 +58,9 @@ Each figure is the mean over seeds 100-104 (per-seed values are in `results/repo
     criterion 2 (against fillers) compared with a weaker control than intended.
   * Zero terms are the length-matched control, with the same token lengths as inverse pairs. They
     also lose, by 72 points, so the conclusion stands.
-  * This test does not separate two explanations: that the model must add the inserted terms, or
-    that the inputs merely resemble the test inputs (many non-zero terms).
+  * Adjacent pairs, which a model could skip locally, work almost as well (86% vs 90% at 8
+    terms; ledger #21). So "the model is forced to sum scattered terms" is not the right
+    explanation. What matters is that non-zero cancelling terms are present.
 * It costs **1 point in-distribution** (8 terms: 98.9% vs 99.9%).
 * It does **not** make models extrapolate beyond the lengths the expansions cover.
 * It does **not** extend to order-dependent composition. On S3 state tracking it teaches only
@@ -109,7 +110,7 @@ This is a solid controlled result and a simple data rule, not a new paradigm.
 * **References not tested:**
   * a scratchpad or chain-of-thought format (running partial sums as output);
   * a looped transformer trained with a loop count tied to length;
-  * NoPE: under audit (ledger #20).
+  * NoPE was tested in the audit (ledger #20): 5.0% at 8 terms, below the baseline.
   * "Beats known methods" holds only for the methods actually tested: sigmoid attention, SSMax,
     random position offsets and fillers.
 * **Wording to avoid:** "3x the training length". The labeled length was 8. Inputs up to 32 terms
