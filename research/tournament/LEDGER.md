@@ -161,5 +161,27 @@ limits held (48 terms: 7.6%; weaker than the oracle on large sums). Full write-u
   survives when each pair could be skipped locally. So the explanation "the model is forced to
   sum the scattered inserted terms" is not supported. What the evidence supports is that
   non-zero cancelling terms are present (zeros and fillers, at the same or shorter lengths, fail).
-* **#22 S3 at 4x budget:** first launch failed (my shell error: `cd dir && (A) & (B) &` applies
-  the `cd` to lane A only); rerun in progress with absolute paths.
+* **#22 S3 at 4x budget (16,000 steps).** The first launch failed: in `cd dir && (A) & (B) &` the
+  `cd` applies only to lane A. Rerun with absolute paths.
+  * The baseline is now adequately trained (in-distribution 1-6: 98%), but long words stay at
+    chance (16 elements: 15.0%).
+  * Inverse pairs: 16 elements 34.2%. Parity is tracked at 97-100% on 12-16 elements, while exact
+    accuracy given the right parity is 0.32-0.34, so rotation is still at chance.
+  * In-distribution, pairs hurt the order-dependent part: 6 elements 73-74% vs 86-89% for the
+    baseline.
+  * The S3 conclusion holds under adequate training: the trick teaches the commutative part and
+    costs accuracy on the order-dependent part.
+
+### Audit verdict
+
+* No bug in the final pipeline: the numbers recompute exactly, the code hash is verified, and all
+  runs exited 0.
+* Errors were in my reporting and are corrected: the idea count, the phrase "3x the training
+  length", the SPEC wording (erratum), and the unmentioned 1-point in-distribution cost.
+* Claims narrowed:
+  * The filler control was length-mismatched; zeros is the matched control.
+  * The "forced to sum scattered terms" explanation is dropped (adjacent pairs work almost as
+    well).
+  * The S3 limit is confirmed at an adequate budget, with an in-distribution cost.
+* Still untested: scratchpad references and a faithful looped transformer. The final models were
+  not saved.

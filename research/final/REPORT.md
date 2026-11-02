@@ -64,7 +64,10 @@ Each figure is the mean over seeds 100-104 (per-seed values are in `results/repo
 * It costs **1 point in-distribution** (8 terms: 98.9% vs 99.9%).
 * It does **not** make models extrapolate beyond the lengths the expansions cover.
 * It does **not** extend to order-dependent composition. On S3 state tracking it teaches only
-  the commutative part (parity); see `research/tournament/LEDGER.md`.
+  the commutative part: parity is tracked at 97-100% on 16-element words while the rotation part
+  stays at chance. It also lowers in-distribution accuracy on the order-dependent part
+  (6 elements: 74% vs 87%). This was confirmed at an adequate training budget in the audit (ledger
+  #22).
 * It is shown on one synthetic task family (signed sums) with small transformers; nothing here
   shows it on language models.
 
