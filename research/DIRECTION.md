@@ -120,3 +120,6 @@ Ideas counted in this direction so far: 2 (one-term shift, all-term shift).
 **Decision: discarded.** It fails the preregistered 8-term target. The one-seed gain at 5 terms
 (+23 over majority) is noted but not claimed. The work continues as an idea tournament in
 `research/tournament/` (ledger: `research/tournament/LEDGER.md`).
+
+Code for the discarded pilot was removed from the active tree; it is in git history at commit
+f16a78e (`git show f16a78e:research/mst/mst.py`).
