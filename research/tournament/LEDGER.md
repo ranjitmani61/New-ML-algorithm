@@ -98,3 +98,18 @@ cancelling elements, relator or Tietze moves, state-tracking augmentation).
 
 Assessment: a solid controlled result and a simple, general data rule, in an area where the core
 idea exists. Not a new paradigm.
+
+## Batch 2 interim: mechanism check on S3 (seed 0, before the batch finished)
+
+| model | 6 elements exact / parity right | 12 elements | 16 elements |
+|---|---|---|---|
+| baseline | 56% / 100% | 18% / 53% (chance) | 17% / 48% (chance) |
+| adjacent inverse pairs (#15) | 51% / 100% | 33% / 98% | 28% / 85% |
+
+Parity (even or odd permutation) is the commutative part of S3 composition: a sum mod 2.
+Inverse pairs make the model track it over long words, while the order-dependent rotation part
+stays at chance (exact accuracy is about parity accuracy times 1/3). So cancelling-pair insertion
+transfers length generalization to the commutative part of a computation, consistent with the
+sum result, and not to the non-commutative part. Caveat: at 4,000 steps even in-distribution
+rotation tracking is incomplete (6 elements: 51-56% exact), so this testbed is under-trained, and
+the keep rule's 95% in-distribution check cannot be met by any S3 idea at this budget.
