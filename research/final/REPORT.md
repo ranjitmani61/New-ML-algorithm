@@ -49,9 +49,18 @@ Each figure is the mean over seeds 100-104 (per-seed values are in `results/repo
 
 ## What this shows and what it does not
 
-* It shows that inserted material must be **computationally active**: cancelling pairs (84.7%)
-  far outperform inactive zeros (12.7%) and meaningless fillers (4.8%). With only short labels,
-  inverse pairs come within 7.5 points of training on true long labels.
+* It shows that length alone does not help: the inserted material has to be **real non-zero
+  terms**. Cancelling pairs scored 84.7%, inactive zeros 12.7% and meaningless fillers 4.8%. With
+  only short labels, inverse pairs come within 7.5 points of training on true long labels.
+* **Control caveat (found in the post-final audit):**
+  * The filler control is length-mismatched: its training inputs reach at most 41 tokens, with
+    only 8% longer than 33. Inverse pairs reach 65 tokens, with 28% longer than 33. So
+    criterion 2 (against fillers) compared with a weaker control than intended.
+  * Zero terms are the length-matched control, with the same token lengths as inverse pairs. They
+    also lose, by 72 points, so the conclusion stands.
+  * This test does not separate two explanations: that the model must add the inserted terms, or
+    that the inputs merely resemble the test inputs (many non-zero terms).
+* It costs **1 point in-distribution** (8 terms: 98.9% vs 99.9%).
 * It does **not** make models extrapolate beyond the lengths the expansions cover.
 * It does **not** extend to order-dependent composition. On S3 state tracking it teaches only
   the commutative part (parity); see `research/tournament/LEDGER.md`.
@@ -73,8 +82,15 @@ This is a solid controlled result and a simple data rule, not a new paradigm.
 
 ## How it was reached
 
-* 20 ideas were logged before their runs (`research/tournament/LEDGER.md`); 17 were discarded and
-  their code deleted.
+* 17 ideas and references were tested on two testbeds, plus two baselines, and logged in
+  `research/tournament/LEDGER.md`. Predictions were written before each run; three were declared
+  follow-ups added after a discovery result.
+  * 2 passed confirmation: inverse pairs and zero terms.
+  * 1 is the ceiling reference: the oracle.
+  * 14 were discarded.
+* Code was deleted for the discarded ideas, except sigmoid attention and fillers, which are kept
+  on purpose as the reference and the control. (An earlier version of this report said "20
+  logged, 17 discarded"; that count was wrong.)
 * Inverse pairs went through three stages:
   1. discovery seeds 0-1: 90.3% vs 6.6% at 8 terms;
   2. preregistered confirmation on seeds 2-4: 88.3% vs 7.6%;
@@ -82,6 +98,23 @@ This is a solid controlled result and a simple data rule, not a new paradigm.
 * Earlier directions that failed are documented too: latent and terminal-ratio voting
   (`reasoning/REPORT.md`, `reasoning/AUDIT.md`) and metamorphic self-training
   (`research/DIRECTION.md`).
+
+## Erratum and pipeline limits (post-final audit)
+
+* **Registration wording:** `SPEC.md` says "half of each batch is augmented". The registered code
+  augments each example with probability 0.5, so half on average, not exactly half. `SPEC.md` is
+  left unchanged as registered.
+* **Final models not saved:** `final.py` records metrics only. Any further mechanism check on the
+  final models needs retraining.
+* **References not tested:**
+  * a scratchpad or chain-of-thought format (running partial sums as output);
+  * a looped transformer trained with a loop count tied to length;
+  * NoPE: under audit (ledger #20).
+  * "Beats known methods" holds only for the methods actually tested: sigmoid attention, SSMax,
+    random position offsets and fillers.
+* **Wording to avoid:** "3x the training length". The labeled length was 8. Inputs up to 32 terms
+  did appear in training, through the expansions, so the primary length (24) is beyond the
+  labeled length but within the trained input length.
 
 ## Reproduce
 
