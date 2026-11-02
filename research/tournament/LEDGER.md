@@ -39,8 +39,8 @@ remains in git history).
 | 9 | weight extrapolation along difficulty (WED) | candidate | theta4 + a (theta4 - theta3) continues the difficulty direction | none or harm (wild card) | destroys the model: 1-4 terms 16% (a=0.5), 0.3% (a=1) | discarded |
 | 10 | risk extrapolation across lengths (REx) | candidate (known method, new use) | low risk variance across lengths favours a length-invariant mechanism | 0 to +10 | 4.9% (-1.8); lowers 4-term accuracy | discarded |
 | 17 | oracle (true labels on 1-8 terms) | reference (upper bound) | violates the short-only constraint; calibrates the ceiling | high | 94.3% (93.0, 95.5); seed 0 by sum: 100% below 10, 78% at 20-29, 25% at 30-36; 10/12/16 terms 35/12/5% | ceiling; npia recovers about 95% of its gain |
-| 18 | shuffled self-duplication (label doubled) | candidate | covers long inputs with large sums, which zero-sum insertion never shows | better on large sums, weaker on small | pending | |
-| 19 | inverse pairs + duplication | candidate | structure from pairs, value range from duplication | at least npia at 8 terms; above 50% on sums of 20 or more | pending | |
+| 18 | shuffled self-duplication (label doubled) | candidate | covers long inputs with large sums, which zero-sum insertion never shows | better on large sums, weaker on small | 29.3% (+22.7) | discarded: dominated by npia |
+| 19 | inverse pairs + duplication | candidate | structure from pairs, value range from duplication | at least npia at 8 terms; above 50% on sums of 20 or more | 85.4% (npia 90.3%); seed 0 by sum: 54% at 20-29 (npia 41%), 12% at 30-36 (npia 1%), but 92% at 10-19 (npia 97%); about 43% on sums of 20 or more | discarded: prediction failed, worse than npia overall |
 
 Ideas 17-19 were added after seeing npia's seed-0 result and its mechanism check (large sums
 fail). They are follow-ups found on discovery data, and they are counted here as such.
