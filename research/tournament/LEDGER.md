@@ -31,3 +31,18 @@ remains in git history).
 | 8 | inverse-pair insertion (NPIA) | candidate | pairs (+a, -a) cover length and non-zero count, labels unchanged | +40 or more | pending | |
 | 9 | weight extrapolation along difficulty (WED) | candidate | theta4 + a (theta4 - theta3) continues the difficulty direction | none or harm (wild card) | pending | |
 | 10 | risk extrapolation across lengths (REx) | candidate (known method, new use) | low risk variance across lengths favours a length-invariant mechanism | 0 to +10 | pending | |
+
+## Batch 2 (testbed 2: S3 state tracking), written before running
+
+Train words of length 1-6, test 7-16; chance is 16.7%. Same model, budget and keep rule, with
+16-element accuracy in place of 8-term accuracy. Here a longer word means genuinely more
+sequential composition, so a gain cannot come from covering length alone.
+
+| # | idea | kind | hypothesis | prediction (before run) |
+|---|---|---|---|---|
+| 11 | baseline | baseline | vanilla transformer | 1-6 learned; 12-16 near chance |
+| 12 | sigmoid attention | reference | unnormalised sums help the counting parts (parity, rotation count) | small to moderate |
+| 13 | random position offsets | reference | larger position values | small |
+| 14 | identity insertion | candidate | covers length only | 0 to +10 |
+| 15 | adjacent inverse pairs | candidate | long words with exact labels; risk: the model learns to skip pairs | small to moderate |
+| 16 | short identity blocks (length 2-3) | candidate | richer local identities, harder to shortcut | small to moderate |
