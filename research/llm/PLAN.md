@@ -80,5 +80,5 @@ shells. Later she lost 4 shells."
   * cancel_spread after 150 steps: 24% / 8% / 3%;
   * 0.54 s per training step, so about 15-16 minutes per full run;
   * prompts: median 68 tokens, max 168, none truncated.
-* **Quota after the smoke runs:** GPU 0.55h h until 2026-11-07. The pilot, discovery and final
+* **Quota after the smoke runs:** GPU 0.55 h until 2026-11-07. The pilot, discovery and final
   runs wait for the refresh.
