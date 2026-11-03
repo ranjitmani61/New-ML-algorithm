@@ -20,7 +20,7 @@ import run_llm as R
 model_dir = sys.argv[1]
 torch.manual_seed(0)
 tok = AutoTokenizer.from_pretrained(model_dir)
-model = AutoModelForCausalLM.from_pretrained(model_dir, torch_dtype=torch.float32)
+model = AutoModelForCausalLM.from_pretrained(model_dir, dtype=torch.float32)
 rng = random.Random(0)
 probs = [P.make_problem(rng, rng.randint(1, 4)) for _ in range(16)]
 enc = [R.encode_example(tok, p, 384) for p in probs]
@@ -44,7 +44,7 @@ model.eval()
 outs = R.generate(model, tok, probs, "cpu", batch=8, max_new=6)
 preds = [R.parse(o) for o in outs]
 acc = float(np.mean([pr == p.answer() for pr, p in zip(preds, probs)]))
-print(f"2. overfit 16 problems: final loss {float(loss):.4f}, exact-match on the same prompts {acc:.2f}")
+print(f"2. overfit 16 problems: final loss {loss.item():.4f}, exact-match on the same prompts {acc:.2f}")
 for p, o in list(zip(probs, outs))[:3]:
     print("   ", repr(p.text()[-60:]), "->", repr(o), "answer", p.answer())
 assert acc >= 0.9, "training format and evaluation prompt do not match"

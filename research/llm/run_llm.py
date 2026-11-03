@@ -131,7 +131,7 @@ def main():
     if tok.pad_token_id is None:
         tok.pad_token = tok.eos_token
     dtype = torch.float16 if device == "cuda" else torch.float32
-    model = AutoModelForCausalLM.from_pretrained(args.model, torch_dtype=dtype).to(device)
+    model = AutoModelForCausalLM.from_pretrained(args.model, dtype=dtype).to(device)
     t0 = time.time()
     rng = random.Random(args.seed)
     train = build_train(rng, args.condition, args.family, args.n_train, args.label_max, args.expand_max)
@@ -169,7 +169,7 @@ def main():
             torch.nn.utils.clip_grad_norm_([q for q in model.parameters() if q.requires_grad], 1.0)
             scaler.step(opt); scaler.update(); opt.zero_grad(set_to_none=True); sched.step()
             if (step + 1) % max(args.steps // 10, 1) == 0:
-                print(json.dumps({"step": step + 1, "loss": round(float(loss), 4), "elapsed": round(time.time() - t0)}), flush=True)
+                print(json.dumps({"step": step + 1, "loss": round(loss.item(), 4), "elapsed": round(time.time() - t0)}), flush=True)
         model.eval()
         model.save_pretrained(os.path.join(args.out, "adapter"))
     train_s = time.time() - t0

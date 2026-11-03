@@ -42,6 +42,31 @@ if not env_info["peft"]:
     r = subprocess.run([sys.executable, "-m", "pip", "install", "-q", "peft"], capture_output=True, text=True)
     env_info["peft_install_exit"] = r.returncode
     env_info["peft"] = has("peft")
+PREFLIGHT = """
+import torch
+from transformers import Qwen2Config, Qwen2ForCausalLM
+from peft import LoraConfig, get_peft_model
+m = Qwen2ForCausalLM(Qwen2Config(vocab_size=64, hidden_size=32, intermediate_size=64, num_hidden_layers=1,
+                                 num_attention_heads=2, num_key_value_heads=1))
+m = get_peft_model(m, LoraConfig(r=4, lora_alpha=8, target_modules=["q_proj", "v_proj"], task_type="CAUSAL_LM"))
+m(input_ids=torch.tensor([[1, 2, 3]]), labels=torch.tensor([[1, 2, 3]])).loss.backward()
+print("PREFLIGHT_OK")
+"""
+
+def preflight():
+    r = subprocess.run([sys.executable, "-c", PREFLIGHT], capture_output=True, text=True)
+    return "PREFLIGHT_OK" in r.stdout, (r.stdout + r.stderr)[-1500:]
+
+ok, info = preflight()
+env_info["lora_preflight"] = ok
+if not ok and "torchao" in info:
+    # PEFT raises (instead of skipping) when an incompatible torchao is installed; we never use torchao
+    r = subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "-q", "torchao"], capture_output=True, text=True)
+    env_info["torchao_uninstall_exit"] = r.returncode
+    ok, info = preflight()
+    env_info["lora_preflight_after_torchao_removal"] = ok
+if not ok:
+    env_info["lora_preflight_error"] = info[-800:]
 v = subprocess.run([sys.executable, "-c", "import torch, transformers, peft; print(torch.__version__, transformers.__version__, peft.__version__, torch.cuda.device_count())"],
                    capture_output=True, text=True)
 env_info["versions"] = (v.stdout + v.stderr).strip()[-400:]
@@ -49,7 +74,7 @@ hits = [os.path.dirname(p) for p in glob.glob(f"{ROOT}/input/**/config.json", re
 hits = [h for h in hits if "0.5b-instruct" in h.lower()] or hits
 env_info["model_dir"] = sorted(hits, key=len)[0] if hits else None
 print(json.dumps({"env": env_info, "code_sha256": CONFIG["code_sha256"]}), flush=True)
-if not env_info["peft"] or not env_info["model_dir"]:
+if not env_info["peft"] or not env_info["model_dir"] or not ok:
     print("SETUP_FAILED", flush=True)
     sys.exit(1)
 
