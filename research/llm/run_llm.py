@@ -37,10 +37,9 @@ def build_train(rng, condition, family, n, label_max, expand_max):
         kmax = expand_max if condition == "oracle" else label_max
         p = P.make_problem(rng, rng.randint(1, kmax), family)
         if condition in P.EXPANSIONS and rng.random() < 0.5:
-            if not (condition == "cancel_spread" and family == "mixed"):
-                q = P.EXPANSIONS[condition](rng, p, expand_max)
-                assert q.answer() == p.answer() and q.valid()
-                p = q
+            q = P.EXPANSIONS[condition](rng, p, expand_max, family)  # raises for cancel_spread + mixed
+            assert q.answer() == p.answer() and q.valid()
+            p = q
         out.append(p)
     return out
 
@@ -86,7 +85,8 @@ def generate(model, tok, problems, device, batch=64, max_new=6):
         chunk = problems[i:i + batch]
         enc = tok([chat_prompt(tok, p.text()) for p in chunk], return_tensors="pt", padding=True,
                   add_special_tokens=False).to(device)
-        g = model.generate(**enc, max_new_tokens=max_new, do_sample=False, pad_token_id=tok.pad_token_id)
+        g = model.generate(input_ids=enc["input_ids"], attention_mask=enc["attention_mask"], max_new_tokens=max_new,
+                           do_sample=False, pad_token_id=tok.pad_token_id)
         outs += tok.batch_decode(g[:, enc["input_ids"].shape[1]:], skip_special_tokens=True)
     return outs
 

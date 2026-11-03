@@ -12,6 +12,8 @@ Families
 Expansions (answer unchanged, checked by tests)
   cancel_spread    gain a ... (later, anywhere) ... loss a          additive family only
   cancel_adjacent  gain a immediately followed by loss a            (mixed: doubles then halves)
+                   "adjacent" means adjacent when inserted: a later-inserted pair can land between
+                   them, which keeps the answer exact because every inserted block is an identity
   inactive         events that change nothing ("counts them")       length control
   irrelevant       numeric sentences about something else           PROBLEMATHIC/NoOp-style control
 """
@@ -174,8 +176,10 @@ def _copy(p):
     return Problem(p.name, p.item, p.start, list(p.events))
 
 
-def cancel_spread(rng, p, max_changes):
+def cancel_spread(rng, p, max_changes, family="additive"):
     """Insert pairs gain a ... loss a, the loss anywhere after its gain (additive family only)."""
+    if family != "additive":
+        raise ValueError("spread pairs do not cancel across doubling or halving; additive family only")
     q = _copy(p)
     k = rng.randint(0, (max_changes - p.n_changes()) // 2)
     names = NAMES_HELDOUT if p.name in NAMES_HELDOUT else NAMES_TRAIN
@@ -188,15 +192,15 @@ def cancel_spread(rng, p, max_changes):
     return q
 
 
-def cancel_adjacent(rng, p, max_changes):
-    """Insert adjacent cancelling pairs: gain a then loss a; in the mixed family also doubles
-    then loses half (both cancel exactly wherever they are placed, being adjacent)."""
+def cancel_adjacent(rng, p, max_changes, family="additive"):
+    """Insert adjacent cancelling pairs: gain a then loss a; in the mixed family, half of the pairs
+    are doubles-then-loses-half instead (both cancel exactly because they are adjacent)."""
     q = _copy(p)
     k = rng.randint(0, (max_changes - p.n_changes()) // 2)
     names = NAMES_HELDOUT if p.name in NAMES_HELDOUT else NAMES_TRAIN
     for _ in range(k):
         i = rng.randint(0, len(q.events))
-        if any(e.kind in ("double", "halve") for e in p.events) and rng.random() < 0.5:
+        if family == "mixed" and rng.random() < 0.5:
             pair = [Event("double", 0, _render(rng, "double", 0, p.name, p.item, names)),
                     Event("halve", 0, _render(rng, "halve", 0, p.name, p.item, names))]
         else:
@@ -207,7 +211,7 @@ def cancel_adjacent(rng, p, max_changes):
     return q
 
 
-def _insert_sentences(rng, p, max_changes, kind):
+def _insert_sentences(rng, p, max_changes, kind, family="additive"):
     q = _copy(p)
     m = 2 * rng.randint(0, (max_changes - p.n_changes()) // 2)  # same count as a pair expansion
     names = NAMES_HELDOUT if p.name in NAMES_HELDOUT else NAMES_TRAIN
@@ -217,11 +221,11 @@ def _insert_sentences(rng, p, max_changes, kind):
     return q
 
 
-def inactive(rng, p, max_changes):
+def inactive(rng, p, max_changes, family="additive"):
     return _insert_sentences(rng, p, max_changes, "inactive")
 
 
-def irrelevant(rng, p, max_changes):
+def irrelevant(rng, p, max_changes, family="additive"):
     return _insert_sentences(rng, p, max_changes, "irrelevant")
 
 
@@ -241,4 +245,4 @@ def demo(seed=0):
     rng = random.Random(seed)
     p = make_problem(rng, 3)
     return {"base": p.text(), "answer": p.answer(),
-            **{name: f(rng, p, 9).text() for name, f in EXPANSIONS.items()}}
+            **{name: f(rng, p, 9).text() for name, f in EXPANSIONS.items()}}  # additive family

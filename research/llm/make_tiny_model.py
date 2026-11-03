@@ -9,7 +9,7 @@ and the chat format and end-of-turn token follow Qwen2.5-Instruct.
 
 import sys
 
-from tokenizers import Tokenizer, models, pre_tokenizers
+from tokenizers import Tokenizer, decoders, models, pre_tokenizers
 from transformers import PreTrainedTokenizerFast, Qwen2Config, Qwen2ForCausalLM
 
 import problems as P
@@ -25,9 +25,11 @@ for t in P.GAIN + P.LOSS + P.INACTIVE + P.IRRELEVANT + [P.DOUBLE, P.HALVE, "{nam
         words.add(w)
 words |= set("Solve the word problem . Answer with the final number only system user assistant".split())
 special = ["<|endoftext|>", "<|im_start|>", "<|im_end|>", "[UNK]"]
-vocab = {t: i for i, t in enumerate(special + [str(d) for d in range(10)] + sorted(words) + ["\n", "-", "'", "s"])}
+tokens = list(dict.fromkeys(special + [str(d) for d in range(10)] + sorted(words) + ["\n", "-", "'", "s"]))
+vocab = {t: i for i, t in enumerate(tokens)}  # dict.fromkeys removes duplicates, so ids have no holes
 tk = Tokenizer(models.WordLevel(vocab=vocab, unk_token="[UNK]"))
 tk.pre_tokenizer = pre_tokenizers.Sequence([pre_tokenizers.Whitespace(), pre_tokenizers.Digits(individual_digits=True)])
+tk.decoder = decoders.Fuse()  # join tokens without spaces, as Qwen's byte-level decoder does for digits
 tok = PreTrainedTokenizerFast(tokenizer_object=tk, eos_token="<|im_end|>", pad_token="<|endoftext|>",
                               unk_token="[UNK]", additional_special_tokens=["<|im_start|>"])
 tok.chat_template = ("{% for m in messages %}<|im_start|>{{ m['role'] }}\n{{ m['content'] }}<|im_end|>\n{% endfor %}"

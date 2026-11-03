@@ -35,8 +35,10 @@ class Problems(unittest.TestCase):
             p = P.make_problem(rng, rng.randint(1, 4), family)
             for name, f in P.EXPANSIONS.items():
                 if name == "cancel_spread" and family == "mixed":
-                    continue  # spread pairs do not cancel across doubling/halving
-                q = f(rng, p, 16)
+                    with self.assertRaises(ValueError):
+                        f(rng, p, 16, family)
+                    continue
+                q = f(rng, p, 16, family)
                 self.assertEqual(q.answer(), p.answer(), (name, q.text()))
                 self.assertTrue(q.valid(), (name, q.text()))
                 self.assertLessEqual(q.n_changes(), 16)
@@ -52,10 +54,21 @@ class Problems(unittest.TestCase):
         plurals = set(P.ITEMS_TRAIN + P.ITEMS_HELDOUT + P.OTHER_THINGS)
         for _ in range(3000):
             p = P.make_problem(rng, rng.randint(1, 16), rng.choice(["additive", "mixed"]))
-            q = rng.choice(list(P.EXPANSIONS.values()))(rng, p, 16) if p.n_changes() <= 4 else p
+            fam = "additive" if p.n_changes() > 4 or all(e.kind in ("gain", "loss") for e in p.events) else "mixed"
+            q = rng.choice([f for n, f in P.EXPANSIONS.items() if not (n == "cancel_spread" and fam == "mixed")])(rng, p, 16, fam) if p.n_changes() <= 4 else p
             words = q.text().replace(".", " ").replace("?", " ").split()
             for a, b in zip(words, words[1:]):
                 self.assertFalse(a == "1" and b in plurals, q.text())
+
+    def test_mixed_adjacent_pairs_include_doubling(self):
+        rng = random.Random(4)
+        kinds = set()
+        for _ in range(300):
+            p = P.make_problem(rng, 2, "mixed")
+            q = P.cancel_adjacent(rng, p, 16, "mixed")
+            kinds |= {e.kind for e in q.events[len(p.events):]} | {e.kind for e in q.events}
+        self.assertIn("double", kinds)
+        self.assertIn("halve", kinds)
 
     def test_vocabulary_split(self):
         self.assertFalse(set(P.NAMES_TRAIN) & set(P.NAMES_HELDOUT))
