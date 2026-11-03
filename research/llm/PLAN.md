@@ -55,3 +55,30 @@ shells. Later she lost 4 shells."
 7. **Registration.** The specification, code hash, seeds, metric and pass criteria are committed
    before the full run. Any deviation goes into an erratum, never a silent edit.
 8. **Budget declared up front, with a stop rule.** No run outside the declared budget.
+
+## Build log (2026-11-03)
+
+* **Local tests**, with a tiny random Qwen2 model run under Kaggle's exact versions
+  (transformers 5.20.2, PEFT 0.21.2):
+  * the answer-only loss mask is checked token by token;
+  * an overfit model reproduces 16/16 answers through batched generation;
+  * all condition, family and zero-shot paths run, with zero leakage.
+* **Bugs found and fixed before any GPU run:**
+  * generate() and token_type_ids;
+  * cancel_spread on the mixed family silently fell back to plain;
+  * cancel_adjacent guessed the family;
+  * the tiny tokenizer's spacing (a test fixture);
+  * a wrapper that hid failures;
+  * the jobs file lost to a blocked command.
+* **Kaggle smoke v1:** setup fine, but LoRA crashed because PEFT 0.21.2 raises on Kaggle's torchao
+  0.10.0. I reproduced this locally and added a LoRA preflight that removes the unused torchao
+  and retries.
+* **Kaggle smoke v2 (real Qwen2.5-0.5B-Instruct; smoke only, not a result):**
+  * the preflight recovered as designed, both jobs exited 0, hashes matched local, there was no
+    leakage, and the metrics recompute exactly;
+  * base model: 5% / 1% / 2% at 4 / 8 / 16 events;
+  * cancel_spread after 150 steps: 24% / 8% / 3%;
+  * 0.54 s per training step, so about 15-16 minutes per full run;
+  * prompts: median 68 tokens, max 168, none truncated.
+* **Quota after the smoke runs:** GPU 0.55h h until 2026-11-07. The pilot, discovery and final
+  runs wait for the refresh.
