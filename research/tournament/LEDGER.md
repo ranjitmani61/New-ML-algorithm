@@ -214,3 +214,19 @@ Notes written before #24 and #25 ran:
   outside `dir`, the same mistake as #22. It was relaunched unchanged.
 * `si_combo.py` gained `--cap` and `--expand-pseudo-cap`; their defaults reproduce #23 exactly
   (checked: the cap-8 pair function matches #8's transform on 300 problems).
+
+### Batch 3 results (seed 0, discovery; outputs in `results_batch3/`)
+
+| # | at 8 / 12 / 16 terms | self-labels kept and right (rounds 1 to 6) | prediction | decision |
+|---|---|---|---|---|
+| 23, baseline start | 9.8 / 3.8 / 2.4% (start: 5.2 / 3.6 / 1.6%) | right 64%, then 17%, 5%, 5%, 4%, 3% | at most 20% at 16: held | the 3 models agree on the same wrong sums (consensus trap) |
+| 23, npia start | 85.0 / 9.4 / 4.6% (start: 85.0 / 10.8 / 6.4%) | right 99.7%, 98.9%, 76%, 10%, 6%, 4.5% | at least 60% at 16: **missed** | **discarded**: collapses one step past the covered length |
+| 24, npia with pairs up to 16 | 81.2 / 69.4 / 58.2% | (no self-improvement) | 25-60% at 16: held | control: the pure rule's reach follows the length its pairs cover |
+| 25, self-improvement with pair-lengthened self-labels | 89.8 / 78.0 / 65.8% | right 99.7%, 99.3%, 95.9%, 88.5%, 83.5%, 77.7% | at least 68.2% at 16 and labels at least 90% in rounds 3-6: **missed** (65.8%; labels below 90% from round 4) | **discarded** under its own bar; +7.6 points over #24 at 16 terms, on one seed, at about 6x the compute |
+
+Reading:
+* Direct self-improvement failed from both starts. Full agreement among 3 models did not stop
+  shared errors, the trap noted for idea #1 and in prior work.
+* The pure pair rule, with pairs covering 16 terms, reached 58.2% at 16 terms from labels on 1-4
+  terms. That is the result batch 3 adds, and it needs no self-improvement.
+* Ideas tried so far: 25 (counting #23-#25 as three).

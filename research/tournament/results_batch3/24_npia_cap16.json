@@ -1,0 +1,24 @@
+{
+ "start": "npia",
+ "args": {
+  "out": "/tmp/claude-0/-home-user-New-ML-algorithm/82b74ce6-f467-54b5-a394-c08fb7a195c2/scratchpad/si_24_npia16.json",
+  "start": "npia",
+  "rounds": 0,
+  "models": 1,
+  "n": 2000,
+  "steps": 4000,
+  "round_steps": 500,
+  "seed": 0,
+  "cap": 16,
+  "expand_pseudo_cap": 0
+ },
+ "round0": {
+  "4": 0.972,
+  "8": 0.812,
+  "10": 0.764,
+  "12": 0.694,
+  "14": 0.614,
+  "16": 0.582
+ },
+ "rounds": []
+}
