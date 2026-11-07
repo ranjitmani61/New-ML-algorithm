@@ -22,6 +22,8 @@ S3_IDEAS = {
     "baseline": dict(kind="baseline"),
     # audit only: re-test of a discarded idea with an adequate training budget
     "pairs": dict(kind="audit", expand=S3.expand_pairs),
+    # audit only (#27): true labels on words of length 1-16, the ceiling for any data rule
+    "oracle": dict(kind="audit", train_max=16),
 }
 TRAIN_MAX = {"sum": 4, "s3": 6}
 TEST = {"sum": list(range(1, 9)), "s3": list(range(1, 17))}
@@ -29,7 +31,7 @@ LONG = {"sum": 8, "s3": 16}
 
 
 def sampler(task, rng, idea, batch=128, p_aug=0.5):
-    kmax, long = TRAIN_MAX[task.name], LONG[task.name]
+    kmax, long = idea.get("train_max", TRAIN_MAX[task.name]), LONG[task.name]
     tf = idea.get("transform") or idea.get("expand")
     max_in = task.max_in(long) if tf else task.max_in(kmax)
 

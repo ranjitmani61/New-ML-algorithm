@@ -250,3 +250,25 @@ Reading:
   2609.29951) is on what models learn when tracking group products. The batch 2 plateau near the
   parity coset in S3 is that kind of outcome.
 * **Decision:** not run. Ideas tried so far: still 25.
+
+## Audit #27: S3 oracle (written before running, 2026-11-07)
+
+* **Why:** "Tracking States or Tracking Cosets?" (arXiv 2609.29951, read 2026-11-07) shows that
+  Transformers trained on long labeled words still plateau at 1/|[G,G]| exact accuracy beyond
+  their exact frontier: they track the abelianization (for S3, parity) and guess within its class
+  (1/3). Their Theorem 1: an order-blind model can output exactly the functions of the product that
+  are constant on [G,G]-cosets. So the S3 plateau of inverse pairs (#15, #22: about 1/3 exact,
+  parity right) is a known Transformer behaviour, not something specific to pairs. This project
+  never ran an S3 oracle, so "pairs do not carry over to order-dependent composition" was never
+  compared with what true long labels give on this bench.
+* **Run:** `run2.py s3 oracle`: true labels on words of length 1-16, otherwise as #22
+  (16,000 steps, seeds 0 and 1). Compared with #22 (same steps, seeds): baseline 15.0% and pairs
+  34.2% at 16 elements.
+* **Prediction (about 60% confidence):** the oracle at 16 elements is between 30% and 50%, so
+  within about 15 points of pairs: at this scale the limit at 16 is the architecture, not the
+  data. At 8 elements the oracle is at least 15 points above pairs.
+* **What each outcome means:**
+  * oracle at most 50% at 16: the S3 claim is restated. At the longest lengths, true labels also
+    give about the abelianization, so pairs lose little to real long data there.
+  * oracle at least 70% at 16: pairs leave a large gap on S3, and the claim stands as written.
+* This is an audit check, not an idea. Ideas tried so far: still 25.
