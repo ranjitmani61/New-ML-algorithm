@@ -1,0 +1,4 @@
+{"lanes": [[{"condition": "plain", "seed": 2}, {"condition": "irrelevant", "seed": 2}, {"condition": "inactive", "seed": 2}, {"condition": "cancel_spread", "seed": 2}],
+           [{"condition": "cancel_adjacent", "seed": 2}, {"condition": "oracle", "seed": 2}, {"condition": "irrelevant", "seed": 1, "family": "mixed"}, {"condition": "inactive", "seed": 1, "family": "mixed"}, {"condition": "oracle", "seed": 1, "family": "mixed"}]],
+ "common": {"family": "additive", "steps": 1500, "n_train": 24000, "batch": 16, "lr": 0.0002, "lora_r": 16,
+            "eval_ks": [4, 8, 12, 16], "eval_per_k": 500}}
