@@ -57,3 +57,10 @@ labeled maximum of 4, within the expansion range of 16), per seed.
     no parse failures.
   * Per the rule fixed in advance: steps doubled to 3,000, once, and the pilot reruns
     (`jobs/pilot2.json`). If plain stays below 90% at 4 events, stop.
+* **2026-11-07, pilot 2** (seed 0, 3,000 steps):
+  * plain: 93.0% at 4 events, 8.6% at 12.
+  * oracle: 93.6% at 4 events, 78.2% at 12.
+  * Both gates pass (93.0% >= 90%; +69.6 points of headroom).
+  * The budget is fixed at 3,000 steps for discovery and the final.
+  * Discovery jobs were rebalanced by measured run times (plain 928 s, oracle 1,816 s), with the
+    go/no-go runs first in each lane.
