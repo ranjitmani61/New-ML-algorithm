@@ -64,3 +64,35 @@ labeled maximum of 4, within the expansion range of 16), per seed.
   * The budget is fixed at 3,000 steps for discovery and the final.
   * Discovery jobs were rebalanced by measured run times (plain 928 s, oracle 1,816 s), with the
     go/no-go runs first in each lane.
+* **2026-11-07, discovery** (seeds 1-2, 3,000 steps, 17 runs; `results/discovery/`):
+  * Checks:
+    * all 17 jobs exited 0;
+    * the code hashes match `SPEC.md`;
+    * no test problem appears in any training set;
+    * the metrics recompute exactly from the raw generations (85 of 85 sets);
+    * no parse failures in the additive runs.
+  * At 12 events:
+    * plain: 6.2% and 8.2%;
+    * cancel_spread: 56.2% and 56.0%;
+    * inactive: 13.4% and 12.4%;
+    * irrelevant: 10.4% and 11.6%;
+    * oracle: 76.8% and 77.8%.
+  * Go/no-go 1: cancel_spread - plain = +50.0 and +47.8 points (needed 15 on both). PASS.
+  * Go/no-go 2: cancel_spread - inactive (the better control) = +43.2 points on average (needed
+    10). PASS.
+  * **Verdict: GO.** The registered final (`SPEC.md`, seeds 3-5) was pushed unchanged right after
+    this verdict.
+  * Descriptive audit (`audit_runs.py`; not a criterion):
+    * trivial rules score at most 7% at 12 events (the start amount, the last number, the most
+      common answer);
+    * 82-90% of cancel_spread's wrong answers are within 2 of the label;
+    * cancel_spread scores 0% on answers of 60 or more (n = 9 and 15), against 27-33% for the
+      oracle, because its training answers stop at about 63. This is the small-sum bias
+      predicted from the toy.
+  * Mixed family (seed 1 only; secondary):
+    * the budget does not learn this family in range: plain and oracle reach only 65.0% and 66.8%
+      at 4 events;
+    * at 12 events: plain 4.8%, inactive 6.6%, irrelevant 6.2%, cancel_adjacent 12.8%, oracle
+      38.8%;
+    * cancel_adjacent costs 4.0 points at 4 events (61.0% vs 65.0%);
+    * so the gain is small and comes with a cost, as predicted.

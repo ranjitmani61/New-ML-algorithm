@@ -2,7 +2,7 @@
 
     python3 inspect_run.py OUT_DIR [--show 10]
 
-For every run folder (metrics.json + generations.jsonl):
+For every run folder (metrics.json + generations.jsonl, or generations.jsonl.gz as committed):
   * recompute strict and lenient accuracy per set from generations.jsonl, independently of
     run_llm.py's code, and flag any disagreement with metrics.json;
   * check that the code hashes recorded by the run match the local files;
@@ -12,6 +12,7 @@ For every run folder (metrics.json + generations.jsonl):
 import argparse
 import collections
 import glob
+import gzip
 import hashlib
 import json
 import os
@@ -35,7 +36,8 @@ for mpath in sorted(glob.glob(os.path.join(a.out, "**", "metrics.json"), recursi
         print(f"  code {n}: {'matches local' if same else 'DIFFERS from local'}")
     print("  train stats:", m["train_stats"] or "(no training)")
     print("  leakage (exact overlap with training):", m["leakage_exact_overlap"])
-    rows = [json.loads(line) for line in open(os.path.join(run, "generations.jsonl"))]
+    g = os.path.join(run, "generations.jsonl")
+    rows = [json.loads(line) for line in (open(g) if os.path.exists(g) else gzip.open(g + ".gz", "rt"))]
     by = collections.defaultdict(list)
     for r in rows:
         by[r["set"]].append(r)

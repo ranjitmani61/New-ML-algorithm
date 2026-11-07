@@ -1,0 +1,169 @@
+[{"stream_name":"stdout","time":72.05060368,"data":"{\"env\": {\"torch\": true, \"transformers\": true, \"peft\": true, \"lora_preflight\": false, \"torchao_uninstall_exit\": 0, \"lora_preflight_after_torchao_removal\": true, \"versions\": \"2.11.0+cu130 5.20.2 0.21.2 2\", \"model_dir\": \"/kaggle/input/models/qwen-lm/qwen2.5/transformers/0.5b-instruct/1\"}, \"code_sha256\": {\"problems.py\": \"d4d3128bd64043ac3449b5bc04a0bc995c3cdb6aa9525236f9140697e63b61a9\", \"run_llm.py\": \"5a684fec81f3bcad5b85db2e56acae8dd63440dcc2f02f2457e6b21f3c1be08a\"}}\n"}
+,{"stream_name":"stderr","time":83.771242294,"data":"\rLoading weights:   0%|          | 0/290 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 0/290 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 1/290 [00:02\u003c13:39,  2.84s/it]\rLoading weights:   0%|          | 1/290 [00:02\u003c13:32,  2.81s/it]\rLoading weights:  92%|█████████▏| 267/290 [00:02\u003c00:00, 126.99it/s]\rLoading weights:  92%|█████████▏| 267/290 [00:02\u003c00:00, 125.95it/s]\rLoading weights: 100%|██████████| 290/290 [00:03\u003c00:00, 94.94it/s] \n"}
+,{"stream_name":"stderr","time":83.771301258,"data":"\rLoading weights: 100%|██████████| 290/290 [00:03\u003c00:00, 94.18it/s] \n"}
+,{"stream_name":"stdout","time":93.051055507,"data":"{\"train_stats\": {\"n_train\": 24000, \"prompt_tokens_mean\": 58.79479166666667, \"prompt_tokens_p50_p90_max\": [59, 69, 85], \"changes_mean\": 2.507041666666667, \"answer_max\": 59, \"truncated\": 0}}\n"}
+,{"stream_name":"stdout","time":95.108739597,"data":"{\"train_stats\": {\"n_train\": 24000, \"prompt_tokens_mean\": 80.07858333333333, \"prompt_tokens_p50_p90_max\": [68, 131, 161], \"changes_mean\": 2.4967083333333333, \"answer_max\": 58, \"truncated\": 0}}\n"}
+,{"stream_name":"stderr","time":95.300340301,"data":"/kaggle/working/code/run_llm.py:170: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate\n"}
+,{"stream_name":"stderr","time":95.300373799,"data":"  scaler.step(opt); scaler.update(); opt.zero_grad(set_to_none=True); sched.step()\n"}
+,{"stream_name":"stderr","time":96.030607273,"data":"/kaggle/working/code/run_llm.py:170: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate\n"}
+,{"stream_name":"stderr","time":96.030642202,"data":"  scaler.step(opt); scaler.update(); opt.zero_grad(set_to_none=True); sched.step()\n"}
+,{"stream_name":"stdout","time":181.648874575,"data":"{\"step\": 300, \"loss\": 0.2987, \"elapsed\": 97}\n"}
+,{"stream_name":"stdout","time":261.059139066,"data":"{\"step\": 300, \"loss\": 0.3294, \"elapsed\": 177}\n"}
+,{"stream_name":"stdout","time":269.67492189,"data":"{\"step\": 600, \"loss\": 0.1489, \"elapsed\": 185}\n"}
+,{"stream_name":"stdout","time":357.54987401,"data":"{\"step\": 900, \"loss\": 0.192, \"elapsed\": 273}\n"}
+,{"stream_name":"stdout","time":427.840132331,"data":"{\"step\": 600, \"loss\": 0.2673, \"elapsed\": 343}\n"}
+,{"stream_name":"stdout","time":445.873012807,"data":"{\"step\": 1200, \"loss\": 0.0755, \"elapsed\": 361}\n"}
+,{"stream_name":"stdout","time":533.837098502,"data":"{\"step\": 1500, \"loss\": 0.2058, \"elapsed\": 449}\n"}
+,{"stream_name":"stdout","time":594.507918906,"data":"{\"step\": 900, \"loss\": 0.3303, \"elapsed\": 510}\n"}
+,{"stream_name":"stdout","time":622.239685657,"data":"{\"step\": 1800, \"loss\": 0.0562, \"elapsed\": 538}\n"}
+,{"stream_name":"stdout","time":710.310853411,"data":"{\"step\": 2100, \"loss\": 0.0024, \"elapsed\": 626}\n"}
+,{"stream_name":"stdout","time":761.176079071,"data":"{\"step\": 1200, \"loss\": 0.2078, \"elapsed\": 677}\n"}
+,{"stream_name":"stdout","time":798.145021989,"data":"{\"step\": 2400, \"loss\": 0.0025, \"elapsed\": 714}\n"}
+,{"stream_name":"stdout","time":886.32751408,"data":"{\"step\": 2700, \"loss\": 0.0026, \"elapsed\": 802}\n"}
+,{"stream_name":"stdout","time":927.453079531,"data":"{\"step\": 1500, \"loss\": 0.0611, \"elapsed\": 843}\n"}
+,{"stream_name":"stdout","time":973.902080612,"data":"{\"step\": 3000, \"loss\": 0.0079, \"elapsed\": 889}\n"}
+,{"stream_name":"stdout","time":980.437701161,"data":"{\"eval\": \"train_vocab/4\", \"accuracy\": 0.94, \"accuracy_lenient\": 0.94, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":988.191534231,"data":"{\"eval\": \"train_vocab/8\", \"accuracy\": 0.158, \"accuracy_lenient\": 0.158, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":997.837895632,"data":"{\"eval\": \"train_vocab/12\", \"accuracy\": 0.082, \"accuracy_lenient\": 0.082, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":1009.239535135,"data":"{\"eval\": \"train_vocab/16\", \"accuracy\": 0.082, \"accuracy_lenient\": 0.082, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":1020.12419677,"data":"{\"eval\": \"heldout_vocab/12\", \"accuracy\": 0.09, \"accuracy_lenient\": 0.09, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":1020.125049811,"data":"{\"done\": \"plain\", \"seed\": 2, \"metrics\": {\"train_vocab/4\": {\"accuracy\": 0.94, \"accuracy_lenient\": 0.94, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/8\": {\"accuracy\": 0.158, \"accuracy_lenient\": 0.158, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/12\": {\"accuracy\": 0.082, \"accuracy_lenient\": 0.082, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/16\": {\"accuracy\": 0.082, \"accuracy_lenient\": 0.082, \"parse_failures\": 0, \"n\": 500}, \"heldout_vocab/12\": {\"accuracy\": 0.09, \"accuracy_lenient\": 0.09, \"parse_failures\": 0, \"n\": 500}}}\n"}
+,{"stream_name":"stdout","time":1021.508522301,"data":"{\"lane\": 0, \"job\": 0, \"args\": {\"family\": \"additive\", \"steps\": 3000, \"n_train\": 24000, \"batch\": 16, \"lr\": 0.0002, \"lora_r\": 16, \"eval_ks\": [4, 8, 12, 16], \"eval_per_k\": 500, \"condition\": \"plain\", \"seed\": 2}, \"exit\": 0, \"seconds\": 949}\n"}
+,{"stream_name":"stderr","time":1030.241119243,"data":"\rLoading weights:   0%|          | 0/290 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 1/290 [00:00\u003c01:28,  3.26it/s]\rLoading weights:  80%|███████▉  | 231/290 [00:00\u003c00:00, 731.01it/s]\rLoading weights: 100%|██████████| 290/290 [00:00\u003c00:00, 622.30it/s]\n"}
+,{"stream_name":"stdout","time":1041.673788615,"data":"{\"train_stats\": {\"n_train\": 24000, \"prompt_tokens_mean\": 80.41625, \"prompt_tokens_p50_p90_max\": [67, 132, 182], \"changes_mean\": 5.726333333333334, \"answer_max\": 63, \"truncated\": 0}}\n"}
+,{"stream_name":"stderr","time":1042.688869144,"data":"/kaggle/working/code/run_llm.py:170: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate\n"}
+,{"stream_name":"stderr","time":1042.688908626,"data":"  scaler.step(opt); scaler.update(); opt.zero_grad(set_to_none=True); sched.step()\n"}
+,{"stream_name":"stdout","time":1094.382700836,"data":"{\"step\": 1800, \"loss\": 0.0402, \"elapsed\": 1010}\n"}
+,{"stream_name":"stdout","time":1207.979330209,"data":"{\"step\": 300, \"loss\": 0.8614, \"elapsed\": 177}\n"}
+,{"stream_name":"stdout","time":1260.139341169,"data":"{\"step\": 2100, \"loss\": 0.008, \"elapsed\": 1176}\n"}
+,{"stream_name":"stdout","time":1374.896483399,"data":"{\"step\": 600, \"loss\": 0.419, \"elapsed\": 344}\n"}
+,{"stream_name":"stdout","time":1425.956712264,"data":"{\"step\": 2400, \"loss\": 0.0809, \"elapsed\": 1342}\n"}
+,{"stream_name":"stdout","time":1543.404666503,"data":"{\"step\": 900, \"loss\": 0.9266, \"elapsed\": 513}\n"}
+,{"stream_name":"stdout","time":1591.824538478,"data":"{\"step\": 2700, \"loss\": 0.0046, \"elapsed\": 1507}\n"}
+,{"stream_name":"stdout","time":1711.146660646,"data":"{\"step\": 1200, \"loss\": 0.5314, \"elapsed\": 680}\n"}
+,{"stream_name":"stdout","time":1757.550939987,"data":"{\"step\": 3000, \"loss\": 0.0085, \"elapsed\": 1673}\n"}
+,{"stream_name":"stdout","time":1764.236277408,"data":"{\"eval\": \"train_vocab/4\", \"accuracy\": 0.928, \"accuracy_lenient\": 0.928, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":1772.283594879,"data":"{\"eval\": \"train_vocab/8\", \"accuracy\": 0.226, \"accuracy_lenient\": 0.226, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":1782.469528497,"data":"{\"eval\": \"train_vocab/12\", \"accuracy\": 0.116, \"accuracy_lenient\": 0.116, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":1794.403752276,"data":"{\"eval\": \"train_vocab/16\", \"accuracy\": 0.086, \"accuracy_lenient\": 0.086, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":1805.853159284,"data":"{\"eval\": \"heldout_vocab/12\", \"accuracy\": 0.13, \"accuracy_lenient\": 0.13, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":1805.853825309,"data":"{\"done\": \"irrelevant\", \"seed\": 2, \"metrics\": {\"train_vocab/4\": {\"accuracy\": 0.928, \"accuracy_lenient\": 0.928, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/8\": {\"accuracy\": 0.226, \"accuracy_lenient\": 0.226, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/12\": {\"accuracy\": 0.116, \"accuracy_lenient\": 0.116, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/16\": {\"accuracy\": 0.086, \"accuracy_lenient\": 0.086, \"parse_failures\": 0, \"n\": 500}, \"heldout_vocab/12\": {\"accuracy\": 0.13, \"accuracy_lenient\": 0.13, \"parse_failures\": 0, \"n\": 500}}}\n"}
+,{"stream_name":"stdout","time":1807.169494445,"data":"{\"lane\": 1, \"job\": 0, \"args\": {\"family\": \"additive\", \"steps\": 3000, \"n_train\": 24000, \"batch\": 16, \"lr\": 0.0002, \"lora_r\": 16, \"eval_ks\": [4, 8, 12, 16], \"eval_per_k\": 500, \"condition\": \"irrelevant\", \"seed\": 2}, \"exit\": 0, \"seconds\": 1735}\n"}
+,{"stream_name":"stderr","time":1816.070492209,"data":"\rLoading weights:   0%|          | 0/290 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 1/290 [00:00\u003c01:33,  3.07it/s]\rLoading weights:  84%|████████▍ | 243/290 [00:00\u003c00:00, 723.64it/s]\rLoading weights: 100%|██████████| 290/290 [00:00\u003c00:00, 600.63it/s]\n"}
+,{"stream_name":"stdout","time":1826.851427864,"data":"{\"train_stats\": {\"n_train\": 24000, \"prompt_tokens_mean\": 80.69808333333333, \"prompt_tokens_p50_p90_max\": [68, 132, 186], \"changes_mean\": 5.771958333333333, \"answer_max\": 58, \"truncated\": 0}}\n"}
+,{"stream_name":"stdout","time":1880.078534189,"data":"{\"step\": 1500, \"loss\": 0.4402, \"elapsed\": 849}\n"}
+,{"stream_name":"stdout","time":1996.045902032,"data":"{\"step\": 300, \"loss\": 1.1586, \"elapsed\": 179}\n"}
+,{"stream_name":"stdout","time":2049.632163478,"data":"{\"step\": 1800, \"loss\": 0.1545, \"elapsed\": 1019}\n"}
+,{"stream_name":"stdout","time":2166.717712601,"data":"{\"step\": 600, \"loss\": 0.6441, \"elapsed\": 350}\n"}
+,{"stream_name":"stdout","time":2217.876287856,"data":"{\"step\": 2100, \"loss\": 0.1483, \"elapsed\": 1187}\n"}
+,{"stream_name":"stdout","time":2337.49090777,"data":"{\"step\": 900, \"loss\": 0.3151, \"elapsed\": 521}\n"}
+,{"stream_name":"stdout","time":2386.741115712,"data":"{\"step\": 2400, \"loss\": 0.1403, \"elapsed\": 1356}\n"}
+,{"stream_name":"stdout","time":2507.835902983,"data":"{\"step\": 1200, \"loss\": 0.2912, \"elapsed\": 691}\n"}
+,{"stream_name":"stdout","time":2554.553870158,"data":"{\"step\": 2700, \"loss\": 0.1358, \"elapsed\": 1524}\n"}
+,{"stream_name":"stdout","time":2679.851702672,"data":"{\"step\": 1500, \"loss\": 0.2737, \"elapsed\": 863}\n"}
+,{"stream_name":"stdout","time":2722.434472605,"data":"{\"step\": 3000, \"loss\": 0.0715, \"elapsed\": 1692}\n"}
+,{"stream_name":"stdout","time":2728.882074773,"data":"{\"eval\": \"train_vocab/4\", \"accuracy\": 0.946, \"accuracy_lenient\": 0.946, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":2736.663219718,"data":"{\"eval\": \"train_vocab/8\", \"accuracy\": 0.682, \"accuracy_lenient\": 0.682, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":2746.612595807,"data":"{\"eval\": \"train_vocab/12\", \"accuracy\": 0.56, \"accuracy_lenient\": 0.56, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":2758.278407594,"data":"{\"eval\": \"train_vocab/16\", \"accuracy\": 0.488, \"accuracy_lenient\": 0.488, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":2769.257510552,"data":"{\"eval\": \"heldout_vocab/12\", \"accuracy\": 0.548, \"accuracy_lenient\": 0.548, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":2769.258210021,"data":"{\"done\": \"cancel_spread\", \"seed\": 2, \"metrics\": {\"train_vocab/4\": {\"accuracy\": 0.946, \"accuracy_lenient\": 0.946, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/8\": {\"accuracy\": 0.682, \"accuracy_lenient\": 0.682, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/12\": {\"accuracy\": 0.56, \"accuracy_lenient\": 0.56, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/16\": {\"accuracy\": 0.488, \"accuracy_lenient\": 0.488, \"parse_failures\": 0, \"n\": 500}, \"heldout_vocab/12\": {\"accuracy\": 0.548, \"accuracy_lenient\": 0.548, \"parse_failures\": 0, \"n\": 500}}}\n"}
+,{"stream_name":"stdout","time":2770.627786668,"data":"{\"lane\": 0, \"job\": 1, \"args\": {\"family\": \"additive\", \"steps\": 3000, \"n_train\": 24000, \"batch\": 16, \"lr\": 0.0002, \"lora_r\": 16, \"eval_ks\": [4, 8, 12, 16], \"eval_per_k\": 500, \"condition\": \"cancel_spread\", \"seed\": 2}, \"exit\": 0, \"seconds\": 1749}\n"}
+,{"stream_name":"stderr","time":2779.330099826,"data":"\rLoading weights:   0%|          | 0/290 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 1/290 [00:00\u003c01:21,  3.56it/s]\rLoading weights:  80%|███████▉  | 231/290 [00:00\u003c00:00, 735.07it/s]\rLoading weights: 100%|██████████| 290/290 [00:00\u003c00:00, 632.26it/s]\n"}
+,{"stream_name":"stdout","time":2790.519917105,"data":"{\"train_stats\": {\"n_train\": 24000, \"prompt_tokens_mean\": 80.592, \"prompt_tokens_p50_p90_max\": [68, 132, 183], \"changes_mean\": 2.4967083333333333, \"answer_max\": 58, \"truncated\": 0}}\n"}
+,{"stream_name":"stderr","time":2791.502535182,"data":"/kaggle/working/code/run_llm.py:170: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate\n"}
+,{"stream_name":"stderr","time":2791.50259673,"data":"  scaler.step(opt); scaler.update(); opt.zero_grad(set_to_none=True); sched.step()\n"}
+,{"stream_name":"stdout","time":2850.805751171,"data":"{\"step\": 1800, \"loss\": 0.165, \"elapsed\": 1034}\n"}
+,{"stream_name":"stdout","time":2957.175545692,"data":"{\"step\": 300, \"loss\": 0.2845, \"elapsed\": 177}\n"}
+,{"stream_name":"stdout","time":3021.020410186,"data":"{\"step\": 2100, \"loss\": 0.2013, \"elapsed\": 1204}\n"}
+,{"stream_name":"stdout","time":3124.306352828,"data":"{\"step\": 600, \"loss\": 0.4367, \"elapsed\": 344}\n"}
+,{"stream_name":"stdout","time":3191.490892405,"data":"{\"step\": 2400, \"loss\": 0.11, \"elapsed\": 1375}\n"}
+,{"stream_name":"stdout","time":3292.396032596,"data":"{\"step\": 900, \"loss\": 0.1258, \"elapsed\": 513}\n"}
+,{"stream_name":"stdout","time":3361.577303723,"data":"{\"step\": 2700, \"loss\": 0.0835, \"elapsed\": 1545}\n"}
+,{"stream_name":"stdout","time":3459.84522758,"data":"{\"step\": 1200, \"loss\": 0.0867, \"elapsed\": 680}\n"}
+,{"stream_name":"stdout","time":3533.538879219,"data":"{\"step\": 3000, \"loss\": 0.0466, \"elapsed\": 1717}\n"}
+,{"stream_name":"stdout","time":3540.259789606,"data":"{\"eval\": \"train_vocab/4\", \"accuracy\": 0.926, \"accuracy_lenient\": 0.926, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":3548.608802715,"data":"{\"eval\": \"train_vocab/8\", \"accuracy\": 0.7, \"accuracy_lenient\": 0.7, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":3559.135668866,"data":"{\"eval\": \"train_vocab/12\", \"accuracy\": 0.61, \"accuracy_lenient\": 0.61, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":3571.569853661,"data":"{\"eval\": \"train_vocab/16\", \"accuracy\": 0.536, \"accuracy_lenient\": 0.536, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":3583.296044574,"data":"{\"eval\": \"heldout_vocab/12\", \"accuracy\": 0.602, \"accuracy_lenient\": 0.602, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":3583.296697784,"data":"{\"done\": \"cancel_adjacent\", \"seed\": 2, \"metrics\": {\"train_vocab/4\": {\"accuracy\": 0.926, \"accuracy_lenient\": 0.926, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/8\": {\"accuracy\": 0.7, \"accuracy_lenient\": 0.7, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/12\": {\"accuracy\": 0.61, \"accuracy_lenient\": 0.61, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/16\": {\"accuracy\": 0.536, \"accuracy_lenient\": 0.536, \"parse_failures\": 0, \"n\": 500}, \"heldout_vocab/12\": {\"accuracy\": 0.602, \"accuracy_lenient\": 0.602, \"parse_failures\": 0, \"n\": 500}}}\n"}
+,{"stream_name":"stdout","time":3584.601244587,"data":"{\"lane\": 1, \"job\": 1, \"args\": {\"family\": \"additive\", \"steps\": 3000, \"n_train\": 24000, \"batch\": 16, \"lr\": 0.0002, \"lora_r\": 16, \"eval_ks\": [4, 8, 12, 16], \"eval_per_k\": 500, \"condition\": \"cancel_adjacent\", \"seed\": 2}, \"exit\": 0, \"seconds\": 1777}\n"}
+,{"stream_name":"stderr","time":3593.481262131,"data":"\rLoading weights:   0%|          | 0/290 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 1/290 [00:00\u003c02:00,  2.40it/s]\rLoading weights:  93%|█████████▎| 269/290 [00:00\u003c00:00, 679.86it/s]\rLoading weights: 100%|██████████| 290/290 [00:00\u003c00:00, 551.47it/s]\n"}
+,{"stream_name":"stdout","time":3604.235258614,"data":"{\"train_stats\": {\"n_train\": 24000, \"prompt_tokens_mean\": 79.34141666666666, \"prompt_tokens_p50_p90_max\": [67, 129, 178], \"changes_mean\": 5.799125, \"answer_max\": 133, \"truncated\": 0}}\n"}
+,{"stream_name":"stdout","time":3628.706750664,"data":"{\"step\": 1500, \"loss\": 0.04, \"elapsed\": 849}\n"}
+,{"stream_name":"stdout","time":3768.974918757,"data":"{\"step\": 300, \"loss\": 0.9008, \"elapsed\": 175}\n"}
+,{"stream_name":"stdout","time":3797.846936119,"data":"{\"step\": 1800, \"loss\": 0.0745, \"elapsed\": 1018}\n"}
+,{"stream_name":"stdout","time":3935.798524915,"data":"{\"step\": 600, \"loss\": 0.312, \"elapsed\": 342}\n"}
+,{"stream_name":"stdout","time":3966.085123027,"data":"{\"step\": 2100, \"loss\": 0.0265, \"elapsed\": 1186}\n"}
+,{"stream_name":"stdout","time":4101.442982383,"data":"{\"step\": 900, \"loss\": 0.5386, \"elapsed\": 507}\n"}
+,{"stream_name":"stdout","time":4133.902353641,"data":"{\"step\": 2400, \"loss\": 0.0204, \"elapsed\": 1354}\n"}
+,{"stream_name":"stdout","time":4267.210345772,"data":"{\"step\": 1200, \"loss\": 0.3715, \"elapsed\": 673}\n"}
+,{"stream_name":"stdout","time":4300.858917074,"data":"{\"step\": 2700, \"loss\": 0.0029, \"elapsed\": 1521}\n"}
+,{"stream_name":"stdout","time":4434.574477666,"data":"{\"step\": 1500, \"loss\": 0.3272, \"elapsed\": 841}\n"}
+,{"stream_name":"stdout","time":4468.633164595,"data":"{\"step\": 3000, \"loss\": 0.0003, \"elapsed\": 1689}\n"}
+,{"stream_name":"stdout","time":4475.085715335,"data":"{\"eval\": \"train_vocab/4\", \"accuracy\": 0.934, \"accuracy_lenient\": 0.934, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":4482.916117887,"data":"{\"eval\": \"train_vocab/8\", \"accuracy\": 0.224, \"accuracy_lenient\": 0.224, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":4492.705807764,"data":"{\"eval\": \"train_vocab/12\", \"accuracy\": 0.124, \"accuracy_lenient\": 0.124, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":4504.155723869,"data":"{\"eval\": \"train_vocab/16\", \"accuracy\": 0.074, \"accuracy_lenient\": 0.074, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":4515.128474569,"data":"{\"eval\": \"heldout_vocab/12\", \"accuracy\": 0.126, \"accuracy_lenient\": 0.126, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":4515.12917472,"data":"{\"done\": \"inactive\", \"seed\": 2, \"metrics\": {\"train_vocab/4\": {\"accuracy\": 0.934, \"accuracy_lenient\": 0.934, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/8\": {\"accuracy\": 0.224, \"accuracy_lenient\": 0.224, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/12\": {\"accuracy\": 0.124, \"accuracy_lenient\": 0.124, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/16\": {\"accuracy\": 0.074, \"accuracy_lenient\": 0.074, \"parse_failures\": 0, \"n\": 500}, \"heldout_vocab/12\": {\"accuracy\": 0.126, \"accuracy_lenient\": 0.126, \"parse_failures\": 0, \"n\": 500}}}\n"}
+,{"stream_name":"stdout","time":4516.478693569,"data":"{\"lane\": 0, \"job\": 2, \"args\": {\"family\": \"additive\", \"steps\": 3000, \"n_train\": 24000, \"batch\": 16, \"lr\": 0.0002, \"lora_r\": 16, \"eval_ks\": [4, 8, 12, 16], \"eval_per_k\": 500, \"condition\": \"inactive\", \"seed\": 2}, \"exit\": 0, \"seconds\": 1746}\n"}
+,{"stream_name":"stderr","time":4525.462338889,"data":"\rLoading weights:   0%|          | 0/290 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 1/290 [00:00\u003c01:45,  2.74it/s]\rLoading weights:  88%|████████▊ | 256/290 [00:00\u003c00:00, 713.94it/s]\rLoading weights: 100%|██████████| 290/290 [00:00\u003c00:00, 582.21it/s]\n"}
+,{"stream_name":"stdout","time":4538.090945271,"data":"{\"train_stats\": {\"n_train\": 24000, \"prompt_tokens_mean\": 98.91516666666666, \"prompt_tokens_p50_p90_max\": [99, 142, 190], \"changes_mean\": 8.482666666666667, \"answer_max\": 93, \"truncated\": 0}}\n"}
+,{"stream_name":"stdout","time":4600.715293297,"data":"{\"step\": 1800, \"loss\": 0.3777, \"elapsed\": 1007}\n"}
+,{"stream_name":"stdout","time":4712.151678417,"data":"{\"step\": 300, \"loss\": 0.7055, \"elapsed\": 186}\n"}
+,{"stream_name":"stdout","time":4767.093877796,"data":"{\"step\": 2100, \"loss\": 0.1916, \"elapsed\": 1173}\n"}
+,{"stream_name":"stdout","time":4887.566979564,"data":"{\"step\": 600, \"loss\": 0.663, \"elapsed\": 362}\n"}
+,{"stream_name":"stdout","time":4932.411856341,"data":"{\"step\": 2400, \"loss\": 0.2738, \"elapsed\": 1338}\n"}
+,{"stream_name":"stdout","time":5062.737623595,"data":"{\"step\": 900, \"loss\": 0.5464, \"elapsed\": 537}\n"}
+,{"stream_name":"stdout","time":5098.350812868,"data":"{\"step\": 2700, \"loss\": 0.2607, \"elapsed\": 1504}\n"}
+,{"stream_name":"stdout","time":5238.327812202,"data":"{\"step\": 1200, \"loss\": 0.4284, \"elapsed\": 712}\n"}
+,{"stream_name":"stdout","time":5265.353218584,"data":"{\"step\": 3000, \"loss\": 0.0918, \"elapsed\": 1671}\n"}
+,{"stream_name":"stdout","time":5272.551810044,"data":"{\"eval\": \"train_vocab/4\", \"accuracy\": 0.61, \"accuracy_lenient\": 0.61, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":5281.163389183,"data":"{\"eval\": \"train_vocab/8\", \"accuracy\": 0.238, \"accuracy_lenient\": 0.238, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":5291.595579627,"data":"{\"eval\": \"train_vocab/12\", \"accuracy\": 0.128, \"accuracy_lenient\": 0.128, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":5303.845047458,"data":"{\"eval\": \"train_vocab/16\", \"accuracy\": 0.086, \"accuracy_lenient\": 0.086, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":5315.754458533,"data":"{\"eval\": \"heldout_vocab/12\", \"accuracy\": 0.144, \"accuracy_lenient\": 0.144, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":5315.755143825,"data":"{\"done\": \"cancel_adjacent\", \"seed\": 1, \"metrics\": {\"train_vocab/4\": {\"accuracy\": 0.61, \"accuracy_lenient\": 0.61, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/8\": {\"accuracy\": 0.238, \"accuracy_lenient\": 0.238, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/12\": {\"accuracy\": 0.128, \"accuracy_lenient\": 0.128, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/16\": {\"accuracy\": 0.086, \"accuracy_lenient\": 0.086, \"parse_failures\": 0, \"n\": 500}, \"heldout_vocab/12\": {\"accuracy\": 0.144, \"accuracy_lenient\": 0.144, \"parse_failures\": 0, \"n\": 500}}}\n"}
+,{"stream_name":"stdout","time":5317.077122387,"data":"{\"lane\": 1, \"job\": 2, \"args\": {\"family\": \"mixed\", \"steps\": 3000, \"n_train\": 24000, \"batch\": 16, \"lr\": 0.0002, \"lora_r\": 16, \"eval_ks\": [4, 8, 12, 16], \"eval_per_k\": 500, \"condition\": \"cancel_adjacent\", \"seed\": 1}, \"exit\": 0, \"seconds\": 1732}\n"}
+,{"stream_name":"stderr","time":5325.825778728,"data":"\rLoading weights:   0%|          | 0/290 [00:00\u003c?, ?it/s]\rLoading weights:   0%|          | 1/290 [00:00\u003c01:35,  3.02it/s]\rLoading weights:  72%|███████▏  | 209/290 [00:00\u003c00:00, 623.00it/s]\rLoading weights: 100%|██████████| 290/290 [00:00\u003c00:00, 547.70it/s]\n"}
+,{"stream_name":"stdout","time":5336.664899228,"data":"{\"train_stats\": {\"n_train\": 24000, \"prompt_tokens_mean\": 79.33495833333333, \"prompt_tokens_p50_p90_max\": [67, 130, 160], \"changes_mean\": 2.5004166666666667, \"answer_max\": 129, \"truncated\": 0}}\n"}
+,{"stream_name":"stdout","time":5415.254046608,"data":"{\"step\": 1500, \"loss\": 0.3867, \"elapsed\": 889}\n"}
+,{"stream_name":"stdout","time":5502.064333152,"data":"{\"step\": 300, \"loss\": 0.5327, \"elapsed\": 176}\n"}
+,{"stream_name":"stdout","time":5592.298177721,"data":"{\"step\": 1800, \"loss\": 0.2424, \"elapsed\": 1066}\n"}
+,{"stream_name":"stdout","time":5666.824421268,"data":"{\"step\": 600, \"loss\": 0.2407, \"elapsed\": 340}\n"}
+,{"stream_name":"stdout","time":5768.573603146,"data":"{\"step\": 2100, \"loss\": 0.256, \"elapsed\": 1243}\n"}
+,{"stream_name":"stdout","time":5833.734291321,"data":"{\"step\": 900, \"loss\": 0.2933, \"elapsed\": 507}\n"}
+,{"stream_name":"stdout","time":5943.054253208,"data":"{\"step\": 2400, \"loss\": 0.2224, \"elapsed\": 1417}\n"}
+,{"stream_name":"stdout","time":5998.366319952,"data":"{\"step\": 1200, \"loss\": 0.1847, \"elapsed\": 672}\n"}
+,{"stream_name":"stdout","time":6118.509285022,"data":"{\"step\": 2700, \"loss\": 0.1379, \"elapsed\": 1593}\n"}
+,{"stream_name":"stdout","time":6164.654378693,"data":"{\"step\": 1500, \"loss\": 0.2292, \"elapsed\": 838}\n"}
+,{"stream_name":"stdout","time":6294.161506225,"data":"{\"step\": 3000, \"loss\": 0.0644, \"elapsed\": 1768}\n"}
+,{"stream_name":"stdout","time":6300.623354574,"data":"{\"eval\": \"train_vocab/4\", \"accuracy\": 0.944, \"accuracy_lenient\": 0.944, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":6308.421259239,"data":"{\"eval\": \"train_vocab/8\", \"accuracy\": 0.822, \"accuracy_lenient\": 0.822, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":6318.111738413,"data":"{\"eval\": \"train_vocab/12\", \"accuracy\": 0.778, \"accuracy_lenient\": 0.778, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":6329.620873618,"data":"{\"eval\": \"train_vocab/16\", \"accuracy\": 0.786, \"accuracy_lenient\": 0.786, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":6330.774459169,"data":"{\"step\": 1800, \"loss\": 0.1929, \"elapsed\": 1004}\n"}
+,{"stream_name":"stdout","time":6340.645092792,"data":"{\"eval\": \"heldout_vocab/12\", \"accuracy\": 0.652, \"accuracy_lenient\": 0.652, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":6340.645872133,"data":"{\"done\": \"oracle\", \"seed\": 2, \"metrics\": {\"train_vocab/4\": {\"accuracy\": 0.944, \"accuracy_lenient\": 0.944, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/8\": {\"accuracy\": 0.822, \"accuracy_lenient\": 0.822, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/12\": {\"accuracy\": 0.778, \"accuracy_lenient\": 0.778, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/16\": {\"accuracy\": 0.786, \"accuracy_lenient\": 0.786, \"parse_failures\": 0, \"n\": 500}, \"heldout_vocab/12\": {\"accuracy\": 0.652, \"accuracy_lenient\": 0.652, \"parse_failures\": 0, \"n\": 500}}}\n"}
+,{"stream_name":"stdout","time":6342.034128117,"data":"{\"lane\": 0, \"job\": 3, \"args\": {\"family\": \"additive\", \"steps\": 3000, \"n_train\": 24000, \"batch\": 16, \"lr\": 0.0002, \"lora_r\": 16, \"eval_ks\": [4, 8, 12, 16], \"eval_per_k\": 500, \"condition\": \"oracle\", \"seed\": 2}, \"exit\": 0, \"seconds\": 1826}\n"}
+,{"stream_name":"stdout","time":6495.241975238,"data":"{\"step\": 2100, \"loss\": 0.1473, \"elapsed\": 1169}\n"}
+,{"stream_name":"stdout","time":6661.052174766,"data":"{\"step\": 2400, \"loss\": 0.1592, \"elapsed\": 1335}\n"}
+,{"stream_name":"stdout","time":6825.41453833,"data":"{\"step\": 2700, \"loss\": 0.0492, \"elapsed\": 1499}\n"}
+,{"stream_name":"stdout","time":6990.980447954,"data":"{\"step\": 3000, \"loss\": 0.0583, \"elapsed\": 1665}\n"}
+,{"stream_name":"stdout","time":6998.096408748,"data":"{\"eval\": \"train_vocab/4\", \"accuracy\": 0.648, \"accuracy_lenient\": 0.648, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":7006.500695387,"data":"{\"eval\": \"train_vocab/8\", \"accuracy\": 0.15, \"accuracy_lenient\": 0.15, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":7016.634718767,"data":"{\"eval\": \"train_vocab/12\", \"accuracy\": 0.062, \"accuracy_lenient\": 0.062, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":7028.563479364,"data":"{\"eval\": \"train_vocab/16\", \"accuracy\": 0.022, \"accuracy_lenient\": 0.022, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":7040.219005542,"data":"{\"eval\": \"heldout_vocab/12\", \"accuracy\": 0.044, \"accuracy_lenient\": 0.044, \"parse_failures\": 0, \"n\": 500}\n"}
+,{"stream_name":"stdout","time":7040.219631763,"data":"{\"done\": \"irrelevant\", \"seed\": 1, \"metrics\": {\"train_vocab/4\": {\"accuracy\": 0.648, \"accuracy_lenient\": 0.648, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/8\": {\"accuracy\": 0.15, \"accuracy_lenient\": 0.15, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/12\": {\"accuracy\": 0.062, \"accuracy_lenient\": 0.062, \"parse_failures\": 0, \"n\": 500}, \"train_vocab/16\": {\"accuracy\": 0.022, \"accuracy_lenient\": 0.022, \"parse_failures\": 0, \"n\": 500}, \"heldout_vocab/12\": {\"accuracy\": 0.044, \"accuracy_lenient\": 0.044, \"parse_failures\": 0, \"n\": 500}}}\n"}
+,{"stream_name":"stdout","time":7041.556834729,"data":"{\"lane\": 1, \"job\": 3, \"args\": {\"family\": \"mixed\", \"steps\": 3000, \"n_train\": 24000, \"batch\": 16, \"lr\": 0.0002, \"lora_r\": 16, \"eval_ks\": [4, 8, 12, 16], \"eval_per_k\": 500, \"condition\": \"irrelevant\", \"seed\": 1}, \"exit\": 0, \"seconds\": 1724}\n"}
+,{"stream_name":"stdout","time":7041.556943223,"data":"ALL_DONE\n"}
+,{"stream_name":"stderr","time":7043.731678167,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":7043.731706039,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":7044.042847972,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":7044.042873145,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":7044.846047071,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":7045.897795832,"data":"[NbConvertApp] Writing 325406 bytes to __results__.html\n"}
+]

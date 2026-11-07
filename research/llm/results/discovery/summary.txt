@@ -1,0 +1,23 @@
+runs: 17 | code hashes differ from local for: none
+condition        family    seed      4      8     12     16  held12  parse-fail  steps
+cancel_adjacent  additive     1  0.928  0.706  0.590  0.532   0.556           0  3000
+cancel_adjacent  additive     2  0.926  0.700  0.610  0.536   0.602           0  3000
+cancel_adjacent  mixed        1  0.610  0.238  0.128  0.086   0.144           0  3000
+cancel_spread    additive     1  0.926  0.722  0.562  0.492   0.522           0  3000
+cancel_spread    additive     2  0.946  0.682  0.560  0.488   0.548           0  3000
+inactive         additive     1  0.916  0.240  0.134  0.082   0.148           0  3000
+inactive         additive     2  0.934  0.224  0.124  0.074   0.126           0  3000
+inactive         mixed        1  0.650  0.162  0.066  0.036   0.058           0  3000
+irrelevant       additive     1  0.912  0.190  0.104  0.066   0.122           0  3000
+irrelevant       additive     2  0.928  0.226  0.116  0.086   0.130           0  3000
+irrelevant       mixed        1  0.648  0.150  0.062  0.022   0.044           0  3000
+oracle           additive     1  0.922  0.798  0.768  0.768   0.646           0  3000
+oracle           additive     2  0.944  0.822  0.778  0.786   0.652           0  3000
+oracle           mixed        1  0.668  0.494  0.388  0.308   0.308           1  3000
+plain            additive     1  0.940  0.146  0.062  0.056   0.090           0  3000
+plain            additive     2  0.940  0.158  0.082  0.082   0.090           0  3000
+plain            mixed        1  0.650  0.110  0.048  0.024   0.028           0  3000
+
+go/no-go 1: cancel_spread - plain at 12 events >= 15 points on both seeds: [0.5, 0.478] -> PASS
+go/no-go 2: cancel_spread - better control (inactive) >= 10 points on average: +0.432 -> PASS
+verdict: GO (register and run the final on seeds 3-5)
