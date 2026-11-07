@@ -1,0 +1,68 @@
+{
+ "lanes": [
+  [
+   {
+    "script": "run_multi.py",
+    "condition": "self_improve",
+    "seed": 11
+   },
+   {
+    "script": "run_multi.py",
+    "condition": "oracle",
+    "seed": 11
+   }
+  ],
+  [
+   {
+    "script": "run_multi.py",
+    "condition": "cancel_spread",
+    "seed": 9
+   },
+   {
+    "script": "run_multi.py",
+    "condition": "cancel_spread",
+    "seed": 10
+   },
+   {
+    "script": "run_multi.py",
+    "condition": "cancel_spread",
+    "seed": 11
+   },
+   {
+    "script": "run_multi.py",
+    "condition": "plain",
+    "seed": 9
+   },
+   {
+    "script": "run_multi.py",
+    "condition": "plain",
+    "seed": 10
+   },
+   {
+    "script": "run_multi.py",
+    "condition": "plain",
+    "seed": 11
+   }
+  ]
+ ],
+ "common": {
+  "family": "multi",
+  "steps": 6000,
+  "n_train": 24000,
+  "batch": 16,
+  "lr": 0.0002,
+  "lora_r": 16,
+  "eval_ks": [
+   4,
+   8,
+   12,
+   16
+  ],
+  "eval_per_k": 500,
+  "si_models": 3,
+  "si_step": 2,
+  "si_n": 4000,
+  "si_steps": 500,
+  "si_max_rounds": -1
+ }
+}

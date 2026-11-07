@@ -104,3 +104,14 @@ direct self-improvement, with plain training and the oracle for reference.
 * **Per the rule above, the steps double to 6,000 once and the pilot reruns** (seed 0,
   otherwise unchanged; `jobs/multi_pilot2.json`). If gate A fails again, the test stops.
 * GPU: 1.07 hours.
+
+## Pilot 2 result (6,000 steps; `results/multi_pilot2/`)
+
+* Checks: all 3 jobs exited 0; the code hashes match; no leakage; every set recomputes. Model 0
+  of self_improve equals the separate plain run.
+* Plain: 92.8% at 4 events, 27.6% at 12. Oracle: 97.4% at 4, 88.8% at 12.
+* **Gate A: PASS** (92.8%). **Gate B: PASS** (+61.2 points).
+* Vote probe: all 3 models agree on 79%, 69%, 57% and 53% of problems at 5-8 events. The agreed
+  labels are right 95%, 94%, 91% and 83% of the time. **Schedule: +2 events per round.**
+* GPU: 1.97 hours.
+* The final is registered in `SPEC_MULTI.md` (6,000 steps, seeds 9-11) before any of its runs.

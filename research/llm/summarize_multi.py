@@ -15,7 +15,7 @@ import numpy as np
 
 PILOT_CODE = {"multi.py": "43c22ac06782e270facbb8fd6463ea44bd62100d480114776dee310787a9e79d",
               "run_multi.py": "fbbc6d3eba216dc7393af1b4171d4f299897545eae120869b57ff9d10f1ab3e4"}
-REGISTERED = {"pilot": PILOT_CODE, "final": PILOT_CODE}  # final: set when SPEC_MULTI.md is registered
+REGISTERED = {"pilot": PILOT_CODE, "final": PILOT_CODE}  # SPEC_MULTI.md registers the same code as the pilots
 SETS = ("train_vocab/4", "train_vocab/6", "train_vocab/8", "train_vocab/12", "train_vocab/16", "heldout_vocab/12")
 
 ap = argparse.ArgumentParser()

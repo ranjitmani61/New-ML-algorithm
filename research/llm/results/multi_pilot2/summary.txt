@@ -1,0 +1,21 @@
+runs: 3 | code hashes differ from the code registered for this gate: none
+condition      seed       4       6       8      12      16  held12  parse-fail  train_s
+oracle            0   0.974   0.954   0.914   0.888   0.800   0.856           0     3954
+plain             0   0.928   0.722   0.546   0.276   0.110   0.266           0     2247
+self_improve      0   0.928   0.722   0.546   0.276   0.110   0.266           0     6855
+
+self_improve round-0 models (each trained like plain; model 0 exactly like plain):
+  model 0: 4 0.928 6 0.722 8 0.546 12 0.276 16 0.110 held12 0.266
+  model 1: 4 0.934 6 0.750 8 0.526 12 0.236 16 0.126 held12 0.234
+  model 2: 4 0.910 6 0.720 8 0.518 12 0.246 16 0.110 held12 0.208
+  model 0 minus the separate plain run (GPU nondeterminism only): max |difference| 0.000
+vote probe (fresh problems; all 3 models must agree):
+  5 events: per-model accuracy [0.858, 0.846, 0.852], kept 397/500 (79%), kept-label accuracy 0.9521410579345088
+  6 events: per-model accuracy [0.768, 0.754, 0.762], kept 343/500 (69%), kept-label accuracy 0.9446064139941691
+  7 events: per-model accuracy [0.684, 0.652, 0.67], kept 287/500 (57%), kept-label accuracy 0.9128919860627178
+  8 events: per-model accuracy [0.59, 0.598, 0.586], kept 263/500 (53%), kept-label accuracy 0.8326996197718631
+
+gate A, learnability: plain at 4 events 0.928 (needs 0.90) -> PASS
+gate B, headroom: oracle - plain at 12 events +0.612 (needs +0.30) -> PASS
+self-improvement schedule: vote at 6 events keeps 69% (needs 20%) with label accuracy 0.9446064139941691 (needs 0.90) -> +2 events per round
+training seconds: {'oracle s0': 3954, 'plain s0': 2247, 'self_improve s0': 6855}
