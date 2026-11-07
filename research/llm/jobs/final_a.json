@@ -1,0 +1,55 @@
+{
+ "lanes": [
+  [
+   {
+    "condition": "oracle",
+    "seed": 3
+   },
+   {
+    "condition": "inactive",
+    "seed": 3
+   },
+   {
+    "condition": "cancel_spread",
+    "seed": 4
+   },
+   {
+    "condition": "irrelevant",
+    "seed": 4
+   }
+  ],
+  [
+   {
+    "condition": "oracle",
+    "seed": 4
+   },
+   {
+    "condition": "inactive",
+    "seed": 4
+   },
+   {
+    "condition": "irrelevant",
+    "seed": 5
+   },
+   {
+    "condition": "cancel_adjacent",
+    "seed": 4
+   }
+  ]
+ ],
+ "common": {
+  "family": "additive",
+  "steps": 3000,
+  "n_train": 24000,
+  "batch": 16,
+  "lr": 0.0002,
+  "lora_r": 16,
+  "eval_ks": [
+   4,
+   8,
+   12,
+   16
+  ],
+  "eval_per_k": 500
+ }
+}
