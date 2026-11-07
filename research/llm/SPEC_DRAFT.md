@@ -46,3 +46,14 @@ labeled maximum of 4, within the expansion range of 16), per seed.
 * `cancel_adjacent` is close to `cancel_spread` (toy audit: 86% vs 90%).
 * Mixed family: little or no gain at long lengths, and a possible in-distribution cost (as S3).
 * Held-out names and items at 12 events: within 5 points of the in-vocabulary result.
+
+## Decision log
+
+* **2026-11-07, pilot 1** (seed 0, 1,500 steps):
+  * plain: 83.8% at 4 events, 9.2% at 12.
+  * oracle: 83.8% at 4 events, 57.4% at 12.
+  * Gate 1 failed (83.8% < 90%); gate 2 passed (+48.2 points).
+  * Errors at 4 events are small arithmetic slips (80 of 81 within 2 of the answer); there were
+    no parse failures.
+  * Per the rule fixed in advance: steps doubled to 3,000, once, and the pilot reruns
+    (`jobs/pilot2.json`). If plain stays below 90% at 4 events, stop.
