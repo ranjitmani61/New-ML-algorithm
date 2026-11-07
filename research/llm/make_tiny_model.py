@@ -24,6 +24,8 @@ for t in P.GAIN + P.LOSS + P.INACTIVE + P.IRRELEVANT + [P.DOUBLE, P.HALVE, "{nam
     for w in t.replace("{", " ").replace("}", " ").replace("'", " ' ").replace(".", " . ").replace("?", " ? ").split():
         words.add(w)
 words |= set("Solve the word problem . Answer with the final number only system user assistant".split())
+import multi  # noqa: E402  (the three-person test: its question and the comma in its first sentence)
+words |= set((multi.QUESTION + " , and").replace("{", " ").replace("}", " ").replace("?", " ? ").split())
 special = ["<|endoftext|>", "<|im_start|>", "<|im_end|>", "[UNK]"]
 tokens = list(dict.fromkeys(special + [str(d) for d in range(10)] + sorted(words) + ["\n", "-", "'", "s"]))
 vocab = {t: i for i, t in enumerate(tokens)}  # dict.fromkeys removes duplicates, so ids have no holes

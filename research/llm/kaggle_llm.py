@@ -81,8 +81,9 @@ if not env_info["peft"] or not env_info["model_dir"] or not ok:
 def lane(i, jobs):
     for j, job in enumerate(jobs):
         args = {**CONFIG["common"], **job}
+        script = args.pop("script", "run_llm.py")  # run_multi.py for the three-person test
         out = f"{WORK}/out/{i}_{j}_{args['condition']}_{args.get('family', 'additive')}_s{args.get('seed', 0)}"
-        cmd = [sys.executable, f"{WORK}/code/run_llm.py", "--model", env_info["model_dir"], "--out", out]
+        cmd = [sys.executable, f"{WORK}/code/{script}", "--model", env_info["model_dir"], "--out", out]
         for k, val in args.items():
             if isinstance(val, list):
                 cmd += [f"--{k.replace('_', '-')}", *map(str, val)]
@@ -107,7 +108,7 @@ def kaggle(*args):
 
 def push(slug, jobs_path, user):
     cfg = json.load(open(jobs_path))
-    files = {n: open(os.path.join(HERE, n), "rb").read() for n in ("problems.py", "run_llm.py")}
+    files = {n: open(os.path.join(HERE, n), "rb").read() for n in ("problems.py", "run_llm.py", "multi.py", "run_multi.py")}
     cfg["code_sha256"] = {n: hashlib.sha256(b).hexdigest() for n, b in files.items()}
     code = RUNNER.replace("__CONFIG__", json.dumps(cfg)).replace(
         "__FILES__", repr({n: base64.b64encode(b).decode() for n, b in files.items()}))
