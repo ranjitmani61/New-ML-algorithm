@@ -34,8 +34,23 @@ ap.add_argument("--n", type=int, default=2000)
 ap.add_argument("--steps", type=int, default=4000)
 ap.add_argument("--round-steps", type=int, default=500)
 ap.add_argument("--seed", type=int, default=0)
+ap.add_argument("--cap", type=int, default=8, help="npia start: pairs up to this many terms (8 = ledger #8)")
+ap.add_argument("--expand-pseudo-cap", type=int, default=0,
+                help="if > 0, self-labeled problems are also lengthened with pairs up to this many terms (#25)")
 a = ap.parse_args()
-expand = I.IDEAS["npia"]["transform"] if a.start == "npia" else None
+
+
+def pairs_to(rng, items, cap):
+    """Ledger #8's t_npia with the cap as a parameter (same random draws; cap 8 gives t_npia exactly)."""
+    k = int(rng.integers(0, (cap - len(items)) // 2 + 1))
+    extra = []
+    for _ in range(k):
+        b = int(rng.integers(1, C.TERM_MAX + 1))
+        extra += [(1, b), (-1, b)]
+    return I._insert(rng, items, extra)
+
+
+expand = (lambda rng, x: pairs_to(rng, x, a.cap)) if a.start == "npia" else None
 
 
 def base_draw(rng, batch):
@@ -55,10 +70,14 @@ def sampler_round(rng, kept_old, kept_new, batch=128):
         for _ in range(batch):
             if kept_new and rng.random() < 0.5:
                 x, y = kept_new[int(rng.integers(len(kept_new)))]
+                if a.expand_pseudo_cap and rng.random() < 0.5:  # pairs keep the self-generated label
+                    x = pairs_to(rng, x, a.expand_pseudo_cap)
             else:  # older data: the base distribution and earlier rounds, uniformly by example source
                 pool_old = len(kept_old)
                 if pool_old and rng.random() < pool_old / (pool_old + 20_000):
                     x, y = kept_old[int(rng.integers(pool_old))]
+                    if a.expand_pseudo_cap and rng.random() < 0.5:
+                        x = pairs_to(rng, x, a.expand_pseudo_cap)
                 else:
                     (x,), (y,) = base_draw(rng, 1)
             items.append(x); ans.append(y)

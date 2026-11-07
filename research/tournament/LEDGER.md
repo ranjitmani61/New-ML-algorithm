@@ -203,3 +203,14 @@ lower accuracy (arXiv 2608.05670).
 Protocol for #23: discovery seed 0 only (model seeds 0-2), script `si_combo.py`
 (committed with this entry, before the run); 4,000 initial steps, then 6 rounds of 2,000 unlabeled problems and 500
 steps per model. If kept, it goes to the language-model test only through a registered spec.
+| 24 | npia with pairs up to 16 terms (no self-improvement) | control for #25 | covering lengths 9-16 with pairs alone; sums stay those of 1-4 terms | at 16 terms between 25% and 60%; weak on large sums |
+| 25 | self-improvement where each round's agreed problems are also lengthened with pairs (up to 16 terms) | candidate | #23 breaks at the edge of covered length (round 3: models 40-58% on 9-10 terms, kept labels 76% right). Lengthening the self-labeled problems keeps training coverage ahead of the labeling frontier, while their labels bring real long-problem sums | after 6 rounds: at least 50% at 16 terms and at least 10 points above #24; kept-label accuracy at least 90% in rounds 3-6 |
+
+Notes written before #24 and #25 ran:
+* #23 (npia start) round 3 had already degraded when these were added: accuracy at 10 terms fell
+  from 35% to 22% after training on 76%-accurate labels. #24 and #25 were designed after seeing
+  that, so they are follow-ups on discovery data and are counted as such.
+* The baseline-start arm of #23 did not start on the first launch: `cd dir && (A) & (B) &` runs B
+  outside `dir`, the same mistake as #22. It was relaunched unchanged.
+* `si_combo.py` gained `--cap` and `--expand-pseudo-cap`; their defaults reproduce #23 exactly
+  (checked: the cap-8 pair function matches #8's transform on 300 problems).
