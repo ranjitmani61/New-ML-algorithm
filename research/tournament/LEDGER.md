@@ -185,3 +185,21 @@ limits held (48 terms: 7.6%; weaker than the oracle on large sums). Full write-u
   * The S3 limit is confirmed at an adequate budget, with an in-distribution cost.
 * Still untested: scratchpad references and a faithful looped transformer. The final models were
   not saved.
+
+## Batch 3 (2026-11-07): written before running
+
+Motivation: in the language-model test, chaining beat inverse pairs because the pairs' long
+examples keep short answers (`research/llm/REPORT.md`). Self-improvement (Lee et al. 2025, arXiv
+2502.01612) labels real longer problems, which fixes that, but it only extends to lengths a model
+already gets mostly right. Inverse pairs give a large free jump in length. The two might combine.
+A pseudo-label check by agreement across answer-preserving rewrites was not re-tried: it is
+close to idea #1 (discarded), and prior work reports that training on such agreed labels can
+lower accuracy (arXiv 2608.05670).
+
+| # | idea | kind | hypothesis | prediction (before run) |
+|---|---|---|---|---|
+| 23 | npia, then self-improvement | candidate (combination) | starting from npia, self-generated labels at 9-16 terms are accurate enough to keep extending; from the baseline they are not | after 6 rounds (+2 terms each, 3 models, full-agreement vote, same compute for both starts): npia start at least 60% at 16 terms; baseline start at most 20%; npia alone is 7% at 16 (#8) |
+
+Protocol for #23: discovery seed 0 only (model seeds 0-2), script `si_combo.py`
+(committed with this entry, before the run); 4,000 initial steps, then 6 rounds of 2,000 unlabeled problems and 500
+steps per model. If kept, it goes to the language-model test only through a registered spec.
