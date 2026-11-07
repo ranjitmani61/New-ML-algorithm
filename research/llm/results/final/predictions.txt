@@ -1,0 +1,24 @@
+means over seeds 3-5; share = (cancel_spread - plain) / (oracle - plain)
+  train_vocab/4     plain 0.931  cancel_spread 0.935  cancel_adjacent 0.937  oracle 0.933  gain +0.004  share 150.0%
+  train_vocab/8     plain 0.129  cancel_spread 0.683  cancel_adjacent 0.690  oracle 0.821  gain +0.554  share 80.1%
+  train_vocab/12    plain 0.100  cancel_spread 0.582  cancel_adjacent 0.590  oracle 0.761  gain +0.482  share 72.9%
+  train_vocab/16    plain 0.069  cancel_spread 0.470  cancel_adjacent 0.503  oracle 0.739  gain +0.401  share 59.9%
+  heldout_vocab/12  plain 0.084  cancel_spread 0.523  cancel_adjacent 0.547  oracle 0.659  gain +0.439  share 76.3%
+  seed 3: the same 12-event test problems for every condition: True
+  seed 4: the same 12-event test problems for every condition: True
+  seed 5: the same 12-event test problems for every condition: True
+
+paired differences (mean over seeds; per seed; 95% bootstrap over problems)
+  cancel_spread - plain at train_vocab/12: +0.482  per seed [0.438, 0.51, 0.498]  [+0.455, +0.509]
+  cancel_spread - irrelevant at train_vocab/12: +0.421  per seed [0.4, 0.402, 0.46]  [+0.393, +0.449]
+  cancel_spread - plain at train_vocab/4: +0.004  per seed [-0.018, 0.006, 0.024]  [-0.010, +0.018]
+  cancel_adjacent - cancel_spread at train_vocab/12: +0.008  per seed [0.052, 0.0, -0.028]  [-0.015, +0.031]
+  cancel_spread - plain at heldout_vocab/12: +0.439  per seed [0.468, 0.426, 0.422]  [+0.411, +0.466]
+  oracle - cancel_spread at train_vocab/12: +0.179  per seed [0.216, 0.162, 0.16]  [+0.154, +0.205]
+
+recorded predictions
+  1. gains shrink at 16 events: gain at 12 +0.482, at 16 +0.401 -> held (large answers: see audit_runs.py)
+  2. cancel_adjacent close to cancel_spread at 12: difference +0.008
+  3. held-out vocabulary within 5 points at 12: per seed [-0.004, -0.084, -0.09], mean -0.059 -> missed
+     for comparison, plain: per seed [-0.034, 0.0, -0.014], mean -0.016
+     for comparison, oracle: per seed [-0.076, -0.102, -0.13], mean -0.103

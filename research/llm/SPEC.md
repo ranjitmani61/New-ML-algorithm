@@ -44,3 +44,13 @@ Evaluated mechanically by `summarize.py --gate final`.
 * Gains shrink at 16 events and on large answers.
 * `cancel_adjacent` lands close to `cancel_spread`.
 * The held-out vocabulary result at 12 events is within 5 points of the in-vocabulary result.
+
+## Erratum (added 2026-11-07, after the final; the registered text above is unchanged)
+
+* "50-step warmup, then linear decay" is loose wording. The code multiplies a 50-step linear
+  warmup by a linear decay that starts at step 0 (the factor at step 49 is 0.984, not 1). The
+  code ran exactly as registered, so this is a wording difference only.
+
+## Result
+
+PASS on all four criteria. See `REPORT.md`.

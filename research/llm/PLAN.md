@@ -1,4 +1,7 @@
-# Language-model test of cancelling-event insertion: plan and rules (draft, not yet registered)
+# Language-model test of cancelling-event insertion: plan and rules
+
+**Status (2026-11-07):** registered in `SPEC.md` and run; the final passed. See `REPORT.md`.
+This file is the original plan, kept as written.
 
 ## Verification log (2026-11-03, after a session restart on a new machine)
 

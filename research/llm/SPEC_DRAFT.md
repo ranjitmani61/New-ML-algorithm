@@ -96,3 +96,10 @@ labeled maximum of 4, within the expansion range of 16), per seed.
       38.8%;
     * cancel_adjacent costs 4.0 points at 4 events (61.0% vs 65.0%);
     * so the gain is small and comes with a cost, as predicted.
+* **2026-11-07, registered final** (seeds 3-5, 18 runs; `results/final/`, `REPORT.md`):
+  * Checks: all jobs exited 0, the hashes match `SPEC.md`, no leakage, and 90 of 90 sets
+    recompute.
+  * At 12 events: plain 10.0%, the method 58.2%, oracle 76.1% (means).
+  * Criteria: +43.8, +51.0 and +49.8 over plain; +42.1 over the better control; 72.9% of the
+    oracle's gain; -0.4 points cost at 4 events. **PASS.**
+  * Predictions: two held; held-out vocabulary missed (-5.9 points).

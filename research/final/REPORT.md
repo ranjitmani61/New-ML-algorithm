@@ -70,6 +70,8 @@ Each figure is the mean over seeds 100-104 (per-seed values are in `results/repo
   #22).
 * It is shown on one synthetic task family (signed sums) with small transformers; nothing here
   shows it on language models.
+  * Follow-up (2026-11-07): a registered test on a language model (Qwen2.5-0.5B-Instruct, templated
+    word problems) passed. See `research/llm/REPORT.md`, including what it does not show.
 
 ## Prior art and novelty
 

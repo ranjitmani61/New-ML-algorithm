@@ -1,0 +1,38 @@
+== 1. shortcut rules (additive; fraction of test problems a trivial rule gets right)
+  seed 3 train_vocab/4   start amount 0.032  last number 0.056  most common answer 0 (0.050)  answers 0-56
+  seed 3 train_vocab/12  start amount 0.026  last number 0.050  most common answer 0 (0.054)  answers 0-75
+  seed 3 train_vocab/16  start amount 0.038  last number 0.076  most common answer 7 (0.032)  answers 0-80
+  seed 4 train_vocab/4   start amount 0.042  last number 0.050  most common answer 13 (0.044)  answers 0-56
+  seed 4 train_vocab/12  start amount 0.028  last number 0.042  most common answer 0 (0.052)  answers 0-70
+  seed 4 train_vocab/16  start amount 0.024  last number 0.064  most common answer 9 (0.044)  answers 0-97
+  seed 5 train_vocab/4   start amount 0.034  last number 0.042  most common answer 18 (0.042)  answers 0-56
+  seed 5 train_vocab/12  start amount 0.026  last number 0.062  most common answer 7 (0.042)  answers 0-88
+  seed 5 train_vocab/16  start amount 0.022  last number 0.052  most common answer 12 (0.050)  answers 0-84
+
+== 2. at 12 events (train vocab): accuracy by answer size; shape of the wrong answers
+  cancel_adjacent  s3  0-30: 0.68 (n=350)  30-60: 0.43 (n=135)  60-90: 0.00 (n=15)  90-max: 0.00 (n=0)  | wrong 205: within 2 0.87, too low 0.57
+  cancel_adjacent  s4  0-30: 0.68 (n=347)  30-60: 0.47 (n=139)  60-90: 0.00 (n=14)  90-max: 0.00 (n=0)  | wrong 199: within 2 0.84, too low 0.51
+  cancel_adjacent  s5  0-30: 0.65 (n=341)  30-60: 0.46 (n=145)  60-90: 0.00 (n=14)  90-max: 0.00 (n=0)  | wrong 211: within 2 0.87, too low 0.61
+  cancel_spread    s3  0-30: 0.61 (n=350)  30-60: 0.42 (n=135)  60-90: 0.00 (n=15)  90-max: 0.00 (n=0)  | wrong 231: within 2 0.89, too low 0.71
+  cancel_spread    s4  0-30: 0.68 (n=347)  30-60: 0.47 (n=139)  60-90: 0.00 (n=14)  90-max: 0.00 (n=0)  | wrong 199: within 2 0.86, too low 0.64
+  cancel_spread    s5  0-30: 0.66 (n=341)  30-60: 0.53 (n=145)  60-90: 0.00 (n=14)  90-max: 0.00 (n=0)  | wrong 197: within 2 0.86, too low 0.65
+  inactive         s3  0-30: 0.15 (n=350)  30-60: 0.08 (n=135)  60-90: 0.00 (n=15)  90-max: 0.00 (n=0)  | wrong 437: within 2 0.43, too low 0.56
+  inactive         s4  0-30: 0.18 (n=347)  30-60: 0.12 (n=139)  60-90: 0.00 (n=14)  90-max: 0.00 (n=0)  | wrong 422: within 2 0.59, too low 0.48
+  inactive         s5  0-30: 0.22 (n=341)  30-60: 0.17 (n=145)  60-90: 0.00 (n=14)  90-max: 0.00 (n=0)  | wrong 402: within 2 0.62, too low 0.56
+  irrelevant       s3  0-30: 0.16 (n=350)  30-60: 0.09 (n=135)  60-90: 0.00 (n=15)  90-max: 0.00 (n=0)  | wrong 431: within 2 0.51, too low 0.51
+  irrelevant       s4  0-30: 0.24 (n=347)  30-60: 0.13 (n=139)  60-90: 0.00 (n=14)  90-max: 0.00 (n=0)  | wrong 400: within 2 0.65, too low 0.52
+  irrelevant       s5  0-30: 0.16 (n=341)  30-60: 0.14 (n=145)  60-90: 0.00 (n=14)  90-max: 0.00 (n=0)  | wrong 427: within 2 0.58, too low 0.44
+  oracle           s3  0-30: 0.79 (n=350)  30-60: 0.73 (n=135)  60-90: 0.20 (n=15)  90-max: 0.00 (n=0)  | wrong 123: within 2 0.98, too low 0.41
+  oracle           s4  0-30: 0.80 (n=347)  30-60: 0.71 (n=139)  60-90: 0.29 (n=14)  90-max: 0.00 (n=0)  | wrong 118: within 2 1.00, too low 0.68
+  oracle           s5  0-30: 0.81 (n=341)  30-60: 0.72 (n=145)  60-90: 0.21 (n=14)  90-max: 0.00 (n=0)  | wrong 117: within 2 0.97, too low 0.74
+  plain            s3  0-30: 0.13 (n=350)  30-60: 0.04 (n=135)  60-90: 0.00 (n=15)  90-max: 0.00 (n=0)  | wrong 450: within 2 0.34, too low 0.59
+  plain            s4  0-30: 0.11 (n=347)  30-60: 0.06 (n=139)  60-90: 0.00 (n=14)  90-max: 0.00 (n=0)  | wrong 454: within 2 0.37, too low 0.56
+  plain            s5  0-30: 0.11 (n=341)  30-60: 0.10 (n=145)  60-90: 0.00 (n=14)  90-max: 0.00 (n=0)  | wrong 446: within 2 0.41, too low 0.50
+
+== 3. raw outputs by eye (seed 3, 12 events, 20 per condition; answer:output)
+  plain            13:'13' 0:'3' 36:'30' 19:'19' 22:'20' 24:'24' 18:'16' 24:'20' 44:'34' 18:'20' 47:'39' 27:'25' 14:'10' 12:'13' 35:'26' 40:'37' 2:'9' 1:'3' 34:'31' 36:'28'
+  irrelevant       13:'12' 0:'3' 36:'34' 19:'21' 22:'26' 24:'24' 18:'20' 24:'23' 44:'40' 18:'19' 47:'42' 27:'29' 14:'10' 12:'10' 35:'30' 40:'37' 2:'9' 1:'2' 34:'33' 36:'30'
+  inactive         13:'12' 0:'3' 36:'34' 19:'15' 22:'22' 24:'22' 18:'18' 24:'20' 44:'37' 18:'19' 47:'40' 27:'25' 14:'10' 12:'11' 35:'30' 40:'37' 2:'9' 1:'3' 34:'31' 36:'30'
+  cancel_spread    13:'13' 0:'0' 36:'36' 19:'19' 22:'21' 24:'23' 18:'17' 24:'23' 44:'42' 18:'17' 47:'46' 27:'28' 14:'14' 12:'12' 35:'36' 40:'39' 2:'4' 1:'0' 34:'34' 36:'34'
+  cancel_adjacent  13:'13' 0:'0' 36:'35' 19:'19' 22:'22' 24:'24' 18:'18' 24:'23' 44:'42' 18:'18' 47:'46' 27:'28' 14:'15' 12:'12' 35:'36' 40:'39' 2:'4' 1:'0' 34:'34' 36:'35'
+  oracle           13:'13' 0:'0' 36:'36' 19:'19' 22:'22' 24:'25' 18:'18' 24:'23' 44:'44' 18:'19' 47:'47' 27:'28' 14:'14' 12:'13' 35:'36' 40:'39' 2:'4' 1:'0' 34:'34' 36:'36'
