@@ -1,0 +1,24 @@
+seed 9: method's training answers: median 26, 99th pct 40, 99.9th 46, max 58; identical to plain's: False
+  train plain     median   26 | 0-29: 75.6% 30-44: 24.2% 45-59:  0.2% 60-  :  0.0% | above method's 99th pct  1.0%, 99.9th  0.1%, max  0.0%
+  train method    median   26 | 0-29: 75.2% 30-44: 24.6% 45-59:  0.2% 60-  :  0.0% | above method's 99th pct  1.0%, 99.9th  0.1%, max  0.0%
+  train oracle    median   27 | 0-29: 60.6% 30-44: 35.1% 45-59:  4.1% 60-  :  0.2% | above method's 99th pct  8.5%, 99.9th  2.9%, max  0.2%
+  test 4 events   median   26 | 0-29: 66.2% 30-44: 32.6% 45-59:  1.2% 60-  :  0.0% | above method's 99th pct  2.8%, 99.9th  0.4%, max  0.0%
+  test 8 events   median   28 | 0-29: 56.2% 30-44: 40.4% 45-59:  3.4% 60-  :  0.0% | above method's 99th pct  7.4%, 99.9th  1.6%, max  0.2%
+  test 12 events  median   29 | 0-29: 53.2% 30-44: 38.8% 45-59:  7.6% 60-  :  0.4% | above method's 99th pct 13.2%, 99.9th  5.8%, max  0.4%
+  test 16 events  median   28 | 0-29: 55.6% 30-44: 32.6% 45-59: 10.4% 60-  :  1.4% | above method's 99th pct 18.0%, 99.9th  8.8%, max  1.4%
+seed 10: method's training answers: median 26, 99th pct 41, 99.9th 47, max 55; identical to plain's: False
+  train plain     median   26 | 0-29: 74.8% 30-44: 25.0% 45-59:  0.2% 60-  :  0.0% | above method's 99th pct  0.7%, 99.9th  0.0%, max  0.0%
+  train method    median   26 | 0-29: 74.7% 30-44: 25.1% 45-59:  0.2% 60-  :  0.0% | above method's 99th pct  0.8%, 99.9th  0.1%, max  0.0%
+  train oracle    median   27 | 0-29: 60.7% 30-44: 35.1% 45-59:  4.0% 60-  :  0.2% | above method's 99th pct  7.0%, 99.9th  2.4%, max  0.5%
+  test 4 events   median   26 | 0-29: 69.8% 30-44: 29.2% 45-59:  1.0% 60-  :  0.0% | above method's 99th pct  1.4%, 99.9th  0.0%, max  0.0%
+  test 8 events   median   28 | 0-29: 57.2% 30-44: 40.4% 45-59:  2.4% 60-  :  0.0% | above method's 99th pct  4.8%, 99.9th  1.6%, max  0.2%
+  test 12 events  median   28 | 0-29: 56.0% 30-44: 38.8% 45-59:  5.0% 60-  :  0.2% | above method's 99th pct  9.2%, 99.9th  3.4%, max  0.2%
+  test 16 events  median   30 | 0-29: 46.8% 30-44: 42.0% 45-59: 10.4% 60-  :  0.8% | above method's 99th pct 16.4%, 99.9th  6.8%, max  2.0%
+seed 11: method's training answers: median 26, 99th pct 41, 99.9th 47, max 57; identical to plain's: False
+  train plain     median   26 | 0-29: 74.7% 30-44: 25.0% 45-59:  0.2% 60-  :  0.0% | above method's 99th pct  0.8%, 99.9th  0.1%, max  0.0%
+  train method    median   26 | 0-29: 75.2% 30-44: 24.4% 45-59:  0.3% 60-  :  0.0% | above method's 99th pct  0.8%, 99.9th  0.1%, max  0.0%
+  train oracle    median   27 | 0-29: 61.1% 30-44: 34.7% 45-59:  4.1% 60-  :  0.2% | above method's 99th pct  7.2%, 99.9th  2.5%, max  0.3%
+  test 4 events   median   26 | 0-29: 68.6% 30-44: 30.8% 45-59:  0.6% 60-  :  0.0% | above method's 99th pct  0.6%, 99.9th  0.2%, max  0.0%
+  test 8 events   median   27 | 0-29: 58.4% 30-44: 38.4% 45-59:  3.2% 60-  :  0.0% | above method's 99th pct  5.8%, 99.9th  1.2%, max  0.0%
+  test 12 events  median   30 | 0-29: 48.4% 30-44: 45.0% 45-59:  6.6% 60-  :  0.0% | above method's 99th pct 10.8%, 99.9th  4.2%, max  0.4%
+  test 16 events  median   29 | 0-29: 50.8% 30-44: 40.2% 45-59:  8.4% 60-  :  0.6% | above method's 99th pct 15.0%, 99.9th  5.8%, max  0.8%

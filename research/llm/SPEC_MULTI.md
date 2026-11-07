@@ -109,3 +109,22 @@ The primary metric is accuracy at 12 events (training vocabulary), per seed.
   * one synthetic task;
   * self-improvement's unlabeled problems come from the test distribution, which favors it;
   * its settings are an adaptation of Lee et al. (stated above), not their exact recipe.
+
+## Addendum (2026-11-07, after registration and before any final result; not part of the decision rule)
+
+Answer sizes, from the generator only (`answer_support_multi.py`, output in
+`results/multi_final/answer_support.txt`; no model output is read):
+
+* The method never changes a label, so its training answers are those of 1-4 event problems:
+  median 26; only 0.2-0.3% are 45 or more; the largest is 55-58.
+* At 12 events, 5.2-8.0% of test answers are 45 or more (the oracle trains on about 4% such
+  answers). On each seed, 9-13% of test answers exceed the 99th percentile of the method's training
+  answers.
+* So answer size alone can cost the method at most about 13 points at 12 events. In the sum toy it
+  was the main failure (`research/tournament/LEDGER.md`, idea #8). Here, most of any gap to the
+  oracle would have to come from tracking the amounts.
+
+**Prediction 6 (secondary, about 70% confidence):** at 12 events (training vocabulary), pooled
+over seeds 9-11, the method's accuracy on answers of 45 or more is at least 20 points below its
+accuracy on answers of 29 or less. The oracle's drop between the same answer sizes is smaller than
+the method's. Checked from `audit_multi.py` section 2, with the bins weighted by problem count.
