@@ -90,3 +90,17 @@ direct self-improvement, with plain training and the oracle for reference.
   * the budget and the stop rule.
 * Estimated GPU use: about 1 hour for the pilot and 7-9 hours for the final, of about 18 left this
   week.
+
+## Pilot 1 result (2026-11-07; `results/multi_pilot1/`)
+
+* Checks: all 3 jobs exited 0; the code hashes match; no leakage; every set recomputes. Model 0 of
+  self_improve equals the separate plain run on every set (also on the GPU).
+* Plain: 88.8% at 4 events, 24.2% at 12. Oracle: 95.8% at 4, 74.2% at 12.
+* **Gate A, learnability: FAIL** (88.8%, needs 90%).
+* Gate B, headroom: PASS (+50.0 points).
+* Vote probe: all 3 models agree on 79%, 66%, 55% and 48% of fresh problems at 5, 6, 7 and 8
+  events. The agreed labels are right 92%, 91%, 84% and 79% of the time. So the schedule
+  rule gives +2 events per round.
+* **Per the rule above, the steps double to 6,000 once and the pilot reruns** (seed 0,
+  otherwise unchanged; `jobs/multi_pilot2.json`). If gate A fails again, the test stops.
+* GPU: 1.07 hours.

@@ -1,0 +1,22 @@
+== 1. shortcut rules (fraction of test problems a trivial rule gets right)
+  seed 0 train_vocab/4     largest start 0.192  last number 0.000  largest number 0.192  most common answer 25 (0.072)  answers 5-43
+  seed 0 train_vocab/6     largest start 0.074  last number 0.000  largest number 0.074  most common answer 27 (0.056)  answers 2-48
+  seed 0 train_vocab/8     largest start 0.042  last number 0.000  largest number 0.042  most common answer 29 (0.054)  answers 3-59
+  seed 0 train_vocab/12    largest start 0.042  last number 0.002  largest number 0.042  most common answer 26 (0.066)  answers 2-65
+  seed 0 train_vocab/16    largest start 0.054  last number 0.000  largest number 0.054  most common answer 32 (0.048)  answers 6-64
+  seed 0 heldout_vocab/12  largest start 0.036  last number 0.004  largest number 0.036  most common answer 28 (0.048)  answers 5-76
+
+== 2. at 12 events (train vocab): accuracy by answer size; shape of the wrong answers
+  oracle         s0  0-29: 0.74 (n=259)  30-44: 0.77 (n=210)  45-59: 0.59 (n=29)  60-max: 0.50 (n=2)  | wrong 129: within 2 0.96, too low 0.59
+  plain          s0  0-29: 0.27 (n=259)  30-44: 0.23 (n=210)  45-59: 0.07 (n=29)  60-max: 0.00 (n=2)  | wrong 379: within 2 0.40, too low 0.72
+  self_improve   s0  0-29: 0.27 (n=259)  30-44: 0.23 (n=210)  45-59: 0.07 (n=29)  60-max: 0.00 (n=2)  | wrong 379: within 2 0.40, too low 0.72
+
+== 3. self-improvement rounds (kept by the vote; label accuracy is a diagnostic only)
+  seed 0: schedule (no rounds)
+    final model 1: train_vocab/4 0.892 train_vocab/6 0.704 train_vocab/8 0.486 train_vocab/12 0.232 train_vocab/16 0.126 heldout_vocab/12 0.212
+    final model 2: train_vocab/4 0.872 train_vocab/6 0.698 train_vocab/8 0.492 train_vocab/12 0.218 train_vocab/16 0.132 heldout_vocab/12 0.218
+
+== 4. raw outputs by eye (seed 0, 12 events, 20 per condition; answer:output)
+  plain          20:'16' 22:'22' 37:'34' 26:'24' 37:'36' 30:'29' 24:'25' 26:'30' 25:'20' 21:'18' 24:'24' 37:'39' 15:'18' 32:'23' 35:'30' 23:'23' 26:'22' 27:'27' 20:'19' 28:'29'
+  self_improve   20:'16' 22:'22' 37:'34' 26:'24' 37:'36' 30:'29' 24:'25' 26:'30' 25:'20' 21:'18' 24:'24' 37:'39' 15:'18' 32:'23' 35:'30' 23:'23' 26:'22' 27:'27' 20:'19' 28:'29'
+  oracle         20:'20' 22:'22' 37:'37' 26:'26' 37:'37' 30:'30' 24:'24' 26:'26' 25:'25' 21:'21' 24:'24' 37:'35' 15:'16' 32:'34' 35:'36' 23:'23' 26:'28' 27:'27' 20:'19' 28:'29'
