@@ -9,12 +9,21 @@ reason.
 
 1. **Pilot (seed 0; calibration only, not a result).** Conditions `plain` and `oracle`, additive
    family. It checks that the budget learns the labeled range (plain at 4 events at least 90%)
-   and that headroom exists (oracle at 12 events at least 20 points above plain). If either check
-   fails, adjust the budget once and log it, or stop.
+   and that headroom exists (oracle at 12 events at least 20 points above plain).
+   * Budget: 1,500 steps, batch 16, learning rate 2e-4, LoRA rank 16, 24,000 training problems,
+     500 test problems per length.
+   * Adjustment, fixed in advance (added 2026-11-07, before the pilot ran): if plain at 4 events
+     is below 90%, double the steps to 3,000 once and rerun the pilot. If it is still below 90%,
+     or the oracle headroom is missing, stop and report it.
 2. **Discovery (seeds 1-2):** all six conditions, additive family. The mixed family runs on
    seed 1 only.
+   * Go/no-go to the final (added 2026-11-07, before the pilot ran): continue only if
+     `cancel_spread` beats `plain` at 12 events by at least 15 points on both discovery seeds,
+     and beats the better length-matched control by at least 10 points on average. Otherwise
+     stop and report the negative result without spending the final's budget.
 3. **Registered final (fresh seeds 3, 4, 5):** all six conditions, additive family, with the
-   specification and code hashes committed before the run.
+   specification and code hashes committed before the run. Discovery results never change the
+   pass criteria below.
 
 ## Primary metric
 
