@@ -103,3 +103,13 @@ labeled maximum of 4, within the expansion range of 16), per seed.
   * Criteria: +43.8, +51.0 and +49.8 over plain; +42.1 over the better control; 72.9% of the
     oracle's gain; -0.4 points cost at 4 events. **PASS.**
   * Predictions: two held; held-out vocabulary missed (-5.9 points).
+* **2026-11-07, chaining comparison** (`SPEC_CHAIN.md`, seeds 6-8, 12 runs; `results/chain/`):
+  * Checks: all jobs exited 0, the hashes match `SPEC_CHAIN.md`, no leakage, and 60 of 60 sets
+    recompute.
+  * At 12 events: plain 8.4%, the method 55.4%, chaining 59.6%, oracle 77.1% (means).
+  * chain - cancel_spread at 12: +4.8, +4.4, +3.4 (mean +4.2; needed +5). **NO CLEAR DIFFERENCE.**
+  * Chaining led on every seed (95% interval +1.7 to +6.7), and by +9.8 at 16 events. The lead is
+    on answers of 30 or more, where the method's training answers stay at the short problems'
+    range.
+  * Predictions: two of five held. The replication of the method over plain held (+46.4 to
+    +47.4).

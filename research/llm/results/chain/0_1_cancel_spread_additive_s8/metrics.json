@@ -1,0 +1,82 @@
+{
+ "args": {
+  "model": "/kaggle/input/models/qwen-lm/qwen2.5/transformers/0.5b-instruct/1",
+  "condition": "cancel_spread",
+  "family": "additive",
+  "seed": 8,
+  "steps": 3000,
+  "batch": 16,
+  "lr": 0.0002,
+  "lora_r": 16,
+  "n_train": 24000,
+  "label_max": 4,
+  "expand_max": 16,
+  "max_len": 384,
+  "eval_ks": [
+   4,
+   8,
+   12,
+   16
+  ],
+  "eval_per_k": 500,
+  "max_new": 0,
+  "out": "/kaggle/working/out/0_1_cancel_spread_additive_s8"
+ },
+ "device": "cuda",
+ "torch": "2.11.0+cu130",
+ "train_stats": {
+  "n_train": 24000,
+  "prompt_tokens_mean": 80.69366666666667,
+  "prompt_tokens_p50_p90_max": [
+   68,
+   132,
+   182
+  ],
+  "changes_mean": 5.76475,
+  "answer_max": 64,
+  "truncated": 0
+ },
+ "leakage_exact_overlap": {
+  "train_vocab/4": 0,
+  "train_vocab/8": 0,
+  "train_vocab/12": 0,
+  "train_vocab/16": 0,
+  "heldout_vocab/12": 0
+ },
+ "metrics": {
+  "train_vocab/4": {
+   "accuracy": 0.942,
+   "accuracy_lenient": 0.942,
+   "parse_failures": 0,
+   "n": 500
+  },
+  "train_vocab/8": {
+   "accuracy": 0.684,
+   "accuracy_lenient": 0.684,
+   "parse_failures": 0,
+   "n": 500
+  },
+  "train_vocab/12": {
+   "accuracy": 0.548,
+   "accuracy_lenient": 0.548,
+   "parse_failures": 0,
+   "n": 500
+  },
+  "train_vocab/16": {
+   "accuracy": 0.464,
+   "accuracy_lenient": 0.464,
+   "parse_failures": 0,
+   "n": 500
+  },
+  "heldout_vocab/12": {
+   "accuracy": 0.538,
+   "accuracy_lenient": 0.538,
+   "parse_failures": 0,
+   "n": 500
+  }
+ },
+ "train_seconds": 1662,
+ "total_seconds": 1707,
+ "generator_sha256": "d8cb98f513f14c3ce41ab088d3ff3023f2827b75b69a83b99d56bb8c364e325a",
+ "script_sha256": "2fe0b2afe62ef404ccb163d087842dc8892b2cebb5ae34204fbf19b24e4db6b7"
+}

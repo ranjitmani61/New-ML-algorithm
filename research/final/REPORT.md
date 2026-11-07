@@ -71,7 +71,9 @@ Each figure is the mean over seeds 100-104 (per-seed values are in `results/repo
 * It is shown on one synthetic task family (signed sums) with small transformers; nothing here
   shows it on language models.
   * Follow-up (2026-11-07): a registered test on a language model (Qwen2.5-0.5B-Instruct, templated
-    word problems) passed. See `research/llm/REPORT.md`, including what it does not show.
+    word problems) passed against plain fine-tuning and clutter controls. A second registered test
+    found that chaining short problems (h1's construction) did at least as well on average and was
+    ahead at 12 events on every seed, though below the registered margin. See `research/llm/REPORT.md`.
 
 ## Prior art and novelty
 

@@ -1,0 +1,21 @@
+runs: 12 | code hashes differ from the code registered for this gate: none
+condition        family    seed      4      8     12     16  held12  parse-fail  steps
+cancel_spread    additive     6  0.942  0.732  0.568  0.466   0.546           0  3000
+cancel_spread    additive     7  0.926  0.702  0.546  0.490   0.534           0  3000
+cancel_spread    additive     8  0.942  0.684  0.548  0.464   0.538           0  3000
+chain            additive     6  0.956  0.738  0.616  0.582   0.616           0  3000
+chain            additive     7  0.936  0.704  0.590  0.572   0.526           0  3000
+chain            additive     8  0.956  0.688  0.582  0.560   0.550           0  3000
+oracle           additive     6  0.962  0.806  0.760  0.744   0.660           0  3000
+oracle           additive     7  0.908  0.804  0.762  0.754   0.638           0  3000
+oracle           additive     8  0.928  0.826  0.790  0.744   0.708           0  3000
+plain            additive     6  0.942  0.128  0.094  0.036   0.094           0  3000
+plain            additive     7  0.944  0.170  0.074  0.060   0.090           0  3000
+plain            additive     8  0.928  0.104  0.084  0.040   0.076           0  3000
+
+decision: chain - cancel_spread at 12 events, per seed [0.048, 0.044, 0.034], mean +0.042
+  rule: CHAINING BETTER if mean >= +5 points and > 0 on every seed; METHOD BETTER if mean <= -5 points and < 0 on every seed; otherwise NO CLEAR DIFFERENCE
+secondary, replication: cancel_spread - plain at 12 >= 15 points on every seed: [0.474, 0.472, 0.464] -> held
+secondary, means at 12: {'plain': 0.084, 'cancel_spread': 0.554, 'chain': 0.596, 'oracle': 0.771} | oracle - chain +0.175
+secondary, chain's in-distribution cost at 4 events (plain - chain): -0.011
+verdict: NO CLEAR DIFFERENCE

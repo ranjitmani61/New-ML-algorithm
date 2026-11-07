@@ -1,0 +1,254 @@
+
+=== 0_0_chain_additive_s6  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 80.68391666666666, 'prompt_tokens_p50_p90_max': [68, 132, 185], 'changes_mean': 5.766583333333333, 'answer_max': 105, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.956 lenient 0.956 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.738 lenient 0.738 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.616 lenient 0.616 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.582 lenient 0.582 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.616 lenient 0.616 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer   14  output '14'
+    [train_vocab/4] answer   18  output '18'
+    [train_vocab/4] answer   10  output '10'
+    [train_vocab/4] answer   28  output '28'
+    [train_vocab/4] answer    3  output '2'
+    [train_vocab/4] answer   39  output '39'
+    [train_vocab/4] answer   12  output '12'
+    [train_vocab/4] answer    7  output '7'
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer    0  output '0'
+
+=== 0_0_chain_additive_s7  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 80.47829166666666, 'prompt_tokens_p50_p90_max': [68, 132, 184], 'changes_mean': 5.741916666666667, 'answer_max': 98, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.936 lenient 0.936 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.704 lenient 0.704 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.590 lenient 0.590 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.572 lenient 0.572 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.526 lenient 0.526 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer   30  output '30'
+    [train_vocab/4] answer   28  output '28'
+    [train_vocab/4] answer   30  output '30'
+    [train_vocab/4] answer   16  output '16'
+    [train_vocab/4] answer    0  output '0'
+    [train_vocab/4] answer   43  output '41'
+    [train_vocab/4] answer   29  output '29'
+    [train_vocab/4] answer    2  output '2'
+    [train_vocab/4] answer   10  output '10'
+
+=== 0_1_cancel_spread_additive_s8  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 80.69366666666667, 'prompt_tokens_p50_p90_max': [68, 132, 182], 'changes_mean': 5.76475, 'answer_max': 64, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.942 lenient 0.942 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.684 lenient 0.684 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.548 lenient 0.548 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.464 lenient 0.464 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.538 lenient 0.538 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer    1  output '1'
+    [train_vocab/4] answer    9  output '9'
+    [train_vocab/4] answer   19  output '19'
+    [train_vocab/4] answer    0  output '0'
+    [train_vocab/4] answer   27  output '27'
+    [train_vocab/4] answer   39  output '41'
+    [train_vocab/4] answer   11  output '11'
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer   44  output '45'
+    [train_vocab/4] answer    1  output '1'
+
+=== 0_1_oracle_additive_s8  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 99.31008333333334, 'prompt_tokens_p50_p90_max': [99, 142, 185], 'changes_mean': 8.54475, 'answer_max': 108, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.928 lenient 0.928 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.826 lenient 0.826 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.790 lenient 0.790 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.744 lenient 0.744 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.708 lenient 0.708 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer    1  output '1'
+    [train_vocab/4] answer    9  output '9'
+    [train_vocab/4] answer   19  output '19'
+    [train_vocab/4] answer    0  output '0'
+    [train_vocab/4] answer   27  output '27'
+    [train_vocab/4] answer   39  output '40'
+    [train_vocab/4] answer   11  output '11'
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer   44  output '45'
+    [train_vocab/4] answer    1  output '1'
+
+=== 0_2_plain_additive_s6  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 58.79541666666667, 'prompt_tokens_p50_p90_max': [59, 69, 82], 'changes_mean': 2.5086666666666666, 'answer_max': 62, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.942 lenient 0.942 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.128 lenient 0.128 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.094 lenient 0.094 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.036 lenient 0.036 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.094 lenient 0.094 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer   14  output '14'
+    [train_vocab/4] answer   18  output '18'
+    [train_vocab/4] answer   10  output '10'
+    [train_vocab/4] answer   28  output '28'
+    [train_vocab/4] answer    3  output '1'
+    [train_vocab/4] answer   39  output '39'
+    [train_vocab/4] answer   12  output '12'
+    [train_vocab/4] answer    7  output '5'
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer    0  output '0'
+
+=== 0_2_plain_additive_s8  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 58.71375, 'prompt_tokens_p50_p90_max': [59, 69, 83], 'changes_mean': 2.4948333333333332, 'answer_max': 63, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.928 lenient 0.928 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.104 lenient 0.104 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.084 lenient 0.084 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.040 lenient 0.040 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.076 lenient 0.076 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer    1  output '1'
+    [train_vocab/4] answer    9  output '9'
+    [train_vocab/4] answer   19  output '19'
+    [train_vocab/4] answer    0  output '0'
+    [train_vocab/4] answer   27  output '29'
+    [train_vocab/4] answer   39  output '40'
+    [train_vocab/4] answer   11  output '11'
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer   44  output '44'
+    [train_vocab/4] answer    1  output '0'
+
+=== 1_0_cancel_spread_additive_s6  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 80.97766666666666, 'prompt_tokens_p50_p90_max': [68, 133, 183], 'changes_mean': 5.8155, 'answer_max': 61, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.942 lenient 0.942 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.732 lenient 0.732 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.568 lenient 0.568 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.466 lenient 0.466 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.546 lenient 0.546 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer   14  output '14'
+    [train_vocab/4] answer   18  output '18'
+    [train_vocab/4] answer   10  output '10'
+    [train_vocab/4] answer   28  output '28'
+    [train_vocab/4] answer    3  output '2'
+    [train_vocab/4] answer   39  output '39'
+    [train_vocab/4] answer   12  output '12'
+    [train_vocab/4] answer    7  output '7'
+    [train_vocab/4] answer   15  output '13'
+    [train_vocab/4] answer    0  output '0'
+
+=== 1_0_cancel_spread_additive_s7  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 80.27433333333333, 'prompt_tokens_p50_p90_max': [67, 132, 183], 'changes_mean': 5.70825, 'answer_max': 58, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.926 lenient 0.926 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.702 lenient 0.702 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.546 lenient 0.546 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.490 lenient 0.490 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.534 lenient 0.534 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer   30  output '30'
+    [train_vocab/4] answer   28  output '28'
+    [train_vocab/4] answer   30  output '30'
+    [train_vocab/4] answer   16  output '16'
+    [train_vocab/4] answer    0  output '0'
+    [train_vocab/4] answer   43  output '41'
+    [train_vocab/4] answer   29  output '29'
+    [train_vocab/4] answer    2  output '2'
+    [train_vocab/4] answer   10  output '10'
+
+=== 1_1_chain_additive_s8  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 80.603125, 'prompt_tokens_p50_p90_max': [68, 132, 185], 'changes_mean': 5.759833333333333, 'answer_max': 93, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.956 lenient 0.956 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.688 lenient 0.688 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.582 lenient 0.582 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.560 lenient 0.560 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.550 lenient 0.550 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer    1  output '1'
+    [train_vocab/4] answer    9  output '9'
+    [train_vocab/4] answer   19  output '21'
+    [train_vocab/4] answer    0  output '0'
+    [train_vocab/4] answer   27  output '27'
+    [train_vocab/4] answer   39  output '41'
+    [train_vocab/4] answer   11  output '11'
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer   44  output '44'
+    [train_vocab/4] answer    1  output '1'
+
+=== 1_1_oracle_additive_s7  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 98.81320833333334, 'prompt_tokens_p50_p90_max': [98, 142, 184], 'changes_mean': 8.469166666666666, 'answer_max': 103, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.908 lenient 0.908 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.804 lenient 0.804 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.762 lenient 0.762 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.754 lenient 0.754 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.638 lenient 0.638 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer   30  output '30'
+    [train_vocab/4] answer   28  output '28'
+    [train_vocab/4] answer   30  output '30'
+    [train_vocab/4] answer   16  output '16'
+    [train_vocab/4] answer    0  output '0'
+    [train_vocab/4] answer   43  output '43'
+    [train_vocab/4] answer   29  output '29'
+    [train_vocab/4] answer    2  output '2'
+    [train_vocab/4] answer   10  output '10'
+
+=== 1_2_oracle_additive_s6  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 99.02679166666667, 'prompt_tokens_p50_p90_max': [99, 141, 184], 'changes_mean': 8.509041666666667, 'answer_max': 100, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.962 lenient 0.962 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.806 lenient 0.806 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.760 lenient 0.760 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.744 lenient 0.744 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.660 lenient 0.660 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer   14  output '14'
+    [train_vocab/4] answer   18  output '18'
+    [train_vocab/4] answer   10  output '10'
+    [train_vocab/4] answer   28  output '28'
+    [train_vocab/4] answer    3  output '2'
+    [train_vocab/4] answer   39  output '39'
+    [train_vocab/4] answer   12  output '12'
+    [train_vocab/4] answer    7  output '7'
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer    0  output '0'
+
+=== 1_2_plain_additive_s7  device=cuda torch=2.11.0+cu130
+  code problems.py: matches local
+  code run_llm.py: matches local
+  train stats: {'n_train': 24000, 'prompt_tokens_mean': 58.79075, 'prompt_tokens_p50_p90_max': [59, 69, 82], 'changes_mean': 2.507, 'answer_max': 60, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.944 lenient 0.944 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.170 lenient 0.170 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.074 lenient 0.074 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.060 lenient 0.060 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.090 lenient 0.090 parse failures 0  (matches metrics.json)
+    [train_vocab/4] answer   15  output '15'
+    [train_vocab/4] answer   30  output '30'
+    [train_vocab/4] answer   28  output '28'
+    [train_vocab/4] answer   30  output '30'
+    [train_vocab/4] answer   16  output '16'
+    [train_vocab/4] answer    0  output '0'
+    [train_vocab/4] answer   43  output '41'
+    [train_vocab/4] answer   29  output '29'
+    [train_vocab/4] answer    2  output '2'
+    [train_vocab/4] answer   10  output '10'
+
+all checks consistent

@@ -1,0 +1,48 @@
+== means over seeds 6-8
+  train_vocab/4     plain 0.938  cancel_spread 0.937  chain 0.949  oracle 0.933
+  train_vocab/8     plain 0.134  cancel_spread 0.706  chain 0.710  oracle 0.812
+  train_vocab/12    plain 0.084  cancel_spread 0.554  chain 0.596  oracle 0.771
+  train_vocab/16    plain 0.045  cancel_spread 0.473  chain 0.571  oracle 0.747
+  heldout_vocab/12  plain 0.087  cancel_spread 0.539  chain 0.564  oracle 0.669
+  seed 6: the same test problems for every condition, in every set: True
+  seed 7: the same test problems for every condition, in every set: True
+  seed 8: the same test problems for every condition, in every set: True
+
+== paired differences (mean over seeds; per seed; 95% bootstrap over problems)
+  chain - cancel_spread at train_vocab/4: +0.013  per seed [0.014, 0.01, 0.014]  [+0.001, +0.025]
+  chain - cancel_spread at train_vocab/8: +0.004  per seed [0.006, 0.002, 0.004]  [-0.019, +0.026]
+  chain - cancel_spread at train_vocab/12: +0.042  per seed [0.048, 0.044, 0.034]  [+0.017, +0.067]
+  chain - cancel_spread at train_vocab/16: +0.098  per seed [0.116, 0.082, 0.096]  [+0.069, +0.126]
+  chain - cancel_spread at heldout_vocab/12: +0.025  per seed [0.07, -0.008, 0.012]  [-0.000, +0.050]
+  oracle - chain at train_vocab/12: +0.175  per seed [0.144, 0.172, 0.208]  [+0.151, +0.199]
+  cancel_spread - plain at train_vocab/12: +0.470  per seed [0.474, 0.472, 0.464]  [+0.443, +0.497]
+  chain - plain at train_vocab/4: +0.011  per seed [0.014, -0.008, 0.028]  [-0.002, +0.024]
+
+== test answers of 60 or more (12 events is the registered measure; 16 events is descriptive)
+  train_vocab/12  plain          0/30 = 0.000  per seed ['0/8', '0/7', '0/15']
+  train_vocab/12  cancel_spread  0/30 = 0.000  per seed ['0/8', '0/7', '0/15']
+  train_vocab/12  chain          3/30 = 0.100  per seed ['2/8', '0/7', '1/15']
+  train_vocab/12  oracle         6/30 = 0.200  per seed ['1/8', '1/7', '4/15']
+  train_vocab/16  plain          0/65 = 0.000  per seed ['0/23', '0/26', '0/16']
+  train_vocab/16  cancel_spread  2/65 = 0.031  per seed ['1/23', '1/26', '0/16']
+  train_vocab/16  chain          9/65 = 0.138  per seed ['3/23', '5/26', '1/16']
+  train_vocab/16  oracle         17/65 = 0.262  per seed ['5/23', '10/26', '2/16']
+
+== recorded predictions (SPEC_CHAIN.md)
+  1. verdict CHAINING BETTER: d per seed [0.048, 0.044, 0.034], mean +0.042 -> NO CLEAR DIFFERENCE -> missed
+  2. chain >= 65% at 12: 0.596 -> missed; the method 0.554 (final: 0.582)
+  3. chain > 10% on answers >= 60 at 12: 3/30 = 0.100 pooled -> missed; the method 0/30 -> held
+  4. replication (cancel_spread - plain >= 15 points at 12 on every seed): [0.474, 0.472, 0.464] -> held
+  5. chain costs <= 3 points at 4 events (plain - chain): -0.011 -> held
+
+== training data, regenerated with the registered code (seed 6)
+  cancel_spread  changes mean 5.8155 (run recorded 5.8155), answer max 61 (run recorded 61) -> same
+  chain          changes mean 5.7666 (run recorded 5.7666), answer max 105 (run recorded 105) -> same
+  oracle         changes mean 8.5090 (run recorded 8.5090), answer max 100 (run recorded 100) -> same
+  answer distribution by number of changes (mean; share of answers >= 30; count)
+  changes                    cancel_spread                           chain                          oracle
+   1-4                 18.0  0.16  n=14281             18.1  0.16  n=14337             18.0  0.16  n= 6000
+   5-8                 18.1  0.16  n= 3171             20.7  0.24  n= 3211             19.4  0.23  n= 5909
+   9-12                18.0  0.17  n= 3197             23.4  0.32  n= 3218             20.9  0.27  n= 6141
+  13-16                18.3  0.17  n= 3351             25.7  0.37  n= 3234             22.9  0.32  n= 5950
+  test, 12 events (seed 6): answer mean 21.2, share >= 30 0.28

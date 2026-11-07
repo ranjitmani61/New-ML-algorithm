@@ -1,6 +1,8 @@
 # Language-model test of cancelling-event insertion: plan and rules
 
-**Status (2026-11-07):** registered in `SPEC.md` and run; the final passed. See `REPORT.md`.
+**Status (2026-11-07):** registered in `SPEC.md` and run; the final passed. A second registered
+test against chaining (`SPEC_CHAIN.md`) found no clear difference by its rule, with chaining
+ahead on every seed. See `REPORT.md`.
 This file is the original plan, kept as written.
 
 ## Verification log (2026-11-03, after a session restart on a new machine)

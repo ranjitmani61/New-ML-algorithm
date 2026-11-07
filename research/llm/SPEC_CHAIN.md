@@ -100,3 +100,16 @@ The rule is applied mechanically by `summarize.py --gate chain`.
   untested.
 * **METHOD BETTER or NO CLEAR DIFFERENCE:** the method is at least competitive with chaining here,
   at equal labeled data and length.
+
+## Result (appended after the run; the text above is unchanged)
+
+* **Verdict: NO CLEAR DIFFERENCE** (`summarize.py --gate chain`). chain - cancel_spread at 12
+  events was +4.8, +4.4 and +3.4 points on seeds 6, 7 and 8, a mean of +4.2. The rule needed +5.
+* No deviations: the 12 registered jobs ran once and all exited 0, with no reruns. Both kernels
+  recorded the code hashes above. GPU use was 2.85 hours (from the kernel logs).
+* Chaining was ahead on every seed. The paired 95% bootstrap interval over test problems is +1.7
+  to +6.7 at 12 events, and +6.9 to +12.6 at 16 events, where chaining led by +9.8.
+* So the outcome meaning registered above for NO CLEAR DIFFERENCE ("at least competitive")
+  overstates the method's position. The report gives the weaker reading the data support.
+* Predictions: 4 and 5 held; 1, 2 and 3 missed (3 by the narrowest margin, 3 of 30 = 10%).
+* See `REPORT.md` and `results/chain/`.
