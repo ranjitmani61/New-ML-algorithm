@@ -19,12 +19,15 @@ import os
 import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-local = {n: hashlib.sha256(open(os.path.join(HERE, n), "rb").read()).hexdigest() for n in ("problems.py", "run_llm.py")}
+local = {n: hashlib.sha256(open(os.path.join(HERE, n), "rb").read()).hexdigest()
+         for n in ("problems.py", "run_llm.py", "multi.py", "run_multi.py")}
 REGISTERED = {  # earlier registered versions, so committed results still check out after code changes
     "d4d3128bd64043ac3449b5bc04a0bc995c3cdb6aa9525236f9140697e63b61a9": "the version registered in SPEC.md",
     "5a684fec81f3bcad5b85db2e56acae8dd63440dcc2f02f2457e6b21f3c1be08a": "the version registered in SPEC.md",
     "d8cb98f513f14c3ce41ab088d3ff3023f2827b75b69a83b99d56bb8c364e325a": "the version registered in SPEC_CHAIN.md",
     "2fe0b2afe62ef404ccb163d087842dc8892b2cebb5ae34204fbf19b24e4db6b7": "the version registered in SPEC_CHAIN.md",
+    "43c22ac06782e270facbb8fd6463ea44bd62100d480114776dee310787a9e79d": "the version run in the pilot (PLAN_MULTI.md)",
+    "fbbc6d3eba216dc7393af1b4171d4f299897545eae120869b57ff9d10f1ab3e4": "the version run in the pilot (PLAN_MULTI.md)",
 }
 
 ap = argparse.ArgumentParser()
@@ -36,7 +39,9 @@ for mpath in sorted(glob.glob(os.path.join(a.out, "**", "metrics.json"), recursi
     run = os.path.dirname(mpath)
     m = json.load(open(mpath))
     print(f"\n=== {os.path.basename(run)}  device={m['device']} torch={m['torch']}")
-    for n, h in (("problems.py", m["generator_sha256"]), ("run_llm.py", m["script_sha256"])):
+    hashes = (m["code_sha256"].items() if "code_sha256" in m  # run_multi.py records every file it used
+              else (("problems.py", m["generator_sha256"]), ("run_llm.py", m["script_sha256"])))
+    for n, h in hashes:
         known = h == local[n] or h in REGISTERED
         bad += not known
         where = "local" if h == local[n] else REGISTERED.get(h, "")
