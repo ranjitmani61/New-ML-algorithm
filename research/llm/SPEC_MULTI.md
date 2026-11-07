@@ -128,3 +128,15 @@ Answer sizes, from the generator only (`answer_support_multi.py`, output in
 over seeds 9-11, the method's accuracy on answers of 45 or more is at least 20 points below its
 accuracy on answers of 29 or less. The oracle's drop between the same answer sizes is smaller than
 the method's. Checked from `audit_multi.py` section 2, with the bins weighted by problem count.
+
+## Addendum 2 (2026-11-07, before any final result): an applicable method missed at registration
+
+* The Question section says self-improvement is "the strongest existing method found that still
+  applies here". A search after registration found another one.
+* PAR (arXiv 2610.27628, 2026-10-20) retrofits Qwen2.5-0.5B as a looped model and uses prefix
+  self-distillation, which needs only final answers on short problems. A prefix of a three-person
+  problem is a valid shorter problem, so PAR applies to this task.
+* It reports 85% at 16x the training length on S5 state tracking without step labels. This project
+  has shown about 3-4x.
+* PAR is not compared here. The registered test can show at most whether the method beats direct
+  self-improvement, not every method that applies. The decision rule is unchanged.

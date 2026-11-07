@@ -230,3 +230,23 @@ Reading:
 * The pure pair rule, with pairs covering 16 terms, reached 58.2% at 16 terms from labels on 1-4
   terms. That is the result batch 3 adds, and it needs no self-improvement.
 * Ideas tried so far: 25 (counting #23-#25 as three).
+
+## Idea #26: dropped before running, on prior art (2026-11-07)
+
+* **The idea:** align the model's internal representation of a pair-expanded problem with that of
+  its short original. Both end in the same full state, and in the three-person task the max label
+  does not say who has what. So aligned states would carry more than the label does.
+* **Prior art found before any code was written:**
+  * PAR (arXiv 2610.27628, 2026-10-20) trains a looped Qwen2.5-0.5B with prefix
+    self-distillation: the model's answers on prefixes, which are valid shorter problems, supervise
+    the matching iterations on the full input. It uses final answers only.
+  * Without step labels, PAR reports 85% at 16x the training length on single-query S5 (chance
+    20%), and up to 99.7% on swap-S5 after a positional-stretch fine-tune. This project has shown
+    about 3-4x.
+  * Du et al. (ICML 2025, "Long-short alignment") regularize the gap between output distributions
+    at different lengths.
+  * Aligning representations across our rewrites would be a small variation on these.
+* **Related, seen only in search results:** "Tracking States or Tracking Cosets?" (arXiv
+  2609.29951) is on what models learn when tracking group products. The batch 2 plateau near the
+  parity coset in S3 is that kind of outcome.
+* **Decision:** not run. Ideas tried so far: still 25.
