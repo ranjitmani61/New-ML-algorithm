@@ -1,4 +1,4 @@
-runs: 17 | code hashes differ from local for: none
+runs: 17 | code hashes differ from the code registered for this gate: none
 condition        family    seed      4      8     12     16  held12  parse-fail  steps
 cancel_adjacent  additive     1  0.928  0.706  0.590  0.532   0.556           0  3000
 cancel_adjacent  additive     2  0.926  0.700  0.610  0.536   0.602           0  3000

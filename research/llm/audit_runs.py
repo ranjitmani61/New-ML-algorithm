@@ -21,7 +21,7 @@ import sys
 
 NUM = re.compile(r"\d+")
 BINS = ((0, 30), (30, 60), (60, 90), (90, 10**9))
-CONDS = ("plain", "irrelevant", "inactive", "cancel_spread", "cancel_adjacent", "oracle")
+CONDS = ("plain", "irrelevant", "inactive", "cancel_spread", "cancel_adjacent", "oracle", "chain")
 
 
 def rows_of(run):

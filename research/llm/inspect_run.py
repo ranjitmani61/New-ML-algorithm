@@ -5,7 +5,7 @@
 For every run folder (metrics.json + generations.jsonl, or generations.jsonl.gz as committed):
   * recompute strict and lenient accuracy per set from generations.jsonl, independently of
     run_llm.py's code, and flag any disagreement with metrics.json;
-  * check that the code hashes recorded by the run match the local files;
+  * check that the code hashes recorded by the run match the local files or a registered version;
   * print train statistics, leakage counts and a few raw generations for reading by eye.
 """
 
@@ -20,6 +20,12 @@ import re
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 local = {n: hashlib.sha256(open(os.path.join(HERE, n), "rb").read()).hexdigest() for n in ("problems.py", "run_llm.py")}
+REGISTERED = {  # earlier registered versions, so committed results still check out after code changes
+    "d4d3128bd64043ac3449b5bc04a0bc995c3cdb6aa9525236f9140697e63b61a9": "the version registered in SPEC.md",
+    "5a684fec81f3bcad5b85db2e56acae8dd63440dcc2f02f2457e6b21f3c1be08a": "the version registered in SPEC.md",
+    "d8cb98f513f14c3ce41ab088d3ff3023f2827b75b69a83b99d56bb8c364e325a": "the version registered in SPEC_CHAIN.md",
+    "2fe0b2afe62ef404ccb163d087842dc8892b2cebb5ae34204fbf19b24e4db6b7": "the version registered in SPEC_CHAIN.md",
+}
 
 ap = argparse.ArgumentParser()
 ap.add_argument("out")
@@ -31,9 +37,10 @@ for mpath in sorted(glob.glob(os.path.join(a.out, "**", "metrics.json"), recursi
     m = json.load(open(mpath))
     print(f"\n=== {os.path.basename(run)}  device={m['device']} torch={m['torch']}")
     for n, h in (("problems.py", m["generator_sha256"]), ("run_llm.py", m["script_sha256"])):
-        same = h == local[n]
-        bad += not same
-        print(f"  code {n}: {'matches local' if same else 'DIFFERS from local'}")
+        known = h == local[n] or h in REGISTERED
+        bad += not known
+        where = "local" if h == local[n] else REGISTERED.get(h, "")
+        print(f"  code {n}: {('matches ' + where) if known else 'DIFFERS from local and from every registered version'}")
     print("  train stats:", m["train_stats"] or "(no training)")
     print("  leakage (exact overlap with training):", m["leakage_exact_overlap"])
     g = os.path.join(run, "generations.jsonl")

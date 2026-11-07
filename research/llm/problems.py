@@ -16,6 +16,9 @@ Expansions (answer unchanged, checked by tests)
                    them, which keeps the answer exact because every inserted block is an identity
   inactive         events that change nothing ("counts them")       length control
   irrelevant       numeric sentences about something else           PROBLEMATHIC/NoOp-style control
+
+Chaining (answer recomputed from labels, not unchanged; see chain())
+  chain            append other labeled short problems' events      h1-style prior-art baseline
 """
 
 from __future__ import annotations
@@ -209,6 +212,37 @@ def cancel_adjacent(rng, p, max_changes, family="additive"):
                     Event("loss", a, _render(rng, "loss", a, p.name, p.item, names))]
         q.events[i:i] = pair
     return q
+
+
+def chain(rng, p, max_changes, pool, family="additive"):
+    """Serial composition of short labeled problems (h1-style substitution chaining, arXiv
+    2510.07312), rendered as one continuous story like the test problems.
+
+    Starting from p, append the events of other labeled problems drawn from `pool`, re-rendered
+    on p's person and item. The running amount replaces each piece's start (an identity adapter),
+    and the new label is composed from labels alone: label + (piece.answer() - piece.start).
+    A piece is used only if it stays non-negative from the running amount (h1's well-posedness
+    check). The total number of changes targets the same distribution as cancel_spread:
+    n + 2 * randint(0, (max_changes - n) // 2). Returns (problem, composed label). Additive only.
+    """
+    if family != "additive":
+        raise ValueError("chaining by label composition is implemented for the additive family only")
+    target = p.n_changes() + 2 * rng.randint(0, (max_changes - p.n_changes()) // 2)
+    q = _copy(p)
+    label = p.answer()
+    names = NAMES_HELDOUT if p.name in NAMES_HELDOUT else NAMES_TRAIN
+    for _ in range(200):
+        if q.n_changes() >= target:
+            break
+        piece = rng.choice(pool)
+        if piece.n_changes() > target - q.n_changes():
+            continue
+        if label + min(a - piece.start for a in piece.amounts()) < 0:
+            continue
+        for e in piece.events:
+            q.events.append(Event(e.kind, e.n, _render(rng, e.kind, e.n, p.name, p.item, names)))
+        label += piece.answer() - piece.start
+    return q, label
 
 
 def _insert_sentences(rng, p, max_changes, kind, family="additive"):

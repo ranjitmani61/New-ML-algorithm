@@ -3,7 +3,8 @@
     python3 run_llm.py --model MODEL_DIR --condition cancel_spread --seed 0 --out OUT_DIR
 
 Conditions: plain, irrelevant, inactive, cancel_spread, cancel_adjacent, oracle (true labels for
-all lengths). --steps 0 evaluates the base model unchanged (headroom check).
+all lengths), chain (short labeled problems chained serially, the h1-style prior-art baseline).
+--steps 0 evaluates the base model unchanged (headroom check).
 
 The model answers with the number only. Loss is computed on the answer tokens only. Everything
 needed to recompute the metrics is saved: raw generations (generations.jsonl), the trained
@@ -26,12 +27,24 @@ import torch
 import problems as P
 
 SYSTEM = "Solve the word problem. Answer with the final number only."
-CONDITIONS = ("plain", "irrelevant", "inactive", "cancel_spread", "cancel_adjacent", "oracle")
+CONDITIONS = ("plain", "irrelevant", "inactive", "cancel_spread", "cancel_adjacent", "oracle", "chain")
 ANSWER = re.compile(r"^\s*(-?\d+)")
 ANY_INT = re.compile(r"-?\d+")
 
 
 def build_train(rng, condition, family, n, label_max, expand_max):
+    if condition == "chain":
+        # The same labeled budget as every condition: n short problems. Half of them (on average)
+        # are extended by chaining pieces drawn from that same pool.
+        pool = [P.make_problem(rng, rng.randint(1, label_max), family) for _ in range(n)]
+        out = []
+        for p in pool:
+            if rng.random() < 0.5:
+                q, label = P.chain(rng, p, expand_max, pool, family)  # raises for the mixed family
+                assert q.answer() == label and q.valid()
+                p = q
+            out.append(p)
+        return out
     out = []
     for _ in range(n):
         kmax = expand_max if condition == "oracle" else label_max

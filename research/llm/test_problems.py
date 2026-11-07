@@ -70,6 +70,54 @@ class Problems(unittest.TestCase):
         self.assertIn("double", kinds)
         self.assertIn("halve", kinds)
 
+    def test_chain_label_composition_matches_the_text(self):
+        """The composed label (labels only) must equal an independent parse of the chained text,
+        the problem must stay valid, keep one person and one item, and respect the length cap."""
+        rng = random.Random(5)
+        pat = {"gain": [r"buys (\d+) more", r"gives \w+ (\d+) ", r"finds (\d+)", r"wins (\d+)"],
+               "loss": [r"gives (\d+) \w+ to", r"loses (\d+)", r"sells (\d+)", r"uses (\d+)"]}
+        pool = [P.make_problem(rng, rng.randint(1, 4)) for _ in range(500)]
+        labels, hit = [], 0
+        for _ in range(3000):
+            p = P.make_problem(rng, rng.randint(1, 4), heldout=rng.random() < 0.3)
+            q, label = P.chain(rng, p, 16, pool)
+            x = int(re.match(r"\w+ has (\d+) ", q.text()).group(1))
+            for sent in re.split(r"(?<=\.) ", q.text())[1:-1]:
+                self.assertIn(p.name, sent)
+                self.assertTrue(p.item in sent or P.singular(p.item) in sent, sent)
+                if any(re.search(r, sent) for r in pat["loss"]):
+                    x -= int(next(re.search(r, sent).group(1) for r in pat["loss"] if re.search(r, sent)))
+                else:
+                    x += int(next(re.search(r, sent).group(1) for r in pat["gain"] if re.search(r, sent)))
+                self.assertGreaterEqual(x, 0, q.text())
+            self.assertEqual(x, label, q.text())
+            self.assertEqual(q.answer(), label)
+            self.assertTrue(q.valid())
+            self.assertLessEqual(q.n_changes(), 16)
+            self.assertEqual(q.events[:len(p.events)], p.events)
+            labels.append(label)
+            hit += q.n_changes() > p.n_changes()
+        self.assertGreater(max(labels), 70)  # composed labels go beyond the short problems' range
+        self.assertGreater(hit, 2400)  # most chains grow (k = 0 pairs leaves the problem unchanged)
+
+    def test_chain_is_additive_only(self):
+        rng = random.Random(6)
+        pool = [P.make_problem(rng, 2, "mixed") for _ in range(10)]
+        with self.assertRaises(ValueError):
+            P.chain(rng, pool[0], 16, pool, "mixed")
+
+    def test_chain_length_matches_cancel_spread(self):
+        """Same target length distribution as the method (measured, not assumed)."""
+        rng = random.Random(7)
+        pool = [P.make_problem(rng, rng.randint(1, 4)) for _ in range(2000)]
+        base = [P.make_problem(rng, rng.randint(1, 4)) for _ in range(4000)]
+        ch = [P.chain(rng, p, 16, pool)[0].n_changes() for p in base]
+        cs = [P.cancel_spread(rng, p, 16).n_changes() for p in base]
+        self.assertLess(abs(sum(ch) / len(ch) - sum(cs) / len(cs)), 0.15, (sum(ch) / len(ch), sum(cs) / len(cs)))
+        self.assertLess(abs(max(ch) - max(cs)), 1)
+        # Chain lengths can only fall short of the target, never exceed it; the shortfall is small.
+        self.assertLess(sum(cs) / len(cs) - sum(ch) / len(ch), 0.15)
+
     def test_vocabulary_split(self):
         self.assertFalse(set(P.NAMES_TRAIN) & set(P.NAMES_HELDOUT))
         self.assertFalse(set(P.ITEMS_TRAIN) & set(P.ITEMS_HELDOUT))

@@ -1,4 +1,4 @@
-runs: 2 | code hashes differ from local for: none
+runs: 2 | code hashes differ from the code registered for this gate: none
 condition        family    seed      4      8     12     16  held12  parse-fail  steps
 oracle           additive     0  0.838  0.612  0.574  0.562   0.480           0  1500
 plain            additive     0  0.838  0.222  0.092  0.064   0.130           0  1500

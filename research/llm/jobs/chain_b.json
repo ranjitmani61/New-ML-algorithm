@@ -1,0 +1,47 @@
+{
+ "lanes": [
+  [
+   {
+    "condition": "chain",
+    "seed": 7
+   },
+   {
+    "condition": "cancel_spread",
+    "seed": 8
+   },
+   {
+    "condition": "plain",
+    "seed": 6
+   }
+  ],
+  [
+   {
+    "condition": "cancel_spread",
+    "seed": 7
+   },
+   {
+    "condition": "chain",
+    "seed": 8
+   },
+   {
+    "condition": "oracle",
+    "seed": 6
+   }
+  ]
+ ],
+ "common": {
+  "family": "additive",
+  "steps": 3000,
+  "n_train": 24000,
+  "batch": 16,
+  "lr": 0.0002,
+  "lora_r": 16,
+  "eval_ks": [
+   4,
+   8,
+   12,
+   16
+  ],
+  "eval_per_k": 500
+ }
+}

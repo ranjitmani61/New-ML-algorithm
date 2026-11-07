@@ -1,9 +1,11 @@
 """Tabulate fetched language-model runs and apply the gates written in SPEC_DRAFT.md.
 
-    python3 summarize.py --gate pilot|discovery|final DIR [DIR ...]
+    python3 summarize.py --gate pilot|discovery|final|chain DIR [DIR ...]
+
+The chain gate applies the decision rule registered in SPEC_CHAIN.md.
 
 Reads every DIR/**/metrics.json. Refuses to judge (prints INCOMPLETE) if a run the gate needs is
-missing, and flags any run whose code hashes differ from the local files.
+missing, and flags any run whose code hashes differ from the code registered for that gate.
 """
 
 import argparse
@@ -15,11 +17,16 @@ import os
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LOCAL = {n: hashlib.sha256(open(os.path.join(HERE, n), "rb").read()).hexdigest() for n in ("problems.py", "run_llm.py")}
+# Code each gate's runs must have used: sha256 of (problems.py, run_llm.py), as registered.
+SPEC_CODE = ("d4d3128bd64043ac3449b5bc04a0bc995c3cdb6aa9525236f9140697e63b61a9",
+             "5a684fec81f3bcad5b85db2e56acae8dd63440dcc2f02f2457e6b21f3c1be08a")  # SPEC.md
+CHAIN_CODE = ("d8cb98f513f14c3ce41ab088d3ff3023f2827b75b69a83b99d56bb8c364e325a",
+              "2fe0b2afe62ef404ccb163d087842dc8892b2cebb5ae34204fbf19b24e4db6b7")  # SPEC_CHAIN.md
+REGISTERED = {"pilot": SPEC_CODE, "discovery": SPEC_CODE, "final": SPEC_CODE, "chain": CHAIN_CODE}
 SETS = ("train_vocab/4", "train_vocab/8", "train_vocab/12", "train_vocab/16", "heldout_vocab/12")
 
 ap = argparse.ArgumentParser()
-ap.add_argument("--gate", choices=("pilot", "discovery", "final"), required=True)
+ap.add_argument("--gate", choices=("pilot", "discovery", "final", "chain"), required=True)
 ap.add_argument("dirs", nargs="+")
 a = ap.parse_args()
 
@@ -31,10 +38,10 @@ for d in a.dirs:
         if key in runs:
             raise SystemExit(f"duplicate run {key}: {path}")
         runs[key] = m
-        if m["generator_sha256"] != LOCAL["problems.py"] or m["script_sha256"] != LOCAL["run_llm.py"]:
+        if (m["generator_sha256"], m["script_sha256"]) != REGISTERED[a.gate]:
             hash_issues.append(key)
 
-print("runs:", len(runs), "| code hashes differ from local for:", hash_issues or "none")
+print("runs:", len(runs), "| code hashes differ from the code registered for this gate:", hash_issues or "none")
 print(f"{'condition':16s} {'family':9s} {'seed':>4s}", *(f"{s.split('/')[1]:>6s}" for s in SETS[:4]), " held12  parse-fail  steps")
 for key in sorted(runs):
     m = runs[key]["metrics"]
@@ -73,6 +80,29 @@ elif a.gate == "discovery":
     print(f"go/no-go 1: cancel_spread - plain at 12 events >= 15 points on both seeds: {[round(g, 3) for g in gains]} -> {'PASS' if c1 else 'FAIL'}")
     print(f"go/no-go 2: cancel_spread - better control ({best}) >= 10 points on average: {margin:+.3f} -> {'PASS' if c2 else 'FAIL'}")
     print("verdict:", "GO (register and run the final on seeds 3-5)" if c1 and c2 else "NO-GO (stop; report the negative result)")
+elif a.gate == "chain":
+    seeds = (6, 7, 8)
+    need([(c, "additive", s) for c in ("plain", "cancel_spread", "chain", "oracle") for s in seeds])
+    d = [acc("chain", s) - acc("cancel_spread", s) for s in seeds]
+    md = float(np.mean(d))
+    if md >= 0.05 and all(x > 0 for x in d):
+        verdict = "CHAINING BETTER"
+    elif md <= -0.05 and all(x < 0 for x in d):
+        verdict = "METHOD BETTER"
+    else:
+        verdict = "NO CLEAR DIFFERENCE"
+    print(f"decision: chain - cancel_spread at 12 events, per seed {[round(x, 3) for x in d]}, mean {md:+.3f}")
+    print("  rule: CHAINING BETTER if mean >= +5 points and > 0 on every seed; METHOD BETTER if mean <= -5 points"
+          " and < 0 on every seed; otherwise NO CLEAR DIFFERENCE")
+    rep = [acc("cancel_spread", s) - acc("plain", s) for s in seeds]
+    print(f"secondary, replication: cancel_spread - plain at 12 >= 15 points on every seed: {[round(x, 3) for x in rep]}"
+          f" -> {'held' if all(x >= 0.15 for x in rep) else 'not held'}")
+    m = {c: float(np.mean([acc(c, s) for s in seeds])) for c in ("plain", "cancel_spread", "chain", "oracle")}
+    print("secondary, means at 12:", {c: round(v, 3) for c, v in m.items()},
+          f"| oracle - chain {m['oracle'] - m['chain']:+.3f}")
+    cost = float(np.mean([acc("plain", s, "train_vocab/4") - acc("chain", s, "train_vocab/4") for s in seeds]))
+    print(f"secondary, chain's in-distribution cost at 4 events (plain - chain): {cost:+.3f}")
+    print("verdict:", verdict)
 else:
     seeds = (3, 4, 5)
     need([(c, "additive", s) for c in ("plain", "irrelevant", "inactive", "cancel_spread", "oracle") for s in seeds])
