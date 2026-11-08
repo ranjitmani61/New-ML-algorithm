@@ -376,3 +376,42 @@ family.
 
 A kept idea goes to the language model only through a registered spec. Ideas tried so far: 27
 after this batch (#28-#29).
+
+### Batch 4 result (2026-11-08): the testbed failed, so split is untested
+
+**Proxy check: failed.** The toy did not reproduce the language model's failure, so this batch
+cannot judge split.
+
+* Pairs fell by 3.8 points (seed 0) and 6.6 points (seed 1) between winners with 0-2 events and
+  winners with 5-6 events. The check needed at least 30.
+* The cause is the toy, not any condition. The small model never learned the task, even at training lengths:
+  the baseline gets 82.5% at 1 event and 29.9% at 4 events (mean of seeds 0 and 1).
+* At 12 events every condition is between 5% and 8%. Always giving the most common answer scores
+  4.5% (seed 0) and 5.6% (seed 1) on the same test problems, so these numbers are at the floor.
+
+| # | condition | 1 event | 4 events | mean, 1-4 | 8 | 12 (s0, s1) | 16 | prediction |
+|---|---|---|---|---|---|---|---|---|
+| 30 | baseline | 82.5 | 29.9 | 53.6 | 8.2 | 5.3 (5.3, 5.4) | 3.3 | at most 15%: held |
+| 31 | pairs | 70.7 | 23.0 | 44.1 | 7.1 | 5.7 (5.0, 6.4) | 5.2 | 40-80%: missed |
+| 32 | oracle (1-16) | 53.5 | 15.0 | 30.8 | 6.1 | 7.1 (6.1, 8.0) | 7.2 | at least 80%: missed |
+| 28 | split | 78.7 | 28.5 | 50.4 | 11.2 | 6.3 (7.4, 5.3) | 5.6 | +10 over pairs: missed (+0.6) |
+| 29 | split, then pairs | 69.8 | 23.5 | 44.0 | 7.5 | 5.7 (5.4, 6.0) | 5.8 | +10 over pairs: missed (0.0) |
+
+All numbers are percent correct on 1,000 fresh problems per length and seed. The per-seed results
+and the accuracy by the winner's events are in `results_batch4/*.json`.
+
+**Keep rule.** Nothing is kept. No condition reaches the in-distribution bar; the baseline itself
+averages 53.6% at 1-4 events. Split (#28) and split-then-pairs (#29) are neither kept nor deleted:
+this batch says nothing about them.
+
+**My errors.**
+
+* I launched the whole batch (about 1.4 hours on each of two CPU lanes) without first checking that the
+  baseline learns the task at training lengths. One baseline run (8 minutes) would have shown it.
+* My predictions for pairs and the oracle assumed the toy could learn the task. Nothing I had
+  measured supported that.
+
+From now on, each new testbed starts with a baseline run at training lengths. A batch goes ahead
+only if the baseline reaches at least 90% there.
+
+Ideas tried so far: 27 (#28 and #29 were run, but this testbed could not test them).
