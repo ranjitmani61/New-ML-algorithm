@@ -1,0 +1,2 @@
+exit s0 0
+exit s1 0

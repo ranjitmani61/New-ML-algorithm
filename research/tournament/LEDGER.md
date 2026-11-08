@@ -272,3 +272,23 @@ Reading:
     give about the abelianization, so pairs lose little to real long data there.
   * oracle at least 70% at 16: pairs leave a large gap on S3, and the claim stands as written.
 * This is an audit check, not an idea. Ideas tried so far: still 25.
+
+### Audit #27 result, part 1: the oracle (seeds 0-1, 16,000 steps; `results_audit27/`)
+
+| elements | 6 | 8 | 12 | 16 |
+|---|---|---|---|---|
+| oracle exact (seed 0, seed 1) | 62.2, 65.1% | 38.1, 39.1% | 35.4, 37.1% | 30.5, 31.9% |
+| oracle parity right | 99.9, 99.9% | 100.0, 99.9% | 99.9, 100.0% | 99.0, 99.7% |
+
+* **At 16 elements** the oracle has 31.2% (mean); in #22, pairs had 34.2% and the baseline 15.0%.
+  * The first part of the prediction held: 31.2% is within 30-50%, and 3 points below pairs.
+  * True long labels do not beat pairs here.
+* **From 8 elements on**, exact accuracy given the right parity is 0.31-0.39, about 1/3. The oracle
+  tracks parity and guesses within it: the same plateau as pairs, and as the Transformers of
+  2609.29951.
+* **In range**, training on lengths up to 16 costs short-length accuracy. At 6 elements the oracle
+  has 62-65%, against the baseline's 86-89% (trained on 1-6) and pairs' 73-74%.
+* **Pending:** the second part (the oracle at least 15 points above pairs at 8 elements). It waits
+  for a deterministic rerun of #22's pairs runs, whose per-length numbers were not saved.
+* The parity numbers come from the saved parameters (`oracle_s*_s*.pkl`), evaluated on the same
+  test words as `engine.evaluate`. The exact accuracies recompute to the saved values.
