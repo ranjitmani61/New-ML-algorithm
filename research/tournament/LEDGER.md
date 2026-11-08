@@ -292,3 +292,30 @@ Reading:
   for a deterministic rerun of #22's pairs runs, whose per-length numbers were not saved.
 * The parity numbers come from the saved parameters (`oracle_s*_s*.pkl`), evaluated on the same
   test words as `engine.evaluate`. The exact accuracies recompute to the saved values.
+
+### Audit #27 result, part 2: pairs rerun, and verdict
+
+| elements | 6 | 8 | 12 | 16 |
+|---|---|---|---|---|
+| pairs (#22 rerun; seed 0, seed 1) | 72.7, 72.3% | 45.2, 44.9% | 37.1, 32.1% | 35.2, 33.2% |
+| oracle (mean of seeds 0-1) | 63.7% | 38.6% | 36.2% | 31.2% |
+| oracle minus pairs | -8.8 | -6.5 | +1.7 | -3.0 |
+
+* **The rerun reproduces #22 at 16 elements** (34.2%). At 6 elements it gives 72.3-72.7%, where
+  #22's entry says 73-74%. The original per-length files were not saved, so that small
+  difference cannot be traced.
+* **Prediction, part 2: missed.** At 8 elements the oracle is 6.5 points below pairs, not 15
+  above.
+* **In-distribution (1-6):** pairs 93.8-94.1%, oracle 89.7-92.0%; the baseline had 98% in #22.
+* **Verdict:**
+  * At this scale on S3, true labels on long words give no more than pairs at any tested length.
+  * Both track parity and stay at about 1/3 within it from about 10 elements on.
+  * So the S3 failure is not a shortfall of the pair rule against long data. No data tested here
+    teaches the order-dependent part.
+  * The claim "pairs do not carry over to order-dependent composition" is replaced: on S3 at this
+    scale, neither pairs nor true long labels teach it, and pairs match true long labels.
+  * The in-distribution cost at 6 elements is shared by the oracle. It comes from training on
+    longer words, not from pairs specifically.
+* **Untested:** whether pairs would fall short in a model that does learn order-dependent tracking
+  from long data, such as a recurrent or looped model (PAR; the LSTMs and GRUs of 2609.29951).
+* `research/final/REPORT.md` is corrected to match. Ideas tried so far: still 25.

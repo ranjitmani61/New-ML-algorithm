@@ -63,11 +63,18 @@ Each figure is the mean over seeds 100-104 (per-seed values are in `results/repo
     explanation. What matters is that non-zero cancelling terms are present.
 * It costs **1 point in-distribution** (8 terms: 98.9% vs 99.9%).
 * It does **not** make models extrapolate beyond the lengths the expansions cover.
-* It does **not** extend to order-dependent composition. On S3 state tracking it teaches only
-  the commutative part: parity is tracked at 97-100% on 16-element words while the rotation part
-  stays at chance. It also lowers in-distribution accuracy on the order-dependent part
-  (6 elements: 74% vs 87%). This was confirmed at an adequate training budget in the audit (ledger
-  #22).
+* **Order-dependent composition** (corrected 2026-11-08 by ledger audit #27):
+  * On S3 state tracking it teaches only the commutative part. Parity is tracked at 97-100% on
+    16-element words, while the rotation part stays at chance (ledger #22, adequate budget).
+  * But true labels on words of length 1-16 do no better on this bench: 31.2% at 16 elements
+    against 34.2% for pairs, and 38.6% against 45.1% at 8. They show the same parity plateau,
+    which prior work reports for Transformers in general (arXiv 2609.29951).
+  * So no data tested here teaches the order-dependent part at this scale, and pairs match true
+    long labels.
+  * Training on longer words lowers accuracy at 6 elements in both cases: the oracle has 64% and
+    pairs 72-74%, against the baseline's 87%.
+  * Whether pairs fall short where a model can learn order-dependent tracking from long data, such
+    as a recurrent or looped model, is untested.
 * It is shown on one synthetic task family (signed sums) with small transformers; nothing here
   shows it on language models.
   * Follow-up (2026-11-07): a registered test on a language model (Qwen2.5-0.5B-Instruct, templated

@@ -1,2 +1,4 @@
 exit s0 0
 exit s1 0
+exit pairs s0 0
+exit pairs s1 0
