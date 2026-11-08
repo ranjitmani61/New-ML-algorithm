@@ -1,0 +1,7 @@
+exit baseline s3 0
+exit baseline s4 0
+exit baseline s2 0
+exit npia s2 0
+exit mined s3 0
+exit mined s4 0
+exit mined s2 0

@@ -550,7 +550,9 @@ Percent correct, 1,000 fresh problems per length and seed; per-seed files in `re
 * **The npia rerun is 2.05 points below batch 1** (86.6 vs 87.7, 89.9 vs 92.8). The transform
   and the sampler's random draws are unchanged since batch 1 (checked in git), and the baseline
   reproduces batch 1 exactly (8.4, 4.8). Batch 1's result files were never committed, and its
-  library versions were not recorded. Now: jax 0.12.0.1, optax 0.2.8, numpy 2.5.3. The
+  library versions were not recorded. Now: jax 0.12.0.1, optax 0.2.8, numpy 2.5.3. Runs are
+  deterministic here: npia seed 1 rerun alone gave identical numbers at every length. So the gap
+  comes from something that changed since batch 1, most likely library versions. The
   mined-vs-npia comparison ran in one runner and one environment, so it is not affected.
 
 ## Confirmation of #33 (registered before running; seeds 2, 3, 4 untouched until now)

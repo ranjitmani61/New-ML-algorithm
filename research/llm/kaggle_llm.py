@@ -106,9 +106,10 @@ def kaggle(*args):
     return subprocess.run(["kaggle", *args], capture_output=True, text=True)
 
 
-def push(slug, jobs_path, user):
+def push(slug, jobs_path, user, kernel_sources=(), dry_run=False):
     cfg = json.load(open(jobs_path))
-    files = {n: open(os.path.join(HERE, n), "rb").read() for n in ("problems.py", "run_llm.py", "multi.py", "run_multi.py")}
+    files = {n: open(os.path.join(HERE, n), "rb").read()
+             for n in ("problems.py", "run_llm.py", "multi.py", "run_multi.py", "mine_multi.py")}
     cfg["code_sha256"] = {n: hashlib.sha256(b).hexdigest() for n, b in files.items()}
     code = RUNNER.replace("__CONFIG__", json.dumps(cfg)).replace(
         "__FILES__", repr({n: base64.b64encode(b).decode() for n, b in files.items()}))
@@ -117,8 +118,11 @@ def push(slug, jobs_path, user):
     meta = {"id": f"{user}/{slug}", "title": slug, "code_file": "runner.py", "language": "python",
             "kernel_type": "script", "is_private": True, "enable_gpu": True, "enable_tpu": False,
             "machine_shape": "NvidiaTeslaT4", "enable_internet": True, "dataset_sources": [],
-            "kernel_sources": [], "competition_sources": [], "model_sources": [MODEL_SOURCE]}
+            "kernel_sources": list(kernel_sources), "competition_sources": [], "model_sources": [MODEL_SOURCE]}
     json.dump(meta, open(os.path.join(d, "kernel-metadata.json"), "w"), indent=2)
+    if dry_run:  # local tests: write the kernel folder only
+        print(d)
+        return d
     r = kaggle("kernels", "push", "-p", d)
     print(r.stdout.strip(), r.stderr.strip()[-1500:])
     print(json.dumps({"code_sha256": cfg["code_sha256"], "lanes": cfg["lanes"]}))
@@ -130,6 +134,9 @@ def main():
     p = sub.add_parser("push")
     p.add_argument("--slug", required=True)
     p.add_argument("--jobs", required=True)
+    p.add_argument("--kernel-source", action="append", default=[],
+                   help="another kernel whose output is mounted under /kaggle/input (e.g. user/slug)")
+    p.add_argument("--dry-run", action="store_true")
     for name in ("status", "fetch"):
         q = sub.add_parser(name)
         q.add_argument("--slug", required=True)
@@ -139,7 +146,7 @@ def main():
         q.add_argument("--user", default=os.environ.get("KAGGLE_USERNAME", "epicnexus"))
     a = ap.parse_args()
     if a.cmd == "push":
-        push(a.slug, a.jobs, a.user)
+        push(a.slug, a.jobs, a.user, a.kernel_source, a.dry_run)
     elif a.cmd == "status":
         r = kaggle("kernels", "status", f"{a.user}/{a.slug}")
         print(r.stdout.strip(), r.stderr.strip())

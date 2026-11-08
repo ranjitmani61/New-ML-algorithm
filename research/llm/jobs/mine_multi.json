@@ -1,0 +1,14 @@
+{
+ "lanes": [
+  [
+   {"script": "mine_multi.py", "condition": "mined", "seed": 9},
+   {"script": "mine_multi.py", "condition": "mined", "seed": 11}
+  ],
+  [
+   {"script": "mine_multi.py", "condition": "mined", "seed": 10}
+  ]
+ ],
+ "common": {"family": "multi", "steps": 6000, "n_train": 24000, "batch": 16, "lr": 0.0002, "lora_r": 16,
+            "eval_ks": [4, 8, 12, 16], "eval_per_k": 500, "cert_n1": 8, "cert_m1": 1, "cert_n": 64,
+            "cert_margin": 0.05, "cert_ref_n": 1000, "gate": 0.9, "m0_root": "/kaggle/input"}
+}
