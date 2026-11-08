@@ -603,7 +603,7 @@ the band was written two-sided. The prediction (all four hold, about 70%) **miss
 **Reading.**
 
 * **What failed is the band.** It was narrower than seed noise. npia alone ranges from 85.1% to
-  92.8% at 8 terms over the seven seeds run so far, so a two-sided band of 5 points per seed can
+  92.8% at 8 terms over seven runs on five seeds, so a two-sided band of 5 points per seed can
   fail on noise in either direction. I named that risk in the prediction and kept the rule. It
   stands.
 * **What replicated on fresh seeds:** the certificates were exact on every seed, mined equals
