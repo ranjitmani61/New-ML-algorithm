@@ -140,3 +140,72 @@ the method's. Checked from `audit_multi.py` section 2, with the bins weighted by
   has shown about 3-4x.
 * PAR is not compared here. The registered test can show at most whether the method beats direct
   self-improvement, not every method that applies. The decision rule is unchanged.
+
+## Result (2026-11-08; `results/multi_final/`), reported against this file unchanged
+
+**Checks:**
+
+* All 12 jobs exited 0, and both kernels reached ALL_DONE. Each job ran once; there were no reruns.
+* All 12 runs recorded the registered code hashes.
+* 60 of 60 test sets recompute exactly from the raw generations (`inspect.txt`).
+* No test problem appears in training, no training example was truncated, and there were no
+  parse failures.
+* Within each seed, every condition got the same test problems.
+* No secrets were found in the committed logs or generations.
+
+**Verdict, by the registered rule (`summary.txt`): METHOD BETTER.**
+
+* Validity: the method minus plain at 12 events was +18.8, +18.4 and +18.0 points (needs 15 on
+  every seed). It holds.
+* d = the method minus self-improvement (model 0) at 12 events: +15.6, +18.4, +18.6, a mean of
+  +17.5. The 95% bootstrap interval over test problems is +15.0 to +20.1.
+
+Means over seeds 9-11 (accuracy, %), and training time per run:
+
+| condition | 4 events | 8 | **12** | 16 | 12, held-out vocabulary | training s |
+|---|---|---|---|---|---|---|
+| plain | 91.9 | 56.4 | **23.3** | 11.7 | 23.2 | 2,414 |
+| the method (cancel_spread) | 92.2 | 69.3 | **41.7** | 25.8 | 42.1 | 4,090 |
+| self-improvement (model 0) | 85.1 | 52.9 | **24.1** | 10.7 | 23.4 | 12,936 |
+| oracle | 97.7 | 93.9 | **88.5** | 79.9 | 86.5 | 3,822 |
+
+**Predictions** (`predictions.txt`, `prediction6.txt`); 5 of 6 held, and prediction 2 missed
+badly:
+
+1. Verdict METHOD BETTER: **held.**
+2. Levels at 12 events: **missed.**
+   * The method had 41.7%; 60-75% was predicted.
+   * Self-improvement had 24.1%; 40-60% was predicted.
+   * Plain had 23.3% (about 28% was expected) and the oracle 88.5% (about 89%).
+3. Validity: **held**, with 3.0-3.8 points to spare.
+4. Self-improvement's kept labels below 85% accuracy by round 4: **held.** They first fell below
+   in round 2 or 3.
+5. The method's cost at 4 events at most 3 points: **held.** It scored 0.3 points above plain.
+6. (secondary) Answer size: **held.** The method fell 27.1 points from answers of 29 or less to
+   answers of 45 or more (44.3% to 17.2%). The oracle fell 15.1 (89.8% to 74.7%).
+
+**What the verdict rests on:**
+
+* **Self-improvement gave no gain.**
+  * It was +0.9 points over plain at 12 events (95% interval -1.3 to +3.0) and -6.9 at 4 events.
+  * Its kept labels were right 94%, 85%, 68%, 43%, 26% and 15% of the time in rounds 1-6 (means
+    over seeds).
+  * In the later rounds the three models agreed more often (44-62% of problems kept) while being
+    mostly wrong. This is the consensus trap seen in the toy (ledger #23).
+* **The method's own gain is modest.**
+  * It was +18.4 points over plain, against +47 in the additive test (`SPEC.md`).
+  * It recovers 28% of the oracle's gain at 12 events (18.4 of 65.2 points), and the oracle is
+    46.9 points ahead.
+* **Answer size explains little of that gap.** On answers of 29 or less, the method had 44.3% and
+  the oracle 89.8%, as the addendum's answer-size check expected. Most of the gap is in tracking
+  the amounts.
+* **Compute:**
+  * Correction to "What each outcome means": the method used about a third of self-improvement's
+    training time, not "about a fifth" (4,090 s against 12,936 s per run). Its inputs are longer,
+    so it trains 1.7 times as long as plain.
+  * GPU: 10.33 hours on 2 kernels (10.2 estimated).
+* **Scope:** as registered, plus Addendum 2.
+  * Self-improvement was this adaptation of Lee et al., with unlabeled problems from the test
+    distribution.
+  * PAR was not compared, so the result is "beats direct self-improvement", not "beats every
+    method that applies".

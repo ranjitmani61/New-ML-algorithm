@@ -1,0 +1,6 @@
+plain          pooled: answers 0-29 230/788 = 0.292; answers 45+ 5/99 = 0.051; drop +0.241 | s9 0.278 (n=266) vs 0.075 (n=40); s10 0.314 (n=280) vs 0.000 (n=26); s11 0.281 (n=242) vs 0.061 (n=33)
+cancel_spread  pooled: answers 0-29 349/788 = 0.443; answers 45+ 17/99 = 0.172; drop +0.271 | s9 0.429 (n=266) vs 0.175 (n=40); s10 0.468 (n=280) vs 0.154 (n=26); s11 0.430 (n=242) vs 0.182 (n=33)
+self_improve   pooled: answers 0-29 211/788 = 0.268; answers 45+ 3/99 = 0.030; drop +0.237 | s9 0.286 (n=266) vs 0.050 (n=40); s10 0.257 (n=280) vs 0.038 (n=26); s11 0.260 (n=242) vs 0.000 (n=33)
+oracle         pooled: answers 0-29 708/788 = 0.898; answers 45+ 74/99 = 0.747; drop +0.151 | s9 0.887 (n=266) vs 0.725 (n=40); s10 0.882 (n=280) vs 0.731 (n=26); s11 0.930 (n=242) vs 0.788 (n=33)
+
+prediction 6: method's drop +0.271 (needs >= +0.20): held; oracle's drop +0.151 smaller than the method's: held -> HELD

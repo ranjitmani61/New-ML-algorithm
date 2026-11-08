@@ -1,0 +1,65 @@
+== 1. shortcut rules (fraction of test problems a trivial rule gets right)
+  seed 9 train_vocab/4     largest start 0.164  last number 0.000  largest number 0.164  most common answer 29 (0.058)  answers 2-49
+  seed 9 train_vocab/8     largest start 0.084  last number 0.000  largest number 0.084  most common answer 29 (0.054)  answers 5-59
+  seed 9 train_vocab/12    largest start 0.068  last number 0.002  largest number 0.068  most common answer 26 (0.048)  answers 3-70
+  seed 9 train_vocab/16    largest start 0.040  last number 0.000  largest number 0.040  most common answer 27 (0.046)  answers 5-64
+  seed 9 heldout_vocab/12  largest start 0.046  last number 0.000  largest number 0.046  most common answer 29 (0.056)  answers 6-70
+  seed 10 train_vocab/4     largest start 0.168  last number 0.002  largest number 0.168  most common answer 29 (0.080)  answers 8-47
+  seed 10 train_vocab/8     largest start 0.070  last number 0.000  largest number 0.070  most common answer 26 (0.060)  answers 3-57
+  seed 10 train_vocab/12    largest start 0.050  last number 0.002  largest number 0.050  most common answer 25 (0.054)  answers 5-69
+  seed 10 train_vocab/16    largest start 0.026  last number 0.002  largest number 0.026  most common answer 32 (0.050)  answers 3-71
+  seed 10 heldout_vocab/12  largest start 0.028  last number 0.002  largest number 0.028  most common answer 26 (0.050)  answers 7-66
+  seed 11 train_vocab/4     largest start 0.172  last number 0.000  largest number 0.172  most common answer 26 (0.068)  answers 7-54
+  seed 11 train_vocab/8     largest start 0.070  last number 0.000  largest number 0.070  most common answer 25 (0.050)  answers 5-54
+  seed 11 train_vocab/12    largest start 0.046  last number 0.002  largest number 0.046  most common answer 31 (0.056)  answers 5-59
+  seed 11 train_vocab/16    largest start 0.028  last number 0.000  largest number 0.028  most common answer 27 (0.048)  answers 2-65
+  seed 11 heldout_vocab/12  largest start 0.052  last number 0.000  largest number 0.052  most common answer 30 (0.058)  answers 2-57
+
+== 2. at 12 events (train vocab): accuracy by answer size; shape of the wrong answers
+  cancel_spread  s9  0-29: 0.43 (n=266)  30-44: 0.42 (n=194)  45-59: 0.18 (n=38)  60-max: 0.00 (n=2)  | wrong 298: within 2 0.70, too low 0.53
+  cancel_spread  s10  0-29: 0.47 (n=280)  30-44: 0.42 (n=194)  45-59: 0.16 (n=25)  60-max: 0.00 (n=1)  | wrong 284: within 2 0.70, too low 0.53
+  cancel_spread  s11  0-29: 0.43 (n=242)  30-44: 0.43 (n=225)  45-59: 0.18 (n=33)  60-max: 0.00 (n=0)  | wrong 293: within 2 0.66, too low 0.72
+  oracle         s9  0-29: 0.89 (n=266)  30-44: 0.87 (n=194)  45-59: 0.76 (n=38)  60-max: 0.00 (n=2)  | wrong 66: within 2 0.95, too low 0.61
+  oracle         s10  0-29: 0.88 (n=280)  30-44: 0.88 (n=194)  45-59: 0.76 (n=25)  60-max: 0.00 (n=1)  | wrong 63: within 2 0.98, too low 0.51
+  oracle         s11  0-29: 0.93 (n=242)  30-44: 0.92 (n=225)  45-59: 0.79 (n=33)  60-max: 0.00 (n=0)  | wrong 43: within 2 1.00, too low 0.33
+  plain          s9  0-29: 0.28 (n=266)  30-44: 0.16 (n=194)  45-59: 0.08 (n=38)  60-max: 0.00 (n=2)  | wrong 392: within 2 0.45, too low 0.76
+  plain          s10  0-29: 0.31 (n=280)  30-44: 0.19 (n=194)  45-59: 0.00 (n=25)  60-max: 0.00 (n=1)  | wrong 376: within 2 0.43, too low 0.68
+  plain          s11  0-29: 0.28 (n=242)  30-44: 0.21 (n=225)  45-59: 0.06 (n=33)  60-max: 0.00 (n=0)  | wrong 383: within 2 0.40, too low 0.70
+  self_improve   s9  0-29: 0.29 (n=266)  30-44: 0.24 (n=194)  45-59: 0.05 (n=38)  60-max: 0.00 (n=2)  | wrong 376: within 2 0.39, too low 0.75
+  self_improve   s10  0-29: 0.26 (n=280)  30-44: 0.26 (n=194)  45-59: 0.04 (n=25)  60-max: 0.00 (n=1)  | wrong 376: within 2 0.37, too low 0.67
+  self_improve   s11  0-29: 0.26 (n=242)  30-44: 0.23 (n=225)  45-59: 0.00 (n=33)  60-max: 0.00 (n=0)  | wrong 386: within 2 0.39, too low 0.74
+
+== 3. self-improvement rounds (kept by the vote; label accuracy is a diagnostic only)
+  seed 9: schedule [[5, 6], [7, 8], [9, 10], [11, 12], [13, 14], [15, 16]]
+    round 1 events [5, 6]: kept 2959/4000 (74%), kept-label accuracy 0.9459276782696857, per-model pool accuracy [0.814, 0.804, 0.807]
+    round 2 events [7, 8]: kept 2214/4000 (55%), kept-label accuracy 0.8590785907859079, per-model pool accuracy [0.621, 0.63, 0.624]
+    round 3 events [9, 10]: kept 1844/4000 (46%), kept-label accuracy 0.6816702819956616, per-model pool accuracy [0.448, 0.444, 0.441]
+    round 4 events [11, 12]: kept 1870/4000 (47%), kept-label accuracy 0.44224598930481285, per-model pool accuracy [0.314, 0.303, 0.304]
+    round 5 events [13, 14]: kept 2283/4000 (57%), kept-label accuracy 0.2518615856329391, per-model pool accuracy [0.205, 0.207, 0.211]
+    round 6 events [15, 16]: kept 2493/4000 (62%), kept-label accuracy 0.1532290413156839, per-model pool accuracy [0.137, 0.139, 0.132]
+    final model 1: train_vocab/4 0.870 train_vocab/8 0.546 train_vocab/12 0.270 train_vocab/16 0.108 heldout_vocab/12 0.260
+    final model 2: train_vocab/4 0.880 train_vocab/8 0.540 train_vocab/12 0.240 train_vocab/16 0.102 heldout_vocab/12 0.232
+  seed 10: schedule [[5, 6], [7, 8], [9, 10], [11, 12], [13, 14], [15, 16]]
+    round 1 events [5, 6]: kept 2969/4000 (74%), kept-label accuracy 0.939036712697878, per-model pool accuracy [0.794, 0.791, 0.815]
+    round 2 events [7, 8]: kept 2098/4000 (52%), kept-label accuracy 0.847950428979981, per-model pool accuracy [0.587, 0.597, 0.603]
+    round 3 events [9, 10]: kept 1764/4000 (44%), kept-label accuracy 0.6621315192743764, per-model pool accuracy [0.406, 0.42, 0.441]
+    round 4 events [11, 12]: kept 1800/4000 (45%), kept-label accuracy 0.4261111111111111, per-model pool accuracy [0.281, 0.287, 0.296]
+    round 5 events [13, 14]: kept 2037/4000 (51%), kept-label accuracy 0.249386352479136, per-model pool accuracy [0.186, 0.185, 0.202]
+    round 6 events [15, 16]: kept 2449/4000 (61%), kept-label accuracy 0.1322988975091874, per-model pool accuracy [0.117, 0.117, 0.123]
+    final model 1: train_vocab/4 0.866 train_vocab/8 0.528 train_vocab/12 0.242 train_vocab/16 0.120 heldout_vocab/12 0.210
+    final model 2: train_vocab/4 0.852 train_vocab/8 0.530 train_vocab/12 0.236 train_vocab/16 0.120 heldout_vocab/12 0.214
+  seed 11: schedule [[5, 6], [7, 8], [9, 10], [11, 12], [13, 14], [15, 16]]
+    round 1 events [5, 6]: kept 2935/4000 (73%), kept-label accuracy 0.9359454855195911, per-model pool accuracy [0.795, 0.801, 0.788]
+    round 2 events [7, 8]: kept 2086/4000 (52%), kept-label accuracy 0.8441994247363375, per-model pool accuracy [0.587, 0.609, 0.578]
+    round 3 events [9, 10]: kept 1805/4000 (45%), kept-label accuracy 0.6831024930747922, per-model pool accuracy [0.435, 0.445, 0.439]
+    round 4 events [11, 12]: kept 1823/4000 (46%), kept-label accuracy 0.4360943499725727, per-model pool accuracy [0.292, 0.299, 0.282]
+    round 5 events [13, 14]: kept 2106/4000 (53%), kept-label accuracy 0.2644824311490978, per-model pool accuracy [0.208, 0.2, 0.206]
+    round 6 events [15, 16]: kept 2394/4000 (60%), kept-label accuracy 0.158312447786132, per-model pool accuracy [0.139, 0.143, 0.139]
+    final model 1: train_vocab/4 0.866 train_vocab/8 0.512 train_vocab/12 0.234 train_vocab/16 0.086 heldout_vocab/12 0.260
+    final model 2: train_vocab/4 0.876 train_vocab/8 0.542 train_vocab/12 0.234 train_vocab/16 0.090 heldout_vocab/12 0.276
+
+== 4. raw outputs by eye (seed 9, 12 events, 20 per condition; answer:output)
+  plain          48:'48' 31:'30' 22:'20' 29:'25' 27:'25' 38:'36' 32:'28' 26:'26' 49:'40' 24:'23' 12:'16' 26:'23' 40:'41' 37:'37' 28:'27' 17:'19' 10:'16' 40:'36' 33:'31' 20:'22'
+  cancel_spread  48:'48' 31:'30' 22:'20' 29:'25' 27:'27' 38:'36' 32:'31' 26:'27' 49:'45' 24:'25' 12:'14' 26:'27' 40:'40' 37:'38' 28:'28' 17:'16' 10:'14' 40:'40' 33:'35' 20:'22'
+  self_improve   48:'40' 31:'23' 22:'16' 29:'20' 27:'25' 38:'36' 32:'30' 26:'27' 49:'40' 24:'20' 12:'14' 26:'27' 40:'40' 37:'30' 28:'28' 17:'16' 10:'14' 40:'38' 33:'30' 20:'20'
+  oracle         48:'48' 31:'31' 22:'22' 29:'29' 27:'27' 38:'37' 32:'32' 26:'26' 49:'47' 24:'24' 12:'12' 26:'26' 40:'40' 37:'37' 28:'28' 17:'19' 10:'10' 40:'40' 33:'33' 20:'20'

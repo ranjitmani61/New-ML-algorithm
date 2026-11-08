@@ -115,3 +115,15 @@ direct self-improvement, with plain training and the oracle for reference.
   labels are right 95%, 94%, 91% and 83% of the time. **Schedule: +2 events per round.**
 * GPU: 1.97 hours.
 * The final is registered in `SPEC_MULTI.md` (6,000 steps, seeds 9-11) before any of its runs.
+
+## Final result (seeds 9-11; `results/multi_final/`)
+
+* **Verdict by the registered rule: METHOD BETTER.**
+  * At 12 events the method beat self-improvement by +15.6, +18.4 and +18.6 points, and beat plain
+    by +18.0 to +18.8 (validity holds).
+  * Means at 12 events: the method 41.7%, self-improvement 24.1%, plain 23.3%, oracle 88.5%.
+* Self-improvement gave no gain over plain (+0.9 points). Its kept labels decayed from 94% right
+  in round 1 to 15% in round 6.
+* The method itself is far below the oracle: it recovers 28% of the oracle's gain.
+* Details and the prediction checks are in `SPEC_MULTI.md` (Result) and `REPORT.md`.
+* GPU: 10.33 hours. Total for this test: 13.37 hours (pilots 3.04).

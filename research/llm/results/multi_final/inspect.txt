@@ -1,0 +1,158 @@
+
+=== 0_0_self_improve_multi_s11  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 77.67695833333333, 'prompt_tokens_p50_p90_max': [78, 88, 103], 'changes_mean': 2.486291666666667, 'answer_max': 59, 'truncated': 0, 'si_examples_total': 37149}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.840 lenient 0.840 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.524 lenient 0.524 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.228 lenient 0.228 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.104 lenient 0.104 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.250 lenient 0.250 parse failures 0  (matches metrics.json)
+
+=== 0_0_self_improve_multi_s9  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 77.69991666666667, 'prompt_tokens_p50_p90_max': [78, 88, 103], 'changes_mean': 2.4935416666666668, 'answer_max': 58, 'truncated': 0, 'si_examples_total': 37663}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.848 lenient 0.848 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.520 lenient 0.520 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.248 lenient 0.248 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.104 lenient 0.104 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.240 lenient 0.240 parse failures 0  (matches metrics.json)
+
+=== 0_1_oracle_multi_s11  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 117.94104166666666, 'prompt_tokens_p50_p90_max': [118, 161, 199], 'changes_mean': 8.486708333333333, 'answer_max': 76, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.968 lenient 0.968 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.940 lenient 0.940 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.914 lenient 0.914 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.814 lenient 0.814 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.858 lenient 0.858 parse failures 0  (matches metrics.json)
+
+=== 0_1_oracle_multi_s9  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 118.38325, 'prompt_tokens_p50_p90_max': [118, 161, 197], 'changes_mean': 8.560625, 'answer_max': 81, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.982 lenient 0.982 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.930 lenient 0.930 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.868 lenient 0.868 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.786 lenient 0.786 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.882 lenient 0.882 parse failures 0  (matches metrics.json)
+
+=== 1_0_cancel_spread_multi_s9  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 99.58825, 'prompt_tokens_p50_p90_max': [87, 152, 201], 'changes_mean': 5.752166666666667, 'answer_max': 58, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.934 lenient 0.934 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.720 lenient 0.720 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.404 lenient 0.404 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.242 lenient 0.242 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.450 lenient 0.450 parse failures 0  (matches metrics.json)
+
+=== 1_0_self_improve_multi_s10  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 77.734625, 'prompt_tokens_p50_p90_max': [78, 88, 101], 'changes_mean': 2.4977916666666666, 'answer_max': 54, 'truncated': 0, 'si_examples_total': 37117}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.864 lenient 0.864 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.544 lenient 0.544 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.248 lenient 0.248 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.114 lenient 0.114 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.212 lenient 0.212 parse failures 0  (matches metrics.json)
+
+=== 1_1_cancel_spread_multi_s10  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 99.52170833333334, 'prompt_tokens_p50_p90_max': [87, 151, 200], 'changes_mean': 5.73925, 'answer_max': 55, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.922 lenient 0.922 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.690 lenient 0.690 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.432 lenient 0.432 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.264 lenient 0.264 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.380 lenient 0.380 parse failures 0  (matches metrics.json)
+
+=== 1_1_oracle_multi_s10  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 118.16375, 'prompt_tokens_p50_p90_max': [118, 161, 198], 'changes_mean': 8.52775, 'answer_max': 91, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.980 lenient 0.980 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.946 lenient 0.946 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.874 lenient 0.874 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.798 lenient 0.798 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.854 lenient 0.854 parse failures 0  (matches metrics.json)
+
+=== 1_2_cancel_spread_multi_s11  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 99.4765, 'prompt_tokens_p50_p90_max': [87, 151, 205], 'changes_mean': 5.738458333333333, 'answer_max': 57, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.910 lenient 0.910 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.668 lenient 0.668 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.414 lenient 0.414 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.268 lenient 0.268 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.432 lenient 0.432 parse failures 0  (matches metrics.json)
+
+=== 1_3_plain_multi_s9  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 77.69991666666667, 'prompt_tokens_p50_p90_max': [78, 88, 103], 'changes_mean': 2.4935416666666668, 'answer_max': 58, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.918 lenient 0.918 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.558 lenient 0.558 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.216 lenient 0.216 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.120 lenient 0.120 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.240 lenient 0.240 parse failures 0  (matches metrics.json)
+
+=== 1_4_plain_multi_s10  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 77.734625, 'prompt_tokens_p50_p90_max': [78, 88, 101], 'changes_mean': 2.4977916666666666, 'answer_max': 54, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.918 lenient 0.918 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.566 lenient 0.566 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.248 lenient 0.248 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.114 lenient 0.114 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.204 lenient 0.204 parse failures 0  (matches metrics.json)
+
+=== 1_5_plain_multi_s11  device=cuda torch=2.11.0+cu130
+  code multi.py: matches local
+  code run_multi.py: matches local
+  code run_llm.py: matches local
+  code problems.py: matches local
+  train stats: {'n': 24000, 'prompt_tokens_mean': 77.67695833333333, 'prompt_tokens_p50_p90_max': [78, 88, 103], 'changes_mean': 2.486291666666667, 'answer_max': 59, 'truncated': 0}
+  leakage (exact overlap with training): {'train_vocab/4': 0, 'train_vocab/8': 0, 'train_vocab/12': 0, 'train_vocab/16': 0, 'heldout_vocab/12': 0}
+  train_vocab/4      n=500 strict 0.922 lenient 0.922 parse failures 0  (matches metrics.json)
+  train_vocab/8      n=500 strict 0.568 lenient 0.568 parse failures 0  (matches metrics.json)
+  train_vocab/12     n=500 strict 0.234 lenient 0.234 parse failures 0  (matches metrics.json)
+  train_vocab/16     n=500 strict 0.116 lenient 0.116 parse failures 0  (matches metrics.json)
+  heldout_vocab/12   n=500 strict 0.252 lenient 0.252 parse failures 0  (matches metrics.json)
+
+all checks consistent

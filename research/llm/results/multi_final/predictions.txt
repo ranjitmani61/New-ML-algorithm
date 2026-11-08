@@ -1,0 +1,42 @@
+== means over seeds 9-11
+  train_vocab/4     plain 0.919  cancel_spread 0.922  self_improve 0.851  oracle 0.977
+  train_vocab/8     plain 0.564  cancel_spread 0.693  self_improve 0.529  oracle 0.939
+  train_vocab/12    plain 0.233  cancel_spread 0.417  self_improve 0.241  oracle 0.885
+  train_vocab/16    plain 0.117  cancel_spread 0.258  self_improve 0.107  oracle 0.799
+  heldout_vocab/12  plain 0.232  cancel_spread 0.421  self_improve 0.234  oracle 0.865
+  seed 9: the same test problems for every condition, in every set: True
+  seed 10: the same test problems for every condition, in every set: True
+  seed 11: the same test problems for every condition, in every set: True
+
+== paired differences (mean over seeds; per seed; 95% bootstrap over problems)
+  cancel_spread - self_improve at train_vocab/4: +0.071  per seed [0.086, 0.058, 0.07]  [+0.053, +0.089]
+  cancel_spread - self_improve at train_vocab/8: +0.163  per seed [0.2, 0.146, 0.144]  [+0.137, +0.189]
+  cancel_spread - self_improve at train_vocab/12: +0.175  per seed [0.156, 0.184, 0.186]  [+0.150, +0.201]
+  cancel_spread - self_improve at train_vocab/16: +0.151  per seed [0.138, 0.15, 0.164]  [+0.129, +0.173]
+  cancel_spread - self_improve at heldout_vocab/12: +0.187  per seed [0.21, 0.168, 0.182]  [+0.161, +0.213]
+  cancel_spread - plain at train_vocab/12: +0.184  per seed [0.188, 0.184, 0.18]  [+0.157, +0.211]
+  self_improve - plain at train_vocab/12: +0.009  per seed [0.032, 0.0, -0.006]  [-0.013, +0.030]
+  oracle - cancel_spread at train_vocab/12: +0.469  per seed [0.464, 0.442, 0.5]  [+0.441, +0.497]
+  plain - cancel_spread at train_vocab/4: -0.003  per seed [-0.016, -0.004, 0.012]  [-0.019, +0.013]
+  plain - self_improve at train_vocab/4: +0.069  per seed [0.07, 0.054, 0.082]  [+0.051, +0.086]
+
+== self-improvement rounds (kept by the vote; label accuracy is a diagnostic only)
+  seed 9: r1 5-6: kept 2959/4000, right 0.946; r2 7-8: kept 2214/4000, right 0.859; r3 9-10: kept 1844/4000, right 0.682; r4 11-12: kept 1870/4000, right 0.442; r5 13-14: kept 2283/4000, right 0.252; r6 15-16: kept 2493/4000, right 0.153
+    models 1 and 2 at 12 events: [0.27, 0.24]
+  seed 10: r1 5-6: kept 2969/4000, right 0.939; r2 7-8: kept 2098/4000, right 0.848; r3 9-10: kept 1764/4000, right 0.662; r4 11-12: kept 1800/4000, right 0.426; r5 13-14: kept 2037/4000, right 0.249; r6 15-16: kept 2449/4000, right 0.132
+    models 1 and 2 at 12 events: [0.242, 0.236]
+  seed 11: r1 5-6: kept 2935/4000, right 0.936; r2 7-8: kept 2086/4000, right 0.844; r3 9-10: kept 1805/4000, right 0.683; r4 11-12: kept 1823/4000, right 0.436; r5 13-14: kept 2106/4000, right 0.264; r6 15-16: kept 2394/4000, right 0.158
+    models 1 and 2 at 12 events: [0.234, 0.234]
+
+== recorded predictions (SPEC_MULTI.md)
+  1. verdict METHOD BETTER: d per seed [0.156, 0.184, 0.186], mean +0.175 -> METHOD BETTER -> held
+  2. at 12 events: the method 0.417 (predicted 0.60-0.75: missed), self-improvement 0.241 (predicted 0.40-0.60: missed), plain 0.233 (about 0.28), oracle 0.885 (about 0.89)
+  3. validity (method - plain >= 15 points on every seed): [0.188, 0.184, 0.18] -> held
+  4. kept labels below 85% accuracy by round 4: first such round per seed {9: 3, 10: 2, 11: 2} -> held
+  5. the method costs at most 3 points at 4 events: plain - method -0.003 -> held
+
+== compute: training seconds per run (mean over seeds)
+  plain              2414
+  cancel_spread      4090
+  self_improve      12936
+  oracle             3822

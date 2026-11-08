@@ -1,6 +1,6 @@
 # Cancelling-event insertion in a language model: registered results
 
-Two registered tests on Qwen2.5-0.5B-Instruct and templated word problems:
+Three registered tests on Qwen2.5-0.5B-Instruct and templated word problems:
 
 1. **Against plain fine-tuning and clutter controls** (`SPEC.md`, seeds 3-5): **PASS** on all
    four criteria. At 12 events the method scored 58.2%, plain 10.0%.
@@ -9,11 +9,19 @@ Two registered tests on Qwen2.5-0.5B-Instruct and templated word problems:
    * But chaining was ahead on every seed: +4.2 points at 12 events (95% interval +1.7 to +6.7),
      short of the registered 5-point bar, and +9.8 at 16 events.
    * **The method does not beat the prior art here.**
+3. **Where answers cannot be composed, against direct self-improvement** (Lee et al. 2025;
+   `SPEC_MULTI.md`, seeds 9-11): **METHOD BETTER.** At 12 events the method was ahead by +17.5
+   points, on every seed.
+   * But self-improvement gave no gain over plain there (+0.9 points).
+   * The method itself recovered only 28% of the oracle's gain (41.7% against 88.5%).
+   * A stronger applicable method, PAR (arXiv 2610.27628), was found after registration and not
+     compared.
 
 * Each spec was committed before any of its results existed: `SPEC.md` in b6dc946,
-  `SPEC_CHAIN.md` in 855a918.
-* The code, seeds, budget, metric and decision rule ran unchanged in both.
-* Recorded predictions: two of three held in the first test, two of five in the second.
+  `SPEC_CHAIN.md` in 855a918, `SPEC_MULTI.md` in 4cdafb5.
+* The code, seeds, budget, metric and decision rule ran unchanged in all three.
+* Recorded predictions: two of three held in the first test, two of five in the second, and five
+  of six in the third.
 
 ## The method
 
@@ -239,6 +247,102 @@ The method's remaining difference is that it computes no new label. It lengthens
 without knowing how to combine answers. Whether that helps where labels cannot be composed is
 untested.
 
+## Where answers cannot be composed: against self-improvement (seeds 9-11)
+
+**Question** (`SPEC_MULTI.md`): chaining needs labels that compose. Where they cannot, does the
+method beat direct self-improvement (Lee et al. 2025, arXiv 2502.01612)?
+
+* **Task** (`multi.py`):
+  * Three people start with 5-30 of one item, and each event changes one person's amount by 1-9.
+  * The question asks for the largest final amount.
+  * A short problem's label (the maximum) does not say who has what, so labels cannot be chained.
+* **Self-improvement as adapted here:**
+  * 3 models are trained like plain.
+  * It runs 6 rounds of +2 events (5-6 up to 15-16). Each round, 4,000 unlabeled problems are kept
+    only when all 3 models agree, and each model trains 500 more steps.
+  * Model 0 is evaluated.
+  * Its unlabeled problems come from the test distribution, which favours it.
+* **Training:** 6,000 steps (doubled by the pilot gate), otherwise as in the earlier tests.
+* Registered in `SPEC_MULTI.md` (4cdafb5) before any run of the method on this task.
+
+Means over seeds 9-11:
+
+| condition | 4 events | 8 | **12 (primary)** | 16 | 12, held-out names and items |
+|---|---|---|---|---|---|
+| plain | 91.9% | 56.4% | **23.3%** | 11.7% | 23.2% |
+| cancelling pairs (the method) | 92.2% | 69.3% | **41.7%** | 25.8% | 42.1% |
+| self-improvement (model 0) | 85.1% | 52.9% | **24.1%** | 10.7% | 23.4% |
+| oracle (true labels, 1-16 events) | 97.7% | 93.9% | **88.5%** | 79.9% | 86.5% |
+
+At 12 events, per seed:
+
+| condition | seed 9 | seed 10 | seed 11 |
+|---|---|---|---|
+| plain | 21.6% | 24.8% | 23.4% |
+| the method | 40.4% | 43.2% | 41.4% |
+| self-improvement | 24.8% | 24.8% | 22.8% |
+| oracle | 86.8% | 87.4% | 91.4% |
+
+**Decision** (`summarize_multi.py --gate final`):
+
+* Validity holds: the method minus plain was +18.8, +18.4 and +18.0 points, and 15 were needed
+  on every seed.
+* The method minus self-improvement was +15.6, +18.4 and +18.6, a mean of +17.5. The 95% interval
+  over test problems is +15.0 to +20.1.
+* Verdict: **METHOD BETTER.**
+
+**Why, and what it does not show** (descriptive; `check_multi.py`, `audit_multi.py`,
+`check_pred6.py`):
+
+* **Self-improvement failed here, so the win mostly reflects that failure.**
+  * It gained +0.9 points over plain at 12 events (interval -1.3 to +3.0) and lost 6.9 at 4 events.
+  * The vote kept labels that were right 94% of the time in round 1 (5-6 events) and 85% in
+    round 2. Then they fell to 68%, 43%, 26% and 15%.
+  * The models agreed more often as they got worse (44-62% kept in rounds 3-6): the consensus trap
+    seen in the toy.
+  * Models 1 and 2 were no better (24.3% at 12 events, mean of 6).
+* **The method's gain is real but modest.**
+  * It was +18.4 points over plain at 12 events (interval +15.7 to +21.1), on every seed.
+  * It held with held-out names and items (+18.9) and at 16 events (+14.1).
+  * It recovered only 28% of the oracle's gain at 12 events; the oracle was 46.9 points ahead
+    (+44.1 to +49.7).
+  * In the additive test (`SPEC.md`), the gain over plain was +47.
+* **Answer size is not the main limit here.**
+  * On answers of 29 or less, the method had 44.3% and the oracle 89.8% (pooled).
+  * The method's training answers stay those of 1-4-event problems (largest 55-58). It scored 17%
+    on answers of 45 or more, against the oracle's 75%. But such answers are only 5-8% of the
+    12-event test set.
+  * So most of the gap is in tracking the three amounts.
+* **Cost:**
+  * no loss at 4 events (0.3 points above plain);
+  * training time 1.7 times plain's, and a third of self-improvement's;
+  * no unlabeled problems.
+
+**Predictions** (`SPEC_MULTI.md`): five of six held.
+
+* Held: the verdict, validity, the decay of the kept labels, the cost at 4 events, and the
+  answer-size prediction.
+* The levels missed badly: the method scored 41.7% (60-75% predicted) and self-improvement 24.1%
+  (40-60% predicted).
+
+**Checks:**
+
+* All 12 jobs exited 0, once each.
+* All runs recorded the registered code hashes.
+* 60 of 60 sets recompute exactly from the raw generations.
+* No leakage, truncation or parse failures.
+* Within each seed, every condition got the same test problems.
+* Shortcut rules score at most 6.8% at 12 and 16 events (17.2% at 4).
+* GPU: 10.33 hours (10.2 estimated).
+
+**Not compared:** PAR (arXiv 2610.27628).
+* It retrofits the same base model as a looped model and trains it with prefix
+  self-distillation, which also needs only short labels.
+* It was found after registration (`SPEC_MULTI.md`, Addendum 2). It reports far longer
+  extrapolation on state tracking: 85% at 16 times the training length.
+* So this test shows that the method beats direct self-improvement here, not every method that
+  applies.
+
 ## What this shows and what it does not
 
 * **It shows** that the toy result transfers to a pretrained language model, with the same
@@ -252,6 +356,12 @@ untested.
     +0.4 points). It led at 12 events (+4.2) and 16 events (+9.8), on every seed (section above).
   * So the claim is "beats plain fine-tuning and clutter controls", not "beats the best known
     way to train long problems from short labels".
+* **Where labels cannot be composed, it beats direct self-improvement** (`SPEC_MULTI.md`): +17.5
+  points at 12 events, on every seed.
+  * But self-improvement gave nothing over plain there.
+  * The method recovered only 28% of the oracle's gain, and its gain over plain (+18.4) was much
+    smaller than in the additive task (+47).
+  * PAR, a looped method that also needs only short labels, was not compared.
 * **Large answers:** the method cannot reach answers beyond the short problems' range.
   * Its largest training answer is 57-61 per run in the final (the oracle's is 98-100), and it
     scores 0% on test answers of 60 or more.
@@ -280,9 +390,13 @@ untested.
   * Nothing here tests real benchmarks such as GSM8K, larger models, chain-of-thought outputs or
     naturally written problems.
 
-**In one line:** a simple data rule that beats plain fine-tuning by about 47 points under
-registration, in a narrow synthetic setting. But it does not beat chaining short problems, the
-prior art's construction, in a task where labels can be composed.
+**In one line:** a simple data rule that beats plain fine-tuning under registration, in narrow
+synthetic settings: by about 47 points in an additive task and 18 in a three-person task.
+* Where labels compose, chaining short problems (the prior art's construction) does at least as
+  well.
+* Where they do not, the rule beats direct self-improvement, which failed there. It stays far
+  below true long labels.
+* A stronger looped method (PAR) was not compared.
 
 ## Erratum
 
@@ -305,14 +419,22 @@ prior art's construction, in a task where labels can be composed.
 4. **Registered final:** seeds 3-5, 18 runs. PASS.
 5. **Chaining comparison:** seeds 6-8, 12 runs, registered in `SPEC_CHAIN.md` (855a918). NO CLEAR
    DIFFERENCE by the rule; chaining was ahead on every seed.
+6. **Three-person test** (`PLAN_MULTI.md`):
+   * Pilot 1 failed the learnability gate (88.8% at 4 events). Per the rule, the steps doubled,
+     and pilot 2 passed (92.8%, with 61.2 points of headroom).
+   * The final was registered in `SPEC_MULTI.md` (4cdafb5) and ran on seeds 9-11, 12 runs:
+     METHOD BETTER.
 
-The decision log is in `SPEC_DRAFT.md`. GPU use this week was about 12.1 of 30 hours on T4 x2
-kernels: 9.22 for the pilots, discovery and final, and 2.85 for the chaining test (from the kernel
-log times).
+The decision log is in `SPEC_DRAFT.md`. GPU use in the week to 2026-11-14 was about 25.4 of 30
+hours on T4 x2 kernels, from the kernel log times:
+* 9.22 for the pilots, discovery and final;
+* 2.85 for the chaining test;
+* 13.37 for the three-person test (pilots 3.04, final 10.33).
 
 ## Files and how to reproduce
 
-* `results/{pilot1,pilot2,discovery,final,chain}/`: per-run `metrics.json`, raw generations
+* `results/{pilot1,pilot2,discovery,final,chain,multi_pilot1,multi_pilot2,multi_final}/`: per-run
+  `metrics.json`, raw generations
   (`generations.jsonl.gz`), kernel logs, and the outputs of the scripts below. Adapters are not
   committed; they stay in the Kaggle kernel outputs.
 * Commands, run in `research/llm/`:
@@ -325,5 +447,11 @@ log times).
   * `python3 -I check_predictions.py results/final` and `python3 -I check_chain.py results/chain`
     check the predictions and give the intervals. `check_chain.py` also regenerates and describes
     the training data.
+  * Three-person test:
+    * `python3 summarize_multi.py --gate final results/multi_final` gives the verdict;
+    * `python3 inspect_run.py results/multi_final` recomputes and checks;
+    * `python3 -I audit_multi.py`, `python3 -I check_multi.py` and `python3 -I check_pred6.py`, each
+      on `results/multi_final`, give the audit, the predictions with intervals, and prediction 6;
+    * `python3 answer_support_multi.py` gives the answer-size check (generator only).
 * To rerun: `python3 kaggle_llm.py push --slug NAME --jobs jobs/final_a.json`, and the same for
-  `final_b.json`, `chain_a.json` and `chain_b.json`.
+  `final_b.json`, `chain_a.json`, `chain_b.json`, `multi_final_a.json` and `multi_final_b.json`.

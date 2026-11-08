@@ -1,0 +1,25 @@
+runs: 12 | code hashes differ from the code registered for this gate: none
+condition      seed       4       6       8      12      16  held12  parse-fail  train_s
+cancel_spread     9   0.934       -   0.720   0.404   0.242   0.450           0     4086
+cancel_spread    10   0.922       -   0.690   0.432   0.264   0.380           0     4097
+cancel_spread    11   0.910       -   0.668   0.414   0.268   0.432           0     4086
+oracle            9   0.982       -   0.930   0.868   0.786   0.882           0     3846
+oracle           10   0.980       -   0.946   0.874   0.798   0.854           0     3774
+oracle           11   0.968       -   0.940   0.914   0.814   0.858           0     3845
+plain             9   0.918       -   0.558   0.216   0.120   0.240           0     2418
+plain            10   0.918       -   0.566   0.248   0.114   0.204           0     2413
+plain            11   0.922       -   0.568   0.234   0.116   0.252           0     2412
+self_improve      9   0.848       -   0.520   0.248   0.104   0.240           0    13025
+self_improve     10   0.864       -   0.544   0.248   0.114   0.212           0    12770
+self_improve     11   0.840       -   0.524   0.228   0.104   0.250           0    13012
+
+validity: cancel_spread - plain at 12 events, per seed [0.188, 0.184, 0.18] (needs >= 0.15 on every seed) -> holds
+decision: cancel_spread - self_improve (model 0) at 12 events, per seed [0.156, 0.184, 0.186], mean +0.175
+  rule: METHOD BETTER if mean >= +5 points and > 0 on every seed; SELF-IMPROVEMENT BETTER if mean <= -5 points and < 0 on every seed; otherwise NO CLEAR DIFFERENCE
+secondary, means: {'plain': {'train_vocab/4': 0.919, 'train_vocab/8': 0.564, 'train_vocab/12': 0.233, 'train_vocab/16': 0.117, 'heldout_vocab/12': 0.232}, 'cancel_spread': {'train_vocab/4': 0.922, 'train_vocab/8': 0.693, 'train_vocab/12': 0.417, 'train_vocab/16': 0.258, 'heldout_vocab/12': 0.421}, 'self_improve': {'train_vocab/4': 0.851, 'train_vocab/8': 0.529, 'train_vocab/12': 0.241, 'train_vocab/16': 0.107, 'heldout_vocab/12': 0.234}, 'oracle': {'train_vocab/4': 0.977, 'train_vocab/8': 0.939, 'train_vocab/12': 0.885, 'train_vocab/16': 0.799, 'heldout_vocab/12': 0.865}}
+secondary, oracle - cancel_spread at 12: +0.469
+secondary, self_improve models 1-2 at 12 (mean of 6): 0.243
+secondary, cancel_spread cost at 4 events (plain - cancel_spread): -0.003
+secondary, self_improve cost at 4 events (plain - self_improve): +0.069
+secondary, training seconds (mean per run): {'plain': 2414, 'cancel_spread': 4090, 'self_improve': 12936, 'oracle': 3822}
+verdict: METHOD BETTER
