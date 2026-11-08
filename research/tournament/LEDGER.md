@@ -576,3 +576,42 @@ designed by hand, and mining would have to find it from the model's own short an
 
 **Prediction:** all four criteria hold (about 70% confidence). The main risk is seed noise: npia
 itself varied by 3-5 points between seeds, so criterion 2 can fail on one seed.
+
+### Confirmation of #33: result (2026-11-08): FAILED by criterion 2, on mining's better side
+
+| seed | baseline, 8 terms | npia | mined | mined - npia | certification, sums / S3 (precision, recall) | 1-4 terms (b / n / m) |
+|---|---|---|---|---|---|---|
+| 2 | 2.2 | 89.6 | 87.1 | -2.5 | 100/100 / 100/100 | 100.0 / 99.8 / 99.6 |
+| 3 | 9.6 | 88.7 | 86.3 | -2.4 | 100/100 / 100/100 | 99.5 / 99.4 / 99.0 |
+| 4 | 11.1 | 85.1 | 90.5 | +5.4 | 100/100 / 100/100 | 100.0 / 99.8 / 99.9 |
+| mean | 7.6 | 87.8 | 88.0 | +0.17 | | |
+
+All 12 runs exited 0. The sums certification found 46 of 46 exact edits on every seed, and S3
+found 8 of 8. The S3 M0s get 96.6-99.9% at 4 elements.
+
+**Criteria:**
+
+1. Certification precision and recall at least 95%: **held**. All six certifications were exact.
+2. On every seed, mined at least 10 points above the baseline (held: +77 to +85) and within 5
+   points of npia: **failed on seed 4**, where mined is 5.4 points above npia.
+3. Mean within 3 points of npia: **held** (+0.17).
+4. In-distribution at least 95%: **held** (99.0-100.0).
+
+**Verdict: FAILED,** by the letter of criterion 2. Mining beat npia by 5.4 points on one seed, and
+the band was written two-sided. The prediction (all four hold, about 70%) **missed**.
+
+**Reading.**
+
+* **What failed is the band.** It was narrower than seed noise. npia alone ranges from 85.1% to
+  92.8% at 8 terms over the seven seeds run so far, so a two-sided band of 5 points per seed can
+  fail on noise in either direction. I named that risk in the prediction and kept the rule. It
+  stands.
+* **What replicated on fresh seeds:** the certificates were exact on every seed, mined equals
+  npia on average (+0.17), and mined is far above the baseline.
+* **Lesson.** An equivalence claim needs a criterion on the mean, with a margin larger than the
+  noise of one paired comparison, or a one-sided bar if "no worse" is the claim. Changing the
+  criterion now and rerunning would be testing until it passes. So #33 is **not confirmed**
+  under the protocol, and any further test of it is a new registered test with this failure on
+  record.
+* The language-model test (draft spec, `research/llm`) was to follow a passed confirmation. It
+  has not been launched, and the decision goes to the user.

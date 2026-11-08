@@ -5,3 +5,8 @@ exit npia s2 0
 exit mined s3 0
 exit mined s4 0
 exit mined s2 0
+exit certify_s3 s3 0
+exit certify_s3 s4 0
+exit certify_s3 s2 0
+exit npia s3 0
+exit npia s4 0
