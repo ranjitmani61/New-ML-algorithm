@@ -1,0 +1,1 @@
+s3 certify 1 {"task": "s3", "cond": "certify", "seed": 1, "steps": 4000, "lr": 0.002, "m0_eval": {"1": 1.0, "2": 1.0, "3": 1.0, "4": 0.997, "5": 0.812, "6": 0.588}, "ref": {"1": 1.0, "2": 1.0}, "certification": {"edits": 78, "certified": 8, "exact": 8, "certified_and_exact": 8, "precision": 1.0, "recall": 1.0, "certified_not_exact": [], "exact_not_certified": []}, "seconds": 181}

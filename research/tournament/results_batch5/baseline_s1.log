@@ -1,0 +1,1 @@
+sum baseline 1 {"task": "sum", "cond": "baseline", "seed": 1, "steps": 4000, "lr": 0.002, "eval": {"1": 1.0, "2": 1.0, "3": 1.0, "4": 0.999, "5": 0.815, "6": 0.448, "7": 0.146, "8": 0.048}, "eval_long": {"12": 0.033, "16": 0.028}, "in_dist": 0.99975, "seconds": 254, "gate_passed": true}

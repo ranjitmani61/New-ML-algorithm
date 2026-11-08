@@ -497,3 +497,80 @@ Checks written before the batch ran (`test_mine.py`, and a 300-step smoke run):
 * In the smoke run an undertrained S3 model (54% on 3-4 elements) certified with precision 45%.
   The certificates are only as good as M0's accuracy at the edited lengths. That is why sums have
   the gate. For S3 I report M0's accuracy next to the certificates.
+
+### Batch 5 result (2026-11-08): mining found exactly the right rules and tied npia
+
+**Gate: passed.** M0 (the baseline) gets 100.0% on 1-4 terms on both seeds.
+
+| # | condition | 1-4 mean | 5 | 6 | 7 | 8 (s0, s1) | 12 | 16 | prediction |
+|---|---|---|---|---|---|---|---|---|---|
+| 34 | baseline (M0) | 100.0 | 78.5 | 37.0 | 15.8 | 6.6 (8.4, 4.8) | 3.1 | 2.6 | 1-4 at least 95%, 8 terms 5-15%: held |
+| 35 | npia rerun | 99.8 | 98.0 | 94.9 | 92.2 | 88.25 (86.6, 89.9) | 7.3 | 5.2 | within 3 points of 90.3%: held (-2.05) |
+| 33 | mined | 99.8 | 97.6 | 96.0 | 92.8 | 88.6 (89.7, 87.5) | 7.3 | 5.0 | within 5 points of npia on both seeds: held (+3.1, -2.4) |
+
+Percent correct, 1,000 fresh problems per length and seed; per-seed files in `results_batch5/`.
+
+| certification | edits | exact | certified | both | precision | recall | lowest exact score | highest other score | threshold |
+|---|---|---|---|---|---|---|---|---|---|
+| sums, seed 0 | 820 | 46 | 46 | 46 | 100% | 100% | 1.000 | 0.000 | 0.950 |
+| sums, seed 1 | 820 | 46 | 46 | 46 | 100% | 100% | 0.997 | 0.000 | 0.948 |
+| S3, seed 0 (#36) | 78 | 8 | 8 | 8 | 100% | 100% | 0.973 | 0.810 | 0.943 |
+| S3, seed 1 (#36) | 78 | 8 | 8 | 8 | 100% | 100% | 1.000 | 0.843 | 0.950 |
+
+**What the miner found by itself.**
+
+* **Sums:** inserting +0 or -0, and every pair of terms that cancel, at spread or adjacent
+  positions and in either order. That is npia's rule, plus zeros.
+* **S3:** the identity, the six adjacent inverse pairs, and the identity twice. It rejected every
+  spread pair of non-identity elements. That includes the inverse 3-cycles at spread positions,
+  which keep the answer 81-84% of the time on 1-2-element words. A rule copied from sums would
+  have accepted them.
+* The S3 M0 gets 99.3-100% on 1-4 elements.
+
+**Keep rule: met.** Within 5 points of npia on both seeds, in-distribution 99.7-99.9%, precision
+100%. #33 goes to confirmation.
+
+**What this does not show.**
+
+* **On sums, certification was easy.** Every wrong edit changed every answer (score 0.000). Only
+  S3 tested separating edits that keep the answer most of the time. There the closest wrong edit
+  was about 10 points below the threshold. A weaker M0 would shrink that margin: the smoke run's
+  undertrained M0 had 45% precision.
+* **It cannot beat an expert who knows the algebra.** Mining finds rules; it does not find
+  better ones. On sums it can at best tie npia, and it did. Its claim is that no person is needed,
+  not higher accuracy. Under the protocol's original bar (beat the best reference by 5 points) it
+  would not count.
+* **It finds only rules inside its edit space** (insert one or two segments). Splits, for
+  example, are outside it.
+* **The reach is still the length the edits cover.** At 12 and 16 terms, mined and npia both get
+  5-7%.
+* **Compute:** M0 training (255 s) plus the mined run (584 s, which includes 71 s of
+  certification) is about 1.65x npia's 509 s. Times are wall-clock with three runs sharing four
+  CPUs.
+* **The npia rerun is 2.05 points below batch 1** (86.6 vs 87.7, 89.9 vs 92.8). The transform
+  and the sampler's random draws are unchanged since batch 1 (checked in git), and the baseline
+  reproduces batch 1 exactly (8.4, 4.8). Batch 1's result files were never committed, and its
+  library versions were not recorded. Now: jax 0.12.0.1, optax 0.2.8, numpy 2.5.3. The
+  mined-vs-npia comparison ran in one runner and one environment, so it is not affected.
+
+## Confirmation of #33 (registered before running; seeds 2, 3, 4 untouched until now)
+
+The same runner and settings, unchanged (`run4.py` at this commit): baseline (= M0), npia and
+mined on sums, and the S3 certification, on seeds 2, 3 and 4.
+
+**Pass criteria (all must hold):**
+
+1. Certification precision and recall at least 95% on every seed, for both sums and S3.
+2. On every seed, mined at 8 terms is at least 10 points above the baseline and within 5 points
+   of npia.
+3. Averaged over the three seeds, mined at 8 terms is within 3 points of npia.
+4. Every seed is at least 95% in-distribution (1-4 terms).
+
+**A note on the protocol.** The original confirmation rule asks a winner to beat the best
+reference by 5 points. That rule is for a claim of higher accuracy. Mining claims the expert's
+accuracy without the expert, so the original rule does not apply, and I make no higher-accuracy
+claim. If mining passes, the next test is the language model. There the rule (cancel_spread) was
+designed by hand, and mining would have to find it from the model's own short answers.
+
+**Prediction:** all four criteria hold (about 70% confidence). The main risk is seed noise: npia
+itself varied by 3-5 points between seeds, so criterion 2 can fail on one seed.
