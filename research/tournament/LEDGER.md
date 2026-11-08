@@ -319,3 +319,60 @@ Reading:
 * **Untested:** whether pairs would fall short in a model that does learn order-dependent tracking
   from long data, such as a recurrent or looped model (PAR; the LSTMs and GRUs of 2609.29951).
 * `research/final/REPORT.md` is corrected to match. Ideas tried so far: still 25.
+
+## Batch 4 (2026-11-08): splitting real changes, written before running
+
+**Motivation.** The diagnosis of the language-model three-person final
+(`research/llm/results/multi_final/diagnosis.txt`, post-hoc) found where the method fails.
+
+* It fails at adding up many real changes for one person, not at comparing people. Only 4% of its
+  wrong answers name another person's amount.
+* Its accuracy falls from 80% to 12% as the winner's events go from 0-2 to 7 or more. The
+  oracle's falls from 94% to 67%.
+* Cancelling pairs add zero. So in the method's long training problems each person still has at
+  most 4 real changes.
+
+**Idea #28, split.** Rewrite a real change as several with the same total ("gains 7" becomes
+"gains 3" and "gains 4").
+
+* It uses another relation of the same event algebra, composition, where pairs use inverses.
+* It needs no solver and reads no amount: a gain's second piece moves earlier, and a loss's later.
+* The answer is unchanged, but the model must now add up many real changes per person.
+
+**Prior art.** Answer-preserving rewrites are a known family: h1's chaining, and math-word-problem
+augmentation (for example arXiv 2010.01556, reverse operations). Two searches found nothing that
+splits changes to teach accumulation over long problems. So this is a new rewrite in a known
+family.
+
+**Testbed 3.** `task_multi.py`, the three-person task for the small model.
+
+* Rules as in `multi.py`, with answers capped at 99.
+* Training on 1-4 events. The test is 1,000 fresh problems at each of 1-4, 8, 12 and 16 events,
+  and the primary metric is 12 events.
+* Model and budget as in the protocol.
+* Discovery seeds 0 and 1; runner `run3.py`; tests in `test_task_multi.py`.
+
+| # | condition | kind | prediction (before run) |
+|---|---|---|---|
+| 30 | baseline (1-4 events) | baseline | at most 15% at 12 events |
+| 31 | pairs (`multi.cancel_spread`, p = 0.5, up to 16) | reference: the language-model method | 40-80% at 12 events |
+| 32 | oracle (true labels, 1-16) | ceiling | at least 80% at 12 events |
+| 28 | split (p = 0.5, up to 16 events) | candidate | at least 10 points above pairs at 12 events (about 35% confidence) |
+| 29 | split, then pairs (both relations) | candidate | at least 10 points above pairs at 12 events (about 40% confidence) |
+
+**Proxy check, first.** Does the toy show the language model's failure?
+
+* It holds if pairs fall by at least 30 points at 12 events between problems where the winner had
+  0-2 events and 5-6 events, while the oracle falls less.
+* About 55% confidence.
+* If it fails, the toy cannot test what split is for, and the split result says little about the
+  language model.
+
+**Keep rule (as in the protocol, against the best reference):**
+
+* the mean at 12 events at least 10 points above pairs, with both seeds above pairs;
+* in-distribution (1-4) at least 95%, or no more than 3 points below the baseline if the baseline
+  itself is below 95%.
+
+A kept idea goes to the language model only through a registered spec. Ideas tried so far: 27
+after this batch (#28-#29).
