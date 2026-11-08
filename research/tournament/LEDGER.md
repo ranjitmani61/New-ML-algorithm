@@ -415,3 +415,85 @@ From now on, each new testbed starts with a baseline run at training lengths. A 
 only if the baseline reaches at least 90% there.
 
 Ideas tried so far: 27 (#28 and #29 were run, but this testbed could not test them).
+
+## Batch 5 (2026-11-08): certified rewrite mining, written before running
+
+**Why a different kind of idea.** Ideas #7-#29 are rewrites that I designed by hand: zeros,
+inverse pairs, splits. Each new task needs a person who knows its algebra. Self-improvement
+avoids the person, but it lets the model label its own long problems, and that failed every time
+here (the consensus trap: #1, #23, and the language-model final). Rewrite mining keeps the
+model's judgment and moves it to the place where the model is reliable. It **certifies rewrites,
+not labels.**
+
+**Idea #33, certified rewrite mining.**
+
+1. Train the model on labeled short problems, as the baseline does (this model is M0).
+2. Take a generic space of edits that never read the answer. Here: insert one segment (a term or
+   group element); insert two segments at independent random positions; insert two segments as an
+   adjacent block. The segment vocabulary is all terms (sums: +0 to +9 and -0 to -9) or all group
+   elements (S3).
+3. For each edit, apply it to labeled problems of 1-2 segments, so the edited problems stay
+   inside the training lengths where M0 is reliable. Score the edit by how often M0's answer on
+   the edited problem equals the original problem's true label.
+4. Certify the edit if that score is at least M0's own accuracy on unedited problems of the same
+   lengths, minus 5 points. A rewrite that keeps the answer should score like M0's accuracy. An
+   edit that changes the answer cannot, unless M0 ignores it.
+5. Train a fresh model with the certified edits applied to labeled short problems up to 8 terms
+   (p = 0.5, as in npia). The labels are inherited. M0 never labels a long problem.
+
+No solver is used anywhere. The true answers of edited problems are computed only afterwards,
+to measure how accurate the certificates were.
+
+**Prior art (checked 2026-11-08, seven searches, five papers read).**
+
+* **Compositional self-improvement** (arXiv 2611.00452, 2026-10-30) builds supervision for
+  harder problems from a model's answers on simpler parts. People supply the composition rules.
+  Its conclusion leaves "how to discover and validate such structures" open. That is the gap this
+  idea targets.
+* **Metamorphic-relation inference** in software testing (GenMorph, arXiv 2312.15302; survey
+  arXiv 2406.05397) finds input-output relations by running a program. The relations test
+  programs; they do not train models.
+* **GraphAug** (arXiv 2202.13248) trains a separate model to predict label invariance and
+  augments at the training distribution. It does not use the edits to reach harder problems.
+* **HARDEN** (arXiv 2609.30571) makes harder evaluation cases and checks each one with a
+  language-model judge. It produces evaluation cases, not training data.
+* **CEDC** (arXiv 2512.01187) needs an external verifier and oracle labels for long problems.
+* **Verdict.** I found no work that certifies edit types with the learner's own short-length
+  answers against true short labels, and then uses them to build long training data. So this is a
+  new algorithm in known families (learned augmentation, compositional self-improvement). Search
+  can miss work, so this is not proof of novelty.
+
+**Gate (the rule from batch 4).** The M0 baseline must reach at least 90% on 1-4 terms (sums).
+If it does not, the batch stops and nothing else is judged.
+
+| # | condition | what it tests | prediction (before run) |
+|---|---|---|---|
+| 34 | baseline (sums, 1-4 terms); also M0 | reference; gate | 1-4 terms at least 95%; 8 terms 5-15% |
+| 35 | npia rerun (same runner) | the hand-designed rule | 8 terms within 3 points of batch 1's 90.3% |
+| 33 | mined (sums) | does mining recover npia without a person? | certified set: precision and recall at least 95% against the exact invariants; 8 terms within 5 points of npia on both seeds (about 70% confidence) |
+| 36 | certification only (S3, M0 trained on 1-6 elements) | does mining find the right algebra when order matters? | adjacent inverse pairs and the identity certified; spread pairs of non-identity elements rejected; precision and recall at least 90% (about 75% confidence) |
+
+**How to read it.** On sums the best possible outcome is a tie with npia. Mining finds rules; it
+does not make better rules than an expert who knows the algebra. The claim to test is that the
+person can be removed. In S3, inserting "g ... g^-1" at spread positions does not keep the answer.
+A rule copied from the abelian case would be wrong there, and the miner should notice.
+
+**Keep rule.** #33 is kept if its 8-term accuracy is within 5 points of npia on both seeds,
+in-distribution stays at least 95%, and certification precision is at least 95%. If kept, the
+next test is a task whose algebra is hidden, and then the language model through a registered
+spec.
+
+Discovery seeds 0 and 1. Runner: `run4.py`; tests: `test_mine.py`. Compute: mining costs M0's
+training plus about 0.1M forward passes for certification, then one normal training run. That is
+about 2x npia's compute, and I will report it.
+
+Checks written before the batch ran (`test_mine.py`, and a 300-step smoke run):
+
+* With a perfect predictor, certification accepts exactly the edits that keep every answer: 46 of
+  820 for sums and 8 of 78 for S3 (the identity, the six adjacent inverse pairs, and two spread
+  identities).
+* A predictor blind to the last segment certifies wrong edits (precision 13-16%). If M0 had such a
+  blind spot, the certificates would be wrong.
+* In the smoke run an undertrained S3 model (54% on 3-4 elements) certified with precision 45%.
+  The certificates are only as good as M0's accuracy at the edited lengths. That is why sums have
+  the gate. For S3 I report M0's accuracy next to the certificates.
