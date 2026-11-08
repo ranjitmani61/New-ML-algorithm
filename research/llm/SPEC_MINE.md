@@ -122,3 +122,95 @@ conditions are the final's own runs on the same seeds and test problems (`result
   1.4 hours (certification about 15 minutes, training about 68).
 * If the kernel fails, I fix it and rerun once this week only if enough quota is left for the
   full job. Otherwise it waits for the refresh.
+
+## Result (2026-11-08, written after the run; nothing above was changed)
+
+Kernel `llm-mine-multi` completed with all three seeds. The kernel recorded `mine_multi.py`'s
+sha256 (ea2bd63f…, equal to the registered one) and the three M0 adapter hashes, which are equal
+to the registered ones. There is no exact overlap between training and test problems. Outputs are
+in `results/mine_multi/`, without adapters. `summary.txt` is the output of `summarize_mine.py`,
+which was committed before the results.
+
+**VERDICT: MATCHES.**
+* At 12 events, mined got 41.2%, 45.2% and 42.4% (mean 42.9%). The hand rule (cancel_spread)
+  got 40.4%, 43.2% and 41.4% (mean 41.7%).
+* So d = +0.8, +2.0 and +1.0, mean +1.27 points.
+* Validity holds: mined minus plain is +19.6, +20.4 and +19.0.
+* By rule 4, the claim "the model found the rule itself and trained as well as with the
+  hand-designed rule" is supported here. This holds on seeds that are not fresh (see weaknesses).
+
+| seed | M0 at 3-4 events | edits certified | of them exact | exact edits found | mined at 12 | cancel_spread at 12 | plain at 12 | self_improve at 12 |
+|---|---|---|---|---|---|---|---|---|
+| 9  | 93.8% | 64 | 64 | 64 / 108 | 41.2% | 40.4% | 21.6% | 24.8% |
+| 10 | 94.3% | 66 | 66 | 66 / 108 | 45.2% | 43.2% | 24.8% | 24.8% |
+| 11 | 91.9% | 86 | 86 | 86 / 108 | 42.4% | 41.4% | 23.4% | 22.8% |
+
+### Predictions, scored
+
+1. The gate passes on all three seeds: **right**.
+2. Precision at least 95%: **right**. It was 100%, and no wrong edit was certified on any seed.
+   Recall at least 80%: **wrong**. It was 59.3%, 61.1% and 79.6%.
+3. MATCHES was the most likely verdict (about 50%): **right**.
+4. Mined at 12 events, mean 33-48%: **right**, 42.9%.
+5. At least 99% of the training labels are true: **right**, 100%. Invalid training problems
+   5-25%: **wrong**. They were 4.6%, 4.6% and 4.1%, below the range.
+
+### Secondary (reported, not decisive)
+
+Means over seeds 9-11, in %:
+
+| condition | 4 events | 8 | 12 | 16 | held-out vocabulary, 12 |
+|---|---|---|---|---|---|
+| plain | 91.9 | 56.4 | 23.3 | 11.7 | 23.2 |
+| cancel_spread (hand rule) | 92.2 | 69.3 | 41.7 | 25.8 | 42.1 |
+| mined | 90.9 | 65.2 | 42.9 | 31.3 | 39.9 |
+| self_improve | 85.1 | 52.9 | 24.1 | 10.7 | 23.4 |
+| oracle (true labels) | 97.7 | 93.9 | 88.5 | 79.9 | 86.5 |
+
+* Mined was below the hand rule at 8 events on every seed (-6.0, -2.0, -4.2) and with held-out
+  vocabulary on every seed (-3.6, -1.4, -1.6).
+* Mined was above it at 16 events on every seed (+7.6, +2.4, +6.4).
+* These were not tested in advance, and I don't know their cause.
+* Mined minus self_improve at 12 events: +16.4, +20.4 and +19.6.
+* **GPU seconds per seed:**
+  * certification: 1,050, 983 and 1,086;
+  * mined training: 4,978, 4,788 and 5,025;
+  * cancel_spread training (final): 4,086-4,097;
+  * plain training: 2,412-2,418.
+* Mined's total, including training M0, is about 8,400 s, about 2.05 times cancel_spread.
+* Mined's training data was no longer than cancel_spread's: 5.6 vs 5.7 events on average. So
+  the extra training time does not come from longer problems. I did not find its cause.
+
+### Post-hoc analysis (not registered; `recall_mine.py`, output in `results/mine_multi/recall.txt`)
+
+* **Why recall was low.** M0 is less accurate on problems that contain a cancelling pair than on
+  typical problems of the same length.
+  * Exact edits that went to stage 2 scored 90.7%, 92.2% and 91.4%. M0's reference was 93.8%,
+    94.3% and 91.9%. These means are biased upward, because only edits that passed stage 1 are
+    included.
+  * So with a 5-point margin, many exact edits fell below the threshold. Rejected at stage 1:
+    16, 24 and 13; rejected at stage 2: 28, 18 and 9.
+  * Most misses involve large amounts. Exact edits with amounts 7-9 were certified 13/36, 13/36
+    and 23/36 times; amounts 1-3, 28/36, 27/36 and 30/36.
+  * Seed 11 had the lowest reference, so the lowest threshold (86.9%) and the highest recall.
+* **The precision margin was thin.** The best-scoring wrong edits reached:
+  * 82.8% on seed 9 (threshold 88.8%);
+  * 85.9% on seed 10 (threshold 89.3%);
+  * 85.9% on seed 11 (threshold 86.9%), one point below the threshold.
+  * These edits keep the answer about 83-86% of the time. For example, two losses for one person
+    keep it whenever that person is not the richest.
+  * With a slightly weaker M0, a fixed 5-point margin would have certified such edits. Their
+    problems would then have carried wrong labels. This is a real weakness of the fixed margin.
+
+### What this does not show
+
+* **Not fresh seeds.** A fresh-seed replication with plain, cancel_spread and mined is still
+  needed, after the quota refresh on 2026-11-14.
+* **One synthetic task.** The rule was inside an edit space I chose.
+* **Matching, not beating.** Mined equals the hand rule at about twice the compute. Its value, if
+  it holds, is that no person writes the rule and the model never labels a long problem.
+* **#33 is still not confirmed** under the tournament protocol, because its fresh-seed
+  confirmation failed.
+
+**Deviations:** none. The PyTorch warning about `lr_scheduler.step()` before `optimizer.step()`
+also appears in the final's logs, from the same recipe.

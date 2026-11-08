@@ -615,3 +615,17 @@ the band was written two-sided. The prediction (all four hold, about 70%) **miss
   record.
 * The language-model test (draft spec, `research/llm`) was to follow a passed confirmation. It
   has not been launched, and the decision goes to the user.
+
+## Language-model test of #33 (2026-11-08; `research/llm/SPEC_MINE.md`)
+
+The user decided to run it after the confirmation failed.
+
+* **Result: MATCHES** by the registered rule.
+  * Mean at 12 events: mined 42.9%, hand rule (cancel_spread) 41.7%, plain 23.3%,
+    self-improvement 24.1%.
+  * d = +0.8, +2.0 and +1.0 points on seeds 9-11.
+* **Certificates.** No wrong edit was certified on any seed. Recall was 59-80%, against a
+  prediction of at least 80%, so that prediction was wrong. On seed 11 the closest wrong edit was
+  one point below the threshold.
+* **Status of #33 in the tournament: unchanged, not confirmed.** The language-model seeds are not
+  fresh. A fresh-seed replication is planned after the quota refresh on 2026-11-14.
