@@ -727,3 +727,22 @@ deterministic. Ideas tried so far: 27, plus #33 on this testbed.
   restart costs at most the jobs in flight.
 * Seeds are independent in run3.py (each has its own PRNG key and data stream), so per-seed jobs
   give the same results as the registered multi-seed jobs.
+
+**Batch 6 erratum 2 (infrastructure only; nothing about the runs changed).**
+* The relaunched batch ran while a session-tracked watcher was alive (13:22-15:22). Baseline s0
+  and s1 and pairs s0 finished and were pushed. Seed 0's baseline reproduced calibration A
+  exactly: the same metrics and the same model sha256 (7c866162…), so the determinism check passed.
+* The watcher stopped at its 2-hour limit and was not restarted. Between 15:24 and the 16:07
+  check-in the session was idle, and the machine restarted again (uptime 0 minutes). Mined s0 and
+  pairs s1 were lost in flight and rerun from the start.
+  * Mined s0 had finished certification: 84 of 5,886 edits certified, precision 1.0, recall
+    0.778. That log line is in commit 0790c6b.
+  * The rerun repeats certification with the same seed, which checks that certification is
+    deterministic.
+* From 16:09 UTC the batch runs in rounds (`ONE_PER_LANE=1 bash batch6.sh`). A round runs at
+  most one job per lane, inside one session-tracked task, and ends within the 2-hour task limit.
+  * Lane order, cores, settings and seeds are unchanged.
+  * The start and end time of each job is logged in `results_batch6/rounds.log`.
+  * The rounds are: (mined s0, pairs s1), (mined s1, oracle s0), (split s0, oracle s1),
+    (split s1, split-then-pairs s0), then split-then-pairs s1.
+  * DONE is written only when all 12 JSONs exist.
