@@ -661,3 +661,58 @@ learned the three-person task, even at the training lengths (53.6% at 1-4 events
   * exact() agrees with brute force.
   * A perfect predictor certifies exactly the exact edits.
   * A predictor blind to the last event certifies wrong edits: precision 41%.
+
+### Calibration result: configuration A passes, and testbed 3 is fixed for batch 6
+
+| run | width, layers, MLP | steps | 1 | 2 | 3 | 4 events | mean, 1-4 | 8 | 12 | 16 | seconds |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| A | 64, 3, 256 | 16,000 | 100.0 | 99.5 | 98.1 | 92.2 | **97.5** | 23.3 | 4.8 | 2.4 | 1,760 |
+| B | 128, 4, 512 | 8,000 | stopped | | | | | | | | |
+
+* **A passes the gate** (97.5% at 1-4 events, seed 0). It is the cheaper configuration, so the
+  rule selects it.
+* B was stopped after 33 minutes, unfinished, because its result could not change the choice.
+  The batch then has the CPU.
+* **At long lengths the baseline fails** (4.8% at 12 events), as on the language model. So the toy
+  has room to show differences.
+* Whether it fails in the same way is the proxy check below.
+
+## Batch 6 (2026-11-09): split on the calibrated toy, written before running
+
+Testbed 3 (`task_multi.py`) uses configuration A: width 64, 3 layers, 16,000 steps, learning rate
+2e-3, batch 128. There are 1,000 fresh test problems per length, with 12 events as the primary
+metric. Discovery seeds are 0 and 1, and the runner is `run3.py`. Every condition has the same
+model and steps.
+
+| # | condition | role | prediction (before run) |
+|---|---|---|---|
+| 30 | baseline (1-4 events) | baseline; also M0 for mined | 1-4 mean at least 95% on both seeds; at most 10% at 12 events |
+| 31 | pairs (`expand_pairs`, p = 0.5, up to 16) | reference: the language model's method | 10-50% at 12 events |
+| 32 | oracle (true labels, 1-16) | ceiling | at least 50% at 12 events |
+| 28 | split (p = 0.5, up to 16) | candidate | at least 10 points above pairs at 12 events on the mean, with both seeds above (about 35%) |
+| 29 | split, then pairs | candidate | the same bar (about 40%) |
+| 33 | mined (insertion edits certified by M0, labels inherited) | the method mining found on the language model | within 5 points of pairs on both seeds (about 60%); certification precision at least 95% (about 75%) |
+
+**Proxy check (batch 4's, unchanged).** It holds if, at 12 events, pairs fall by at least 30
+points from problems whose winner had 0-2 events to problems whose winner had 5-6 events, while
+the oracle falls less. I give this about 45%.
+* If pairs score below about 30% at 12 events overall, the check cannot pass.
+* If it fails, split's result is still reported, but it says little about the language model.
+
+**Keep rule (batch 4's, unchanged).** For split and split-then-pairs, both must hold:
+* the mean at 12 events is at least 10 points above pairs, and both seeds are above pairs;
+* in-distribution (1-4) is at least 95%, or no more than 3 points below the baseline.
+
+**What a kept split leads to:**
+* a registered test of whether mining can find split by itself (edits that replace one event with
+  two);
+* only then a language-model test, through a registered spec.
+
+Mined is reported against pairs, as on the language model. The decision is about split only.
+
+**Lanes (two CPU lanes, two cores each).**
+* Lane 1: baseline, then mined, then split.
+* Lane 2: pairs, oracle, split-then-pairs.
+
+Seed 0's baseline must reproduce calibration run A exactly. That checks that runs are
+deterministic. Ideas tried so far: 27, plus #33 on this testbed.
