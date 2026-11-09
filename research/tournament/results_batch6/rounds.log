@@ -4,3 +4,7 @@
 2026-11-09T17:37:55Z end mined 0
 2026-11-09T17:38:24Z start mined 1 (cores 0,1)
 2026-11-09T17:38:24Z start oracle 0 (cores 2,3)
+2026-11-09T18:50:26Z end oracle 0
+2026-11-09T19:08:56Z end mined 1
+2026-11-09T19:09:31Z start split 0 (cores 0,1)
+2026-11-09T19:09:31Z start oracle 1 (cores 2,3)
