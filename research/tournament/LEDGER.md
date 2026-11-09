@@ -716,3 +716,14 @@ Mined is reported against pairs, as on the language model. The decision is about
 
 Seed 0's baseline must reproduce calibration run A exactly. That checks that runs are
 deterministic. Ideas tried so far: 27, plus #33 on this testbed.
+
+**Batch 6 erratum (infrastructure only; nothing about the runs changed).**
+* The first launch (11:07 UTC) ran detached from the session. At the 13:21 check-in the machine
+  had just restarted (uptime 0 minutes), and no run3.py process was alive.
+* No result had been written, because run3.py writes a JSON only when a seed finishes. So none
+  was lost or selected.
+* The batch was relaunched at 13:22 with the same conditions, settings, seeds and lane order. It
+  now runs one job per condition and seed (`batch6.sh`) and skips any job whose JSON exists. A
+  restart costs at most the jobs in flight.
+* Seeds are independent in run3.py (each has its own PRNG key and data stream), so per-seed jobs
+  give the same results as the registered multi-seed jobs.
