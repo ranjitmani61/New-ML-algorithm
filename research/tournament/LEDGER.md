@@ -629,3 +629,35 @@ The user decided to run it after the confirmation failed.
   one point below the threshold.
 * **Status of #33 in the tournament: unchanged, not confirmed.** The language-model seeds are not
   fresh. A fresh-seed replication is planned after the quota refresh on 2026-11-14.
+
+## Calibration of testbed 3 for batch 6 (2026-11-09; written while the runs train, before any result)
+
+**Why.** Batch 4 could not test split (#28) or split-then-pairs (#29). Its small model never
+learned the three-person task, even at the training lengths (53.6% at 1-4 events).
+
+* The language-model diagnosis still points to accumulation: the model fails at adding up many
+  real changes for one person.
+* Cancelling pairs, and the rules mining found on the language model, add only zero changes.
+* So split is still the untested idea aimed at the failure.
+* The user's rule is to run on Kaggle only after an idea is better locally. So the toy has to work
+  first.
+
+**Runs (baseline only, discovery seed 0, `run3.py`, `results_calib6/`):**
+* A: the batch 4 model (width 64, 3 layers) with 16,000 steps instead of 4,000.
+* B: width 128, 4 layers, MLP 512, 8,000 steps.
+
+**Selection rule, fixed now.**
+* The testbed uses the cheaper configuration whose baseline reaches at least 90% mean accuracy
+  at 1-4 events (the gate from batch 4). The choice looks only at 1-4 events, not at long
+  lengths.
+* If neither passes, one more run follows: width 128, 4 layers, 16,000 steps. If that also fails,
+  the toy route to split stops, and that is reported.
+
+**Code added for batch 6** (before any batch-6 run):
+* `run3.py` gets model-size flags (defaults equal batch 4's) and a `mined` condition. M0 is the
+  baseline pickle of the same seed. The gate is 90% at 1-4 events. Certification uses
+  `mine_multi_toy.py`: 300 problems per edit, margin 5 points, labels inherited.
+* `test_mine_multi_toy.py` passes.
+  * exact() agrees with brute force.
+  * A perfect predictor certifies exactly the exact edits.
+  * A predictor blind to the last event certifies wrong edits: precision 41%.
