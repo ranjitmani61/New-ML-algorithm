@@ -12,3 +12,6 @@
 2026-11-09T20:20:18Z end oracle 1
 2026-11-09T20:20:48Z start split_pairs 0 (cores 2,3)
 2026-11-09T20:20:48Z start split 1 (cores 0,1)
+2026-11-09T21:32:17Z end split 1
+2026-11-09T21:32:21Z end split_pairs 0
+2026-11-09T21:32:50Z start split_pairs 1 (cores 2,3)
