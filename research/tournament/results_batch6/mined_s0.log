@@ -1,0 +1,1 @@
+{"seed": 0, "ref": {"1": 0.9866666666666667, "2": 0.9558333333333333}, "certification": {"edits": 5886, "certified": 84, "exact": 108, "certified_and_exact": 84, "precision": 1.0, "recall": 0.7777777777777778, "certified_not_exact": [], "closest_wrong": [0.807, 0.783, ["spread", [[0, 1, 7], [0, 0, 6]]]]}}
